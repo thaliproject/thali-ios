@@ -8,7 +8,7 @@
 //
 
 import Foundation
-import XCTest
+import SwiftXCTest
 
 public final class TestRunner: NSObject {
 
@@ -29,7 +29,7 @@ public final class TestRunner: NSObject {
   public static let `default`: TestRunner = TestRunner.createDefaultRunner()
 
   private static func createDefaultRunner() -> TestRunner {
-    return TestRunner(testSuite: XCTestSuite.default())
+    return TestRunner(testSuite: rootTestSuite())
   }
 
   public var resultDescription: String? {

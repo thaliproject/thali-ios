@@ -7,10 +7,19 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import XCTest
-import ThaliCore
+@testable import ThaliCore
+import SwiftXCTest
 
 class AtomicTests: XCTestCase {
+
+  static var allTests = {
+    return [
+        ("test_getCorrectValueWithValueProperty", testGetCorrectValueWithValueProperty),
+        ("test_getCorrectValueAfterModify", testGetCorrectValueAfterModify),
+        ("test_getCorrectValueWithValueFunction", testGetCorrectValueWithValueFunction),
+        ("test_lockOnReadWrite", testLockOnReadWrite),
+      ]
+  }()
 
   // MARK: - State
   var atomic: Atomic<Int>!

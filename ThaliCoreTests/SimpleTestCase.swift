@@ -7,9 +7,15 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import XCTest
+import SwiftXCTest
 
 class SimpleTestCase: XCTestCase {
+
+  static var allTests = {
+    return [
+        ("test_example", testExample),
+      ]
+  }()
 
   func testExample() {
     XCTAssert(true)

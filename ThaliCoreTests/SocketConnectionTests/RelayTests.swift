@@ -8,8 +8,8 @@
 //
 
 import MultipeerConnectivity
+import SwiftXCTest
 @testable import ThaliCore
-import XCTest
 
 class RelayTests: XCTestCase {
 

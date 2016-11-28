@@ -8,7 +8,7 @@
 //
 
 @testable import ThaliCore
-import XCTest
+import SwiftXCTest
 
 func createMPCFPeers(with browsingCompletion: @escaping (PeerAvailability) -> Void)
                      -> (AdvertiserManager, BrowserManager) {

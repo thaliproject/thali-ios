@@ -8,7 +8,7 @@
 //
 
 @testable import ThaliCore
-import XCTest
+import SwiftXCTest
 
 class AdvertiserManagerTests: XCTestCase {
 

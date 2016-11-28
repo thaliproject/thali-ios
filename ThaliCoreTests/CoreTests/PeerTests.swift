@@ -8,9 +8,23 @@
 //
 
 @testable import ThaliCore
-import XCTest
+import SwiftXCTest
 
 class PeerTests: XCTestCase {
+
+  static var allTests = {
+    return [
+        ("test_peerByNextGenerationCallShouldHaveSameUUIDPart", testPeerByNextGenerationCallShouldHaveSameUUIDPart),
+        ("test_genetationByNextGenerationCallShouldBeIncreasedByOne",
+         testGenetationByNextGenerationCallShouldBeIncreasedByOne),
+        ("test_stringValueHasCorrectForm", testStringValueHasCorrectForm),
+        ("test_initWithStringHasTwoSeparatorsCausesError", testInitWithStringHasTwoSeparatorsCausesError),
+        ("test_initWithStringHasNoSeparatorCausesError", testInitWithStringHasNoSeparatorCausesError),
+        ("test_initWithStringHasInvalidUUIDPartCausesError", testInitWithStringHasInvalidUUIDPartCausesError),
+        ("test_initWithStringHasNotNumberGenerationCausesError", testInitWithStringHasNotNumberGenerationCausesError),
+        ("test_generationsEquality", testGenerationsEquality),
+      ]
+  }()
 
   // MARK: - Tests
   func testPeerByNextGenerationCallShouldHaveSameUUIDPart() {

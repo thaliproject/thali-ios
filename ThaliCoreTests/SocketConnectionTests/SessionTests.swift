@@ -7,9 +7,9 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import XCTest
-@testable import ThaliCore
 import MultipeerConnectivity
+import SwiftXCTest
+@testable import ThaliCore
 
 class SessionTests: XCTestCase {
 

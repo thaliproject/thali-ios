@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19A1D23E1DEC623E00598612 /* TestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1D23D1DEC623E00598612 /* TestCases.swift */; };
+		19A1D24E1DEC703F00598612 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */; };
 		1C148D141DA3B16C00E0E1AC /* TCPServerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148D131DA3B16C00E0E1AC /* TCPServerMock.swift */; };
 		1C148D161DA3B17500E0E1AC /* TCPClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148D151DA3B17500E0E1AC /* TCPClientMock.swift */; };
 		1C148DDA1DA55D4900E0E1AC /* Dictionary+KeyForValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */; };
@@ -115,6 +117,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		19A1D23D1DEC623E00598612 /* TestCases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCases.swift; sourceTree = "<group>"; };
+		19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Debug-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		1C148D131DA3B16C00E0E1AC /* TCPServerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerMock.swift; sourceTree = "<group>"; };
 		1C148D151DA3B17500E0E1AC /* TCPClientMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientMock.swift; sourceTree = "<group>"; };
 		1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+KeyForValue.swift"; sourceTree = "<group>"; };
@@ -195,12 +199,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19A1D24E1DEC703F00598612 /* SwiftXCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		19A1D24C1DEC703F00598612 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1C3367191D703BAC00143BCF /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +293,7 @@
 				CCA571CA1D4787A900FBEC41 /* ThaliCoreTests */,
 				CCA572F71D4B9E5300FBEC41 /* ThaliCoreCITests */,
 				CCA571BD1D4787A900FBEC41 /* Products */,
+				19A1D24C1DEC703F00598612 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -368,7 +382,6 @@
 			isa = PBXGroup;
 			children = (
 				1CB9B4101D70636F00C59CCF /* Utils */,
-				CCA573091D4BA04B00FBEC41 /* Core */,
 				CCA5730C1D4BA04B00FBEC41 /* TestRunner */,
 				CCA573061D4B9F1B00FBEC41 /* Supporting Files */,
 				CCA572FB1D4B9E5300FBEC41 /* ThaliCore.h */,
@@ -384,17 +397,11 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		CCA573091D4BA04B00FBEC41 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		CCA5730C1D4BA04B00FBEC41 /* TestRunner */ = {
 			isa = PBXGroup;
 			children = (
 				CCA5730E1D4BA04B00FBEC41 /* TestRunner.swift */,
+				19A1D23D1DEC623E00598612 /* TestCases.swift */,
 			);
 			path = TestRunner;
 			sourceTree = "<group>";
@@ -748,6 +755,7 @@
 				1C6D71431DAFBBDC00802569 /* TCPServerMock.swift in Sources */,
 				1C6D71401DAF9BD400802569 /* TCPListenerTests.swift in Sources */,
 				1C6D713B1DAF9BC800802569 /* RelayTests.swift in Sources */,
+				19A1D23E1DEC623E00598612 /* TestCases.swift in Sources */,
 				1C6D71411DAF9BDB00802569 /* StringRandomTests.swift in Sources */,
 				FAADD1BED4E04EEC9EE07240 /* BrowserManagerTests.swift in Sources */,
 				FAADD601541D22571D092A0D /* BrowserTests.swift in Sources */,
@@ -879,7 +887,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "ThaliCore/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -899,7 +907,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "ThaliCore/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -914,7 +922,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "ThaliCoreTests/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/Carthage/Build/iOS";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ThaliCoreTests/Bridging-Header.h";
@@ -929,7 +937,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "ThaliCoreTests/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/Carthage/Build/iOS";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ThaliCoreTests/Bridging-Header.h";
@@ -946,13 +954,9 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
 				INFOPLIST_FILE = "$(SRCROOT)/ThaliCoreCITests/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreCITests;
 				PRODUCT_NAME = ThaliCore;
@@ -970,13 +974,9 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
 				INFOPLIST_FILE = "$(SRCROOT)/ThaliCoreCITests/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreCITests;
 				PRODUCT_NAME = ThaliCore;

@@ -7,8 +7,8 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import XCTest
 @testable import ThaliCore
+import SwiftXCTest
 
 class TCPListenerTests: XCTestCase {
 
@@ -481,13 +481,4 @@ class TCPListenerTests: XCTestCase {
       clientDisconnectHandlerInvoked = nil
     }
   }
-}
-
-// MARK: - GCDAsyncSocketDelegate
-extension TCPListenerTests: GCDAsyncSocketDelegate {
-
-  func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {}
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {}
-  func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {}
-  func socketDidCloseReadStream(_ sock: GCDAsyncSocket) {}
 }

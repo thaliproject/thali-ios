@@ -9,7 +9,7 @@
 
 import MultipeerConnectivity
 @testable import ThaliCore
-import XCTest
+import SwiftXCTest
 
 class AdvertiserRelayTests: XCTestCase {
 
