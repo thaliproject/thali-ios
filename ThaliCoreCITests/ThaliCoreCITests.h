@@ -8,11 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import <ThaliCore/NetworkReachability.h>
-
-#import <ThaliCore/BluetoothHardwareControlManager.h>
-#import <ThaliCore/BluetoothHardwareControlObserver.h>
-#import <ThaliCore/GCDAsyncSocket.h>
+#import <ThaliCoreCITests/BluetoothHardwareControlManager.h>
+#import <ThaliCoreCITests/BluetoothHardwareControlObserver.h>
 
 //! Project version number for ThaliCoreWithTests.
 FOUNDATION_EXPORT double ThaliCoreVersionNumber;

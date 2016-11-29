@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		19A1D23E1DEC623E00598612 /* TestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1D23D1DEC623E00598612 /* TestCases.swift */; };
-		19A1D24E1DEC703F00598612 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */; };
 		19A1D24F1DEC75CC00598612 /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA571BC1D4787A900FBEC41 /* ThaliCore.framework */; };
+		19A1D2561DECA12C00598612 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */; };
 		1C148D141DA3B16C00E0E1AC /* TCPServerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148D131DA3B16C00E0E1AC /* TCPServerMock.swift */; };
 		1C148D161DA3B17500E0E1AC /* TCPClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148D151DA3B17500E0E1AC /* TCPClientMock.swift */; };
 		1C148DDA1DA55D4900E0E1AC /* Dictionary+KeyForValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */; };
@@ -31,7 +31,7 @@
 		1C6D71411DAF9BDB00802569 /* StringRandomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD347541D9FEED9006F1126 /* StringRandomTests.swift */; };
 		1C6D71421DAFBBD100802569 /* TCPClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148D151DA3B17500E0E1AC /* TCPClientMock.swift */; };
 		1C6D71431DAFBBDC00802569 /* TCPServerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148D131DA3B16C00E0E1AC /* TCPServerMock.swift */; };
-		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; };
+		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CD4C0AF1DA68E7B005FFC3B /* AdvertiserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */; };
 		1CD4C0B21DA68E86005FFC3B /* BrowserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */; };
 		1CEBB3F01D997A8600B229C9 /* GCDAsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CEBB3EE1D997A8600B229C9 /* GCDAsyncSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -51,7 +51,7 @@
 		3AD3475E1DA192B3006F1126 /* MCSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD3475D1DA192B3006F1126 /* MCSessionMock.swift */; };
 		CCA571C01D4787A900FBEC41 /* ThaliCore.h in Headers */ = {isa = PBXBuildFile; fileRef = CCA571BF1D4787A900FBEC41 /* ThaliCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CCA571C71D4787A900FBEC41 /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA571BC1D4787A900FBEC41 /* ThaliCore.framework */; };
-		CCA573021D4B9E5300FBEC41 /* ThaliCore.h in Headers */ = {isa = PBXBuildFile; fileRef = CCA572FB1D4B9E5300FBEC41 /* ThaliCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CCA573021D4B9E5300FBEC41 /* ThaliCoreCITests.h in Headers */ = {isa = PBXBuildFile; fileRef = CCA572FB1D4B9E5300FBEC41 /* ThaliCoreCITests.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CCA573131D4BA04B00FBEC41 /* TestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA5730E1D4BA04B00FBEC41 /* TestRunner.swift */; };
 		D3E699F81D798F93005D5315 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD84F3454375EE4974B67 /* Atomic.swift */; };
 		FAADD04D8930DF3297562D09 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD342AF116FCE3B46A03D /* Session.swift */; };
@@ -99,6 +99,7 @@
 /* Begin PBXFileReference section */
 		19A1D23D1DEC623E00598612 /* TestCases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCases.swift; sourceTree = "<group>"; };
 		19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Debug-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
+		19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Release-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		1C148D131DA3B16C00E0E1AC /* TCPServerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerMock.swift; sourceTree = "<group>"; };
 		1C148D151DA3B17500E0E1AC /* TCPClientMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientMock.swift; sourceTree = "<group>"; };
 		1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+KeyForValue.swift"; sourceTree = "<group>"; };
@@ -134,7 +135,7 @@
 		CCA572511D478C1000FBEC41 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCA572921D4A327E00FBEC41 /* ThaliCoreCITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ThaliCoreCITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA572EB1D4B6E9600FBEC41 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
-		CCA572FB1D4B9E5300FBEC41 /* ThaliCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThaliCore.h; sourceTree = "<group>"; };
+		CCA572FB1D4B9E5300FBEC41 /* ThaliCoreCITests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThaliCoreCITests.h; sourceTree = "<group>"; };
 		CCA573071D4B9F1B00FBEC41 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCA5730E1D4BA04B00FBEC41 /* TestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestRunner.swift; sourceTree = "<group>"; };
 		FAADD0580945C0E2E31264FF /* VirtualSocketBuilderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualSocketBuilderTests.swift; sourceTree = "<group>"; };
@@ -179,8 +180,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19A1D2561DECA12C00598612 /* SwiftXCTest.framework in Frameworks */,
 				19A1D24F1DEC75CC00598612 /* ThaliCore.framework in Frameworks */,
-				19A1D24E1DEC703F00598612 /* SwiftXCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,6 +191,7 @@
 		19A1D24C1DEC703F00598612 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */,
 				19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */,
 			);
 			name = Frameworks;
@@ -365,7 +367,7 @@
 				1CB9B4101D70636F00C59CCF /* Utils */,
 				CCA5730C1D4BA04B00FBEC41 /* TestRunner */,
 				CCA573061D4B9F1B00FBEC41 /* Supporting Files */,
-				CCA572FB1D4B9E5300FBEC41 /* ThaliCore.h */,
+				CCA572FB1D4B9E5300FBEC41 /* ThaliCoreCITests.h */,
 			);
 			path = ThaliCoreCITests;
 			sourceTree = "<group>";
@@ -466,9 +468,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCA573021D4B9E5300FBEC41 /* ThaliCoreCITests.h in Headers */,
 				1C38DDD61D74153900418F15 /* BluetoothHardwareControlObserver.h in Headers */,
 				1C38DDD41D74153900418F15 /* BluetoothHardwareControlManager.h in Headers */,
-				CCA573021D4B9E5300FBEC41 /* ThaliCore.h in Headers */,
 				1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
