@@ -7,6 +7,7 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
+import CocoaAsyncSocket
 import ThaliCore
 
 class TCPClientMock: NSObject {

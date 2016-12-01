@@ -7,8 +7,9 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-@testable import ThaliCore
+import CocoaAsyncSocket
 import SwiftXCTest
+@testable import ThaliCore
 
 func createMPCFPeers(with browsingCompletion: @escaping (PeerAvailability) -> Void)
                      -> (AdvertiserManager, BrowserManager) {

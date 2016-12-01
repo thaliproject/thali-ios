@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1922722F1DF05F0D0099BF47 /* TestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1922722E1DF05F0D0099BF47 /* TestRunner.swift */; };
+		1922723D1DF0699F0099BF47 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1922723C1DF0699F0099BF47 /* CocoaAsyncSocket.framework */; };
+		1922723F1DF069EA0099BF47 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1922723E1DF069EA0099BF47 /* CocoaAsyncSocket.framework */; };
 		19A1D24F1DEC75CC00598612 /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA571BC1D4787A900FBEC41 /* ThaliCore.framework */; };
 		19A1D2561DECA12C00598612 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */; };
 		19A1D26D1DEEE41200598612 /* TestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1D26C1DEEE41200598612 /* TestCases.swift */; };
@@ -35,8 +37,6 @@
 		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CD4C0AF1DA68E7B005FFC3B /* AdvertiserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */; };
 		1CD4C0B21DA68E86005FFC3B /* BrowserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */; };
-		1CEBB3F01D997A8600B229C9 /* GCDAsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CEBB3EE1D997A8600B229C9 /* GCDAsyncSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1CEBB3F21D997A8600B229C9 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3EF1D997A8600B229C9 /* GCDAsyncSocket.m */; };
 		1CEBB3FA1D997BF700B229C9 /* TCPListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3F91D997BF700B229C9 /* TCPListener.swift */; };
 		1CEBB3FD1D997CB200B229C9 /* VirtualSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3FC1D997CB200B229C9 /* VirtualSocket.swift */; };
 		1CEBB4001D997CF500B229C9 /* PeerAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3FF1D997CF500B229C9 /* PeerAvailability.swift */; };
@@ -98,6 +98,8 @@
 
 /* Begin PBXFileReference section */
 		1922722E1DF05F0D0099BF47 /* TestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestRunner.swift; path = Utils/TestRunner.swift; sourceTree = "<group>"; };
+		1922723C1DF0699F0099BF47 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = "Carthage/Checkouts/CocoaAsyncSocket/build/Debug-iphoneos/CocoaAsyncSocket.framework"; sourceTree = "<group>"; };
+		1922723E1DF069EA0099BF47 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-dhhtqunbqbzuotbnjpbxjsegdhsr/Build/Products/Debug-iphoneos/CocoaAsyncSocket.framework"; sourceTree = "<group>"; };
 		19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Debug-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Release-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		19A1D26C1DEEE41200598612 /* TestCases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCases.swift; sourceTree = "<group>"; };
@@ -115,8 +117,6 @@
 		1CB9B4201D7063C700C59CCF /* BluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothManager.h; path = Utils/HardwareControl/Bluetooth/PrivateAPI/BluetoothManager.h; sourceTree = "<group>"; };
 		1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertiserRelay.swift; sourceTree = "<group>"; };
 		1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserRelay.swift; sourceTree = "<group>"; };
-		1CEBB3EE1D997A8600B229C9 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = GCDAsyncSocket/GCDAsyncSocket.h; sourceTree = "<group>"; };
-		1CEBB3EF1D997A8600B229C9 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = GCDAsyncSocket/GCDAsyncSocket.m; sourceTree = "<group>"; };
 		1CEBB3F91D997BF700B229C9 /* TCPListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPListener.swift; sourceTree = "<group>"; };
 		1CEBB3FC1D997CB200B229C9 /* VirtualSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualSocket.swift; sourceTree = "<group>"; };
 		1CEBB3FF1D997CF500B229C9 /* PeerAvailability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerAvailability.swift; sourceTree = "<group>"; };
@@ -165,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1922723D1DF0699F0099BF47 /* CocoaAsyncSocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1922723F1DF069EA0099BF47 /* CocoaAsyncSocket.framework in Frameworks */,
 				19A1D2561DECA12C00598612 /* SwiftXCTest.framework in Frameworks */,
 				19A1D24F1DEC75CC00598612 /* ThaliCore.framework in Frameworks */,
 			);
@@ -191,6 +193,8 @@
 		19A1D24C1DEC703F00598612 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1922723E1DF069EA0099BF47 /* CocoaAsyncSocket.framework */,
+				1922723C1DF0699F0099BF47 /* CocoaAsyncSocket.framework */,
 				19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */,
 				19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */,
 			);
@@ -249,15 +253,6 @@
 				1CB9B4201D7063C700C59CCF /* BluetoothManager.h */,
 			);
 			name = PrivateAPI;
-			sourceTree = "<group>";
-		};
-		1CEBB3ED1D9979F700B229C9 /* GCDAsyncSocket */ = {
-			isa = PBXGroup;
-			children = (
-				1CEBB3EE1D997A8600B229C9 /* GCDAsyncSocket.h */,
-				1CEBB3EF1D997A8600B229C9 /* GCDAsyncSocket.m */,
-			);
-			name = GCDAsyncSocket;
 			sourceTree = "<group>";
 		};
 		3AD347591DA145D7006F1126 /* Mocks */ = {
@@ -394,7 +389,6 @@
 		FAADD1C6BE43B5292357C72D /* SocketConnection */ = {
 			isa = PBXGroup;
 			children = (
-				1CEBB3ED1D9979F700B229C9 /* GCDAsyncSocket */,
 				FAADD342AF116FCE3B46A03D /* Session.swift */,
 				FAADD76EB1071AB28B6EB247 /* VirtualSocketBuilder.swift */,
 				1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */,
@@ -452,7 +446,6 @@
 			files = (
 				1C3367201D703EE900143BCF /* NetworkReachability.h in Headers */,
 				CCA571C01D4787A900FBEC41 /* ThaliCore.h in Headers */,
-				1CEBB3F01D997A8600B229C9 /* GCDAsyncSocket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,7 +623,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAADDB5F680C576D4D34638B /* Advertiser.swift in Sources */,
-				1CEBB3F21D997A8600B229C9 /* GCDAsyncSocket.m in Sources */,
 				FAADD49592809F2012ED7B29 /* ApplicationStateNotificationsManager.swift in Sources */,
 				3AD347521D9FB556006F1126 /* TCPClient.swift in Sources */,
 				FAADD7B9451F32511828885E /* Browser.swift in Sources */,
@@ -862,7 +854,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "ThaliCoreTests/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/Carthage/Build/iOS";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ThaliCoreTests/Bridging-Header.h";
@@ -877,7 +869,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "ThaliCoreTests/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/Carthage/Build/iOS";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ThaliCoreTests/Bridging-Header.h";

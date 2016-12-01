@@ -1,1 +1,2 @@
 github "thaliproject/swift-corelibs-xctest" "extend-XCTestSuite-init"
+github "robbiehanson/CocoaAsyncSocket" ~>7.5.1
