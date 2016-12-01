@@ -10,7 +10,7 @@
 import Foundation
 import SwiftXCTest
 
-final class TestRunner: NSObject {
+public final class TestRunner: NSObject {
 
   struct RunResult {
     let executedCount: Int
@@ -22,7 +22,7 @@ final class TestRunner: NSObject {
 
   private let testSuite: XCTestSuite
 
-  init(testSuite: XCTestSuite) {
+  public init(testSuite: XCTestSuite) {
     self.testSuite = testSuite
   }
 
@@ -30,7 +30,7 @@ final class TestRunner: NSObject {
     return runResult.jsonString
   }
 
-  var runResult: RunResult {
+  private var runResult: RunResult {
     // This case isn't obvious, but this is how XCTest.framework is done
     // The reason I see is because XCTest.framework is build on Objective-C
     // when Objective-C doesn't have e.g. generics
@@ -112,11 +112,11 @@ extension TestRunner: XCTestObservation {
     print("\(testCase.name): \(description) in file: \(filePath), at line: \(lineNumber)")
   }
 
-  func testCaseDidFinish(_ testCase: XCTestCase) {
+  public func testCaseDidFinish(_ testCase: XCTestCase) {
     print("\(testCase.name) finished")
   }
 
-  func testSuiteDidFinish(_ testSuite: XCTestSuite) {
+  public func testSuiteDidFinish(_ testSuite: XCTestSuite) {
     print("\(testSuite.name) finished")
   }
 }
