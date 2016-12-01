@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1922722F1DF05F0D0099BF47 /* TestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1922722E1DF05F0D0099BF47 /* TestRunner.swift */; };
 		19A1D24F1DEC75CC00598612 /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA571BC1D4787A900FBEC41 /* ThaliCore.framework */; };
 		19A1D2561DECA12C00598612 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */; };
 		19A1D26D1DEEE41200598612 /* TestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1D26C1DEEE41200598612 /* TestCases.swift */; };
@@ -96,6 +97,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1922722E1DF05F0D0099BF47 /* TestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestRunner.swift; path = Utils/TestRunner.swift; sourceTree = "<group>"; };
 		19A1D24D1DEC703F00598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Debug-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		19A1D2541DEC8E8600598612 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ThaliCore-hgafxxrpzpbqatbpveimytkwnohl/Build/Products/Release-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		19A1D26C1DEEE41200598612 /* TestCases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCases.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 		1CB9B4101D70636F00C59CCF /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				1922722E1DF05F0D0099BF47 /* TestRunner.swift */,
 				1CB9B4111D70637200C59CCF /* HardwareControl */,
 			);
 			name = Utils;
@@ -691,6 +694,7 @@
 				1C6D713F1DAF9BD200802569 /* TCPClientTests.swift in Sources */,
 				FAADD14FB68CA0A056A2EFAF /* AtomicTests.swift in Sources */,
 				FAADDB1A4C19C000CBA8C6A5 /* PeerTests.swift in Sources */,
+				1922722F1DF05F0D0099BF47 /* TestRunner.swift in Sources */,
 				FAADD7417CEB0C20CC94F301 /* AppStateNotificationsManagerTests.swift in Sources */,
 				1C6D71431DAFBBDC00802569 /* TCPServerMock.swift in Sources */,
 				1C6D71401DAF9BD400802569 /* TCPListenerTests.swift in Sources */,
