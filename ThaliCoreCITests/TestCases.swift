@@ -15,6 +15,8 @@ public struct ThaliCore {
       testCase(AtomicTests.allTests),
       testCase(PeerTests.allTests),
       testCase(AppStateNotificationsManagerTests.allTests),
+      testCase(AdvertiserTests.allTests),
+      testCase(BrowserTests.allTests),
     ]
   }
 }

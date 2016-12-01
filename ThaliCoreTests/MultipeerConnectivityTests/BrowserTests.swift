@@ -12,6 +12,23 @@ import MultipeerConnectivity
 import SwiftXCTest
 
 class BrowserTests: XCTestCase {
+  
+  static var allTests = {
+    return [
+      ("test_startChangesListeningState", testStartChangesListeningState),
+      ("test_stopWithoutCallingStartIsNOTError", testStopWithoutCallingStartIsNOTError),
+      ("test_stopTwiceWithoutCallingStartIsNOTError", testStopTwiceWithoutCallingStartIsNOTError),
+      ("test_startStopChangesListeningState", testStartStopChangesListeningState),
+      ("test_startStopStartChangesListeningState", testStartStopStartChangesListeningState),
+      ("test_startListeningCalledTwiceChangesStateProperly", testStartListeningCalledTwiceChangesStateProperly),
+      ("test_stopListeningCalledTwiceChangesStateProperly", testStopListeningCalledTwiceChangesStateProperly),
+      ("test_foundPeerHandlerCalled", testFoundPeerHandlerCalled),
+      ("test_lostPeerHandlerCalled", testLostPeerHandlerCalled),
+      ("test_startListeningErrorHandlerCalled", testStartListeningErrorHandlerCalled),
+      ("test_inviteToConnectPeerMethodReturnsSession", testInviteToConnectPeerMethodReturnsSession),
+      ("test_inviteToConnectWrongPeerReturnsIllegalPeerIDError", testInviteToConnectWrongPeerReturnsIllegalPeerIDError),
+    ]
+  }()
 
   // MARK: - State
   var randomlyGeneratedServiceType: String!
