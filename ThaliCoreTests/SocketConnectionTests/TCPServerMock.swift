@@ -112,7 +112,7 @@ extension TCPServerMock: GCDAsyncSocketDelegate {
     didDisconnectHandler(sock)
   }
 
-  func socket(sock: GCDAsyncSocket, didReadData data: Data, withTag tag: Int) {
+  func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
     didReadDataHandler(sock, data)
   }
 

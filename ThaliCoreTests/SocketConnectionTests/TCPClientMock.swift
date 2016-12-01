@@ -62,7 +62,7 @@ class TCPClientMock: NSObject {
 // MARK: - GCDAsyncSocketDelegate
 extension TCPClientMock: GCDAsyncSocketDelegate {
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
     didDisconnectHandler()
   }
 

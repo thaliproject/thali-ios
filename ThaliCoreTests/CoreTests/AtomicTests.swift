@@ -17,7 +17,7 @@ class AtomicTests: XCTestCase {
         ("test_getCorrectValueWithValueProperty", testGetCorrectValueWithValueProperty),
         ("test_getCorrectValueAfterModify", testGetCorrectValueAfterModify),
         ("test_getCorrectValueWithValueFunction", testGetCorrectValueWithValueFunction),
-        ("test_lockOnReadWrite", testLockOnReadWrite),
+        ("test_lockOnReadWrite", testLockOnReadWrite)
       ]
   }()
 
@@ -88,7 +88,7 @@ class AtomicTests: XCTestCase {
 
     // Wating for async block execution completion
     for _ in 0..<queuesCount {
-      semaphore.wait(timeout: DispatchTime.distantFuture)
+      let _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     }
   }
 }

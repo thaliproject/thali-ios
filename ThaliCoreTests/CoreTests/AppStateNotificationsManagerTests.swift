@@ -15,7 +15,7 @@ class AppStateNotificationsManagerTests: XCTestCase {
   static var allTests = {
     return [
         ("test_willEnterBackground", testWillEnterBackground),
-        ("test_didEnterForeground", testDidEnterForeground),
+        ("test_didEnterForeground", testDidEnterForeground)
       ]
   }()
 

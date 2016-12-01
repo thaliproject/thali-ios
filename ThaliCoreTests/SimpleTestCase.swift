@@ -13,7 +13,7 @@ class SimpleTestCase: XCTestCase {
 
   static var allTests = {
     return [
-        ("test_example", testExample),
+        ("test_example", testExample)
       ]
   }()
 

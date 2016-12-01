@@ -12,11 +12,13 @@ import MultipeerConnectivity
 import SwiftXCTest
 
 class AdvertiserTests: XCTestCase {
-  
+
   static var allTests = {
     return [
-      ("test_advertiserReturnsObjectWhenValidServiceType", testAdvertiserReturnsObjectWhenValidServiceType),
-      ("test_advertiserReturnsNilWhenEmptyServiceType", testAdvertiserReturnsNilWhenEmptyServiceType),
+      ("test_advertiserReturnsObjectWhenValidServiceType",
+        testAdvertiserReturnsObjectWhenValidServiceType),
+      ("test_advertiserReturnsNilWhenEmptyServiceType",
+        testAdvertiserReturnsNilWhenEmptyServiceType),
       ("test_startChangesAdvertisingState", testStartChangesAdvertisingState),
       ("test_stopWithoutCallingStartIsNOTError", testStopWithoutCallingStartIsNOTError),
       ("test_stopTwiceWithoutCallingStartIsNOTError", testStopTwiceWithoutCallingStartIsNOTError),
@@ -24,7 +26,8 @@ class AdvertiserTests: XCTestCase {
       ("test_StartStopChangesAdvertisingState", testStartStopChangesAdvertisingState),
       ("test_startStopStartChangesAdvertisingState", testStartStopStartChangesAdvertisingState),
       ("test_stopCalledTwiceChangesStateProperly", testStopCalledTwiceChangesStateProperly),
-      ("test_startAdvertisingErrorHandlerInvoked", testStartAdvertisingErrorHandlerInvoked),
+      ("test_startAdvertisingErrorHandlerInvoked",
+        testStartAdvertisingErrorHandlerInvoked)
     ]
   }()
 

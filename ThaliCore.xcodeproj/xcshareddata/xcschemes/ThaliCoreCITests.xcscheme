@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CCA572911D4A327E00FBEC41"
-               BuildableName = "ThaliCore.framework"
+               BuildableName = "ThaliCoreCITests.framework"
                BlueprintName = "ThaliCoreCITests"
                ReferencedContainer = "container:ThaliCore.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CCA572911D4A327E00FBEC41"
-            BuildableName = "ThaliCore.framework"
+            BuildableName = "ThaliCoreCITests.framework"
             BlueprintName = "ThaliCoreCITests"
             ReferencedContainer = "container:ThaliCore.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CCA572911D4A327E00FBEC41"
-            BuildableName = "ThaliCore.framework"
+            BuildableName = "ThaliCoreCITests.framework"
             BlueprintName = "ThaliCoreCITests"
             ReferencedContainer = "container:ThaliCore.xcodeproj">
          </BuildableReference>

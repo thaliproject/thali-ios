@@ -28,7 +28,7 @@ class PeerTests: XCTestCase {
       ("test_initWithStringHasNotNumberGenerationCausesError",
         testInitWithStringHasNotNumberGenerationCausesError),
       ("test_generationsEquality",
-        testGenerationsEquality),
+        testGenerationsEquality)
     ]
   }()
 
