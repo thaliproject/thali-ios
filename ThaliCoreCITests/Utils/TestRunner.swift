@@ -13,6 +13,7 @@ import SwiftXCTest
 public final class TestRunner: NSObject {
 
   struct RunResult {
+
     let executedCount: Int
     let succeededCount: Int
     let failureCount: Int
@@ -80,7 +81,7 @@ public final class TestRunner: NSObject {
   }
 }
 
-// MARK:
+// MARK: -
 
 extension TestRunner.RunResult {
   var jsonString: String? {
