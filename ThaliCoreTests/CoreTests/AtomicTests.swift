@@ -12,15 +12,6 @@ import SwiftXCTest
 
 class AtomicTests: XCTestCase {
 
-  static var allTests = {
-    return [
-        ("test_getCorrectValueWithValueProperty", testGetCorrectValueWithValueProperty),
-        ("test_getCorrectValueAfterModify", testGetCorrectValueAfterModify),
-        ("test_getCorrectValueWithValueFunction", testGetCorrectValueWithValueFunction),
-        ("test_lockOnReadWrite", testLockOnReadWrite)
-      ]
-  }()
-
   // MARK: - State
   var atomic: Atomic<Int>!
   let initialValue: Int = 1

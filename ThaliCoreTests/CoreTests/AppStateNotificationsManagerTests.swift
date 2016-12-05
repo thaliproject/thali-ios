@@ -12,13 +12,6 @@ import SwiftXCTest
 
 class AppStateNotificationsManagerTests: XCTestCase {
 
-  static var allTests = {
-    return [
-        ("test_willEnterBackground", testWillEnterBackground),
-        ("test_didEnterForeground", testDidEnterForeground)
-      ]
-  }()
-
   // MARK: - Setup & Teardown
   override func setUp() {
     super.setUp()

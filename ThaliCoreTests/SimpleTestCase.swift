@@ -11,12 +11,6 @@ import SwiftXCTest
 
 class SimpleTestCase: XCTestCase {
 
-  static var allTests = {
-    return [
-        ("test_example", testExample)
-      ]
-  }()
-
   func testExample() {
     XCTAssert(true)
   }
