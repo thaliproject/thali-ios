@@ -1,9 +1,8 @@
 //
-//  TestCases.swift
-//  ThaliCore
-//
-//  Created by Ilya Laryionau on 28/11/2016.
-//  Copyright © 2016 Thali. All rights reserved.
+//  automatically generated
+
+//  Copyright (C) Microsoft. All rights reserved.
+//  Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 //
 
 import SwiftXCTest

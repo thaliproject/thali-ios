@@ -1,4 +1,4 @@
-#!/usr/bin/env swift
+#!/usr/bin/env xcrun --sdk macosx swift
 
 import Foundation
 
@@ -161,10 +161,16 @@ internal struct TestCasesGenerator {
     let spacesL1 = self.spaces(forLevel: level + 1)
 
     return
+      "//\n" +
+      "//  automatically generated\n\n" +
+      "//  Copyright (C) Microsoft. All rights reserved.\n" +
+      "//  Licensed under the MIT license. " +
+      "See LICENSE.txt file in the project root for full license information.\n" +
+      "//\n\n" +
       "import SwiftXCTest\n" +
       "\n" +
-      "public struct Tests {\n" +
-      "\(spacesL0)public static var testCases: [XCTestCaseEntry] {\n" +
+      "public struct ThaliCoreTests {\n" +
+      "\(spacesL0)public static var allTests: [XCTestCaseEntry] {\n" +
       "\(spacesL1)return [\n" +
       "\(testCasesString)" +
       "\(spacesL1)]\n" +
@@ -174,6 +180,7 @@ internal struct TestCasesGenerator {
 }
 
 func main() {
+
   let droppedArguments = CommandLine.arguments.dropFirst()
   let path = droppedArguments[1]
   let outputPath = droppedArguments[2]
@@ -190,10 +197,8 @@ func main() {
 
   do {
     let testCases = try TestCaseParser.parse(directoryAtURL: resolvedURL)
-    
     let testCasesString = TestCasesGenerator.generate(from: testCases, level: 1)
-    print(testCasesString)
-    
+
     try testCasesString.write(to: resolvedOutputURL, atomically: true, encoding: .utf8)
   } catch let error {
     print(error)

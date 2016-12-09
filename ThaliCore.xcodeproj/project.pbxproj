@@ -43,7 +43,6 @@
 		1CEBB4031D9BD37A00B229C9 /* VirtualSocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB4021D9BD37A00B229C9 /* VirtualSocketTests.swift */; };
 		1CEBB4051D9BD4AA00B229C9 /* RelayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB4041D9BD4AA00B229C9 /* RelayTests.swift */; };
 		1CEBB4071D9BF68D00B229C9 /* ThaliCoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB4061D9BF68D00B229C9 /* ThaliCoreError.swift */; };
-		34FD7D891D9BA1EA006593B9 /* SimpleTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FD7D881D9BA1EA006593B9 /* SimpleTestCase.swift */; };
 		3AD347501D9F7EBC006F1126 /* TCPListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD3474F1D9F7EBC006F1126 /* TCPListenerTests.swift */; };
 		3AD347521D9FB556006F1126 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD347511D9FB556006F1126 /* TCPClient.swift */; };
 		3AD347551D9FEED9006F1126 /* StringRandomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD347541D9FEED9006F1126 /* StringRandomTests.swift */; };
@@ -123,7 +122,6 @@
 		1CEBB4021D9BD37A00B229C9 /* VirtualSocketTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualSocketTests.swift; sourceTree = "<group>"; };
 		1CEBB4041D9BD4AA00B229C9 /* RelayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelayTests.swift; sourceTree = "<group>"; };
 		1CEBB4061D9BF68D00B229C9 /* ThaliCoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThaliCoreError.swift; sourceTree = "<group>"; };
-		34FD7D881D9BA1EA006593B9 /* SimpleTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleTestCase.swift; sourceTree = "<group>"; };
 		3AD3474F1D9F7EBC006F1126 /* TCPListenerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPListenerTests.swift; sourceTree = "<group>"; };
 		3AD347511D9FB556006F1126 /* TCPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClient.swift; sourceTree = "<group>"; };
 		3AD347541D9FEED9006F1126 /* StringRandomTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringRandomTests.swift; sourceTree = "<group>"; };
@@ -304,7 +302,6 @@
 		CCA571CA1D4787A900FBEC41 /* ThaliCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				34FD7D881D9BA1EA006593B9 /* SimpleTestCase.swift */,
 				CCA572EB1D4B6E9600FBEC41 /* Bridging-Header.h */,
 				CCA572501D478C1000FBEC41 /* SupportingFiles */,
 				FAADD8520DBCFFFE29307976 /* CoreTests */,
@@ -504,6 +501,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA572971D4A327E00FBEC41 /* Build configuration list for PBXNativeTarget "ThaliCoreCITests" */;
 			buildPhases = (
+				CC3FECCB1DFACF6B00474101 /* Generate Test Cases */,
 				CCA5728D1D4A327E00FBEC41 /* Sources */,
 				CCA5728E1D4A327E00FBEC41 /* Frameworks */,
 				CCA5728F1D4A327E00FBEC41 /* Headers */,
@@ -587,6 +585,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		CC3FECCB1DFACF6B00474101 /* Generate Test Cases */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Test Cases";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Scripts/test-cases-gen.swift ${SRCROOT}/ThaliCoreTests ${SRCROOT}/ThaliCoreCITests/TestCases.swift";
+		};
 		CCA5729C1D4A32E100FBEC41 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -669,7 +681,6 @@
 				3AD347551D9FEED9006F1126 /* StringRandomTests.swift in Sources */,
 				FAADD340E8E13B0AFDBBAA2B /* String+Random.swift in Sources */,
 				1C148D161DA3B17500E0E1AC /* TCPClientMock.swift in Sources */,
-				34FD7D891D9BA1EA006593B9 /* SimpleTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
