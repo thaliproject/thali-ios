@@ -7,7 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import Foundation
 import MultipeerConnectivity
 
 /**
@@ -28,7 +27,7 @@ class Session: NSObject {
   internal var didChangeStateHandler: ((MCSessionState) -> Void)?
 
   /**
-   Handles receiving new InputStream.
+   Handles receiving new NSInputStream.
    */
   internal var didReceiveInputStreamHandler: ((InputStream, String) -> Void)?
 
@@ -93,7 +92,7 @@ class Session: NSObject {
   }
 
   /**
-   Starts new `OutputStream` which represents a byte stream to a nearby peer.
+   Starts new `NSOutputStream` which represents a byte stream to a nearby peer.
 
    - parameters:
      - name:
@@ -103,7 +102,7 @@ class Session: NSObject {
      ConnectionFailed if a stream could not be established.
 
    - returns:
-     `OutputStream` object upon success.
+     `NSOutputStream` object upon success.
    */
   func startOutputStream(with name: String) throws -> OutputStream {
     do {
@@ -129,7 +128,6 @@ extension Session: MCSessionDelegate {
 
     sessionState.modify {
       $0 = state
-
       self.didChangeStateHandler?(state)
 
       switch state {
@@ -141,7 +139,6 @@ extension Session: MCSessionDelegate {
         break
       }
     }
-
   }
 
   func session(_ session: MCSession,

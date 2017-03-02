@@ -124,7 +124,7 @@ public final class AdvertiserManager {
                                 })
 
     guard let newAdvertiser = advertiser else {
-      errorHandler(ThaliCoreError.ConnectionFailed)
+      errorHandler(ThaliCoreError.ConnectionFailed as Error)
       return
     }
 
@@ -144,7 +144,6 @@ public final class AdvertiserManager {
       $0.forEach { $0.stopAdvertising() }
       $0.removeAll()
     }
-
     currentAdvertiser = nil
   }
 
@@ -172,18 +171,23 @@ public final class AdvertiserManager {
    it MUST keep the old object for at least *disposeTimeout*.
    This is to allow any in progress invites to finish.
    After *disposeTimeout* the old `MCNearbyServiceAdvertiser` objects MUST be closed.
+
+   - parameters:
+     - advertiserToBeDisposedOf:
+       `Advertiser` object that should be disposed of after `disposeTimeout`.
    */
   fileprivate func disposeOfAdvertiserAfterTimeoutToFinishInvites(
-    _ advertiserShouldBeDisposed: Advertiser) {
+    _ advertiserToBeDisposedOf: Advertiser) {
 
-    let disposeTimeout = DispatchTime.now() +
+    let disposeTimeout =
+      DispatchTime.now() +
       Double(Int64(self.disposeTimeout * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
 
     DispatchQueue.main.asyncAfter(deadline: disposeTimeout) {
       [weak self,
-      weak advertiserShouldBeDisposed] in
+      weak advertiserToBeDisposedOf] in
       guard let strongSelf = self else { return }
-      guard let advertiserShouldBeDisposed = advertiserShouldBeDisposed else { return }
+      guard let advertiserShouldBeDisposed = advertiserToBeDisposedOf else { return }
 
       strongSelf.advertisers.modify {
         advertiserShouldBeDisposed.stopAdvertising()

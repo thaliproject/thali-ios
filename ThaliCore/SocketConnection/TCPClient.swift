@@ -7,16 +7,11 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import CocoaAsyncSocket
-import Foundation
-
 class TCPClient: NSObject {
 
   // MARK: - Private state
-  fileprivate let socketQueue = DispatchQueue(
-                                  label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
-                                  attributes: DispatchQueue.Attributes.concurrent
-                                )
+  fileprivate let socketQueue = DispatchQueue(label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
+                                                  attributes: DispatchQueue.Attributes.concurrent)
   fileprivate var activeConnections: Atomic<[GCDAsyncSocket]> = Atomic([])
   fileprivate var didReadDataHandler: ((GCDAsyncSocket, Data) -> Void)
   fileprivate var didDisconnectHandler: ((GCDAsyncSocket) -> Void)
@@ -30,9 +25,7 @@ class TCPClient: NSObject {
   }
 
   func connectToLocalhost(onPort port: UInt16,
-                          completion: (_ socket: GCDAsyncSocket?,
-                                       _ port: UInt16?,
-                                       _ error: Error?)
+                          completion: (_ socket: GCDAsyncSocket?, _ port: UInt16?, _ error: Error?)
                           -> Void) {
 
     do {
@@ -70,10 +63,12 @@ extension TCPClient: GCDAsyncSocketDelegate {
         $0.remove(at: indexOfDisconnectedSocket)
       }
     }
+
     didDisconnectHandler(sock)
   }
 
   func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+
   }
 
   func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {

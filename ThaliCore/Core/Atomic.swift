@@ -55,7 +55,7 @@ final class PosixThreadMutex: NSLocking {
 
 public final class Atomic<Value> {
   fileprivate let lock: PosixThreadMutex
-  fileprivate var privateValue: Value
+  fileprivate var _value: Value
 
   public var value: Value {
     return withValue { $0 }
@@ -67,7 +67,7 @@ public final class Atomic<Value> {
    - parameter value: Initial value for `self`.
    */
   public init(_ value: Value) {
-    privateValue = value
+    _value = value
     lock = PosixThreadMutex()
   }
 
@@ -80,12 +80,11 @@ public final class Atomic<Value> {
 
    - returns: The result of the action
    */
-  @discardableResult public func modify<Result>(action: (inout Value) throws -> Result) rethrows
-                                                -> Result {
+  public func modify<Result>(action: (inout Value) throws -> Result) rethrows -> Result {
     lock.lock()
     defer { lock.unlock() }
 
-    return try action(&privateValue)
+    return try action(&_value)
   }
 
   /*!
@@ -101,6 +100,6 @@ public final class Atomic<Value> {
     lock.lock()
     defer { lock.unlock() }
 
-    return try action(privateValue)
+    return try action(_value)
   }
 }

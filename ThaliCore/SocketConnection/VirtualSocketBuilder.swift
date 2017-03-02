@@ -7,8 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import Foundation
-
 /**
  Base class for `BrowserVirtualSocketBuilder` and `AdvertiserVirtualSocketBuilder`
  */
@@ -72,10 +70,10 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
   /**
    Called when creation of VirtualSocket is completed.
 
-   It has 2 arguments: `VirtualSocket?` and `Error?`.
+   It has 2 arguments: `VirtualSocket?` and `ErrorType?`.
 
-   If we're passing `Error` then something went wrong and `VirtualSocket` should be nil.
-   Otherwise `Error` should be nil.
+   If we're passing `ErrorType` then something went wrong and `VirtualSocket` should be nil.
+   Otherwise `ErrorType` should be nil.
    */
   fileprivate var completion: ((VirtualSocket?, Error?) -> Void)?
 
@@ -113,6 +111,10 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
   /**
    This method is trying to start new *outputStream* with fresh generated name
    and then waiting for inputStream from remote peer for *streamReceivedBackTimeout*.
+
+   - parameters:
+     - completion:
+       Called when `VirtualSocket` object is ready or error occured.
    */
   func startBuilding(with completion: @escaping (VirtualSocket?, Error?) -> Void) {
     self.completion = completion
@@ -121,9 +123,9 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
       let outputStream = try nonTCPsession.startOutputStream(with: streamName)
       self.outputStream = outputStream
 
-      let streamReceivedBackTimeout = DispatchTime.now() +
-        Double(Int64(self.streamReceivedBackTimeout * Double(NSEC_PER_SEC))) /
-        Double(NSEC_PER_SEC)
+      let streamReceivedBackTimeout =
+        DispatchTime.now() +
+        Double(Int64(self.streamReceivedBackTimeout * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
       DispatchQueue.main.asyncAfter(deadline: streamReceivedBackTimeout) {
         [weak self] in
         guard let strongSelf = self else { return }
@@ -173,10 +175,10 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
   /**
    Called when creation of VirtualSocket is completed.
 
-   It has 2 arguments: `VirtualSocket?` and `Error?`.
+   It has 2 arguments: `VirtualSocket?` and `ErrorType?`.
 
-   If we're passing `Error` then something went wrong and `VirtualSocket` should be nil.
-   Otherwise `Error` should be nil.
+   If we're passing `ErrorType` then something went wrong and `VirtualSocket` should be nil.
+   Otherwise `ErrorType` should be nil.
    */
   fileprivate var completion: (VirtualSocket?, Error?) -> Void
 
@@ -195,8 +197,7 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
    - returns:
      An initialized `AdvertiserVirtualSocketBuilder` object.
    */
-  required init(with nonTCPsession: Session,
-                completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+  required init(with nonTCPsession: Session, completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     self.completion = completion
     super.init(with: nonTCPsession)
   }
@@ -220,8 +221,7 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
   func createVirtualSocket(with inputStream: InputStream, inputStreamName: String) {
     do {
       let outputStream = try nonTCPsession.startOutputStream(with: inputStreamName)
-      let virtualNonTCPSocket = VirtualSocket(with: inputStream,
-                                              outputStream: outputStream)
+      let virtualNonTCPSocket = VirtualSocket(with: inputStream, outputStream: outputStream)
       completion(virtualNonTCPSocket, nil)
     } catch let error {
       completion(nil, error)

@@ -7,9 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import CocoaAsyncSocket
-import Foundation
-
 /**
  Provides simple methods that listen for and accept incoming TCP connection requests.
  */
@@ -24,10 +21,8 @@ class TCPListener: NSObject {
   fileprivate let socket: GCDAsyncSocket
   fileprivate var listening = false
 
-  fileprivate let socketQueue = DispatchQueue(
-                                  label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
-                                  attributes: DispatchQueue.Attributes.concurrent
-                                )
+  fileprivate let socketQueue = DispatchQueue(label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
+                                                  attributes: DispatchQueue.Attributes.concurrent)
   fileprivate let activeConnections: Atomic<[GCDAsyncSocket]> = Atomic([])
 
   fileprivate var didAcceptConnectionHandler: ((GCDAsyncSocket) -> Void)?
@@ -37,8 +32,8 @@ class TCPListener: NSObject {
 
   // MARK: - Initialization
   required init(with didReadDataFromSocket: @escaping (GCDAsyncSocket, Data) -> Void,
-                socketDisconnected: @escaping (GCDAsyncSocket) -> Void,
-                stoppedListening: @escaping () -> Void) {
+                     socketDisconnected: @escaping (GCDAsyncSocket) -> Void,
+                     stoppedListening: @escaping () -> Void) {
     socket = GCDAsyncSocket()
     didReadDataFromSocketHandler = didReadDataFromSocket
     didSocketDisconnectHandler = socketDisconnected
@@ -50,8 +45,8 @@ class TCPListener: NSObject {
 
   // MARK: - Internal methods
   func startListeningForConnections(on port: UInt16,
-                                    connectionAccepted: @escaping (GCDAsyncSocket) -> Void,
-                                    completion: (_ port: UInt16?, _ error: Error?) -> Void) {
+                                       connectionAccepted: @escaping (GCDAsyncSocket) -> Void,
+                                       completion: (_ port: UInt16?, _ error: Error?) -> Void) {
     if !listening {
       do {
         try socket.accept(onPort: port)
@@ -76,7 +71,7 @@ class TCPListener: NSObject {
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPListener: GCDAsyncSocketDelegate {
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
     if sock == socket {
       socket.delegate = nil
       socket.delegateQueue = nil

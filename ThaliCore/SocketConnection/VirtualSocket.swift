@@ -7,8 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import Foundation
-
 /**
  `VirtualSocket` class manages non-TCP virtual socket.
 
@@ -43,20 +41,20 @@ class VirtualSocket: NSObject {
   func openStreams() {
     if !opened {
       opened = true
-      let queue = DispatchQueue.global()
-      queue.async {
+      let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
+      queue.async(execute: {
         self.inputStream.delegate = self
         self.inputStream.schedule(in: RunLoop.current,
-                                  forMode: RunLoopMode.defaultRunLoopMode)
+          forMode: RunLoopMode.defaultRunLoopMode)
         self.inputStream.open()
 
         self.outputStream.delegate = self
         self.outputStream.schedule(in: RunLoop.current,
-                                   forMode: RunLoopMode.defaultRunLoopMode)
+          forMode: RunLoopMode.defaultRunLoopMode)
         self.outputStream.open()
 
         RunLoop.current.run(until: Date.distantFuture)
-      }
+      })
     }
   }
 
@@ -82,10 +80,10 @@ class VirtualSocket: NSObject {
     }
 
     let dataLength = data.count
-    let buffer: [UInt8] = Array(UnsafeBufferPointer(start: (data as NSData)
-                                .bytes.bindMemory(to: UInt8.self,
-                                                  capacity: data.count),
-                                                  count: dataLength))
+    let buffer: [UInt8] = Array(
+      UnsafeBufferPointer(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count),
+        count: dataLength)
+    )
 
     let bytesWritten = outputStream.write(buffer, maxLength: dataLength)
     if bytesWritten < 0 {
@@ -120,6 +118,7 @@ extension VirtualSocket: StreamDelegate {
 
   // MARK: - Delegate methods
   internal func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
+
     if aStream == self.inputStream {
       handleEventOnInputStream(eventCode)
     } else if aStream == self.outputStream {

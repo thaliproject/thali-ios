@@ -7,9 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import CocoaAsyncSocket
-import Foundation
-
 // MARK: - Methods that available for Relay<BrowserVirtualSocketBuilder>
 final class BrowserRelay {
 
@@ -61,7 +58,7 @@ final class BrowserRelay {
 
   // MARK: - Private handlers
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
-                                                       inputStreamName: String) {
+                                                   inputStreamName: String) {
     if let builder = virtualSocketBuilders.value[inputStreamName] {
       builder.completeVirtualSocket(with: inputStream)
     } else {
@@ -145,8 +142,7 @@ final class BrowserRelay {
   }
 
   // MARK: - Private methods
-  fileprivate func createVirtualSocket(
-    with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+  fileprivate func createVirtualSocket(with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
 
     guard virtualSockets.value.count <= maxVirtualSocketsCount else {
       completion(nil, ThaliCoreError.ConnectionFailed)

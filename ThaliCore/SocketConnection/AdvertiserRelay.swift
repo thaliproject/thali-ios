@@ -7,28 +7,22 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-import CocoaAsyncSocket
-import Foundation
-
 // MARK: - Methods that available for Relay<AdvertiserVirtualSocketBuilder>
 final class AdvertiserRelay {
 
   // MARK: - Internal state
-
   internal var virtualSocketsAmount: Int {
     return virtualSockets.value.count
   }
   internal fileprivate(set) var clientPort: UInt16
 
   // MARK: - Private state
-
   fileprivate var tcpClient: TCPClient!
   fileprivate var nonTCPsession: Session
   fileprivate var virtualSocketsBuilders: Atomic<[String: AdvertiserVirtualSocketBuilder]>
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
 
   // MARK: - Initialization
-
   init(with session: Session, on port: UInt16) {
     nonTCPsession = session
     clientPort = port
@@ -39,7 +33,6 @@ final class AdvertiserRelay {
   }
 
   // MARK: - Internal methods
-
   func closeRelay() {
     tcpClient.disconnectClientsFromLocalhost()
   }
@@ -49,7 +42,6 @@ final class AdvertiserRelay {
   }
 
   // MARK: - Private handlers
-
   fileprivate func didReadDataFromStreamHandler(_ virtualSocket: VirtualSocket, data: Data) {
     guard let socket = virtualSockets.value.key(for: virtualSocket) else {
       virtualSocket.closeStreams()
@@ -62,7 +54,7 @@ final class AdvertiserRelay {
   }
 
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
-                                                       inputStreamName: String) {
+                                                   inputStreamName: String) {
     createVirtualSocket(with: inputStream, inputStreamName: inputStreamName) {
       [weak self] virtualSocket, error in
       guard let strongSelf = self else { return }
@@ -96,8 +88,8 @@ final class AdvertiserRelay {
   }
 
   fileprivate func createVirtualSocket(with inputStream: InputStream,
-                                       inputStreamName: String,
-                                       completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+                                        inputStreamName: String,
+                                        completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     let virtualSockBuilder = AdvertiserVirtualSocketBuilder(with: nonTCPsession) {
       virtualSocket, error in
       completion(virtualSocket, error)
@@ -107,6 +99,7 @@ final class AdvertiserRelay {
   }
 
   fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
+
   }
 
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {

@@ -38,7 +38,7 @@ public struct Peer: Hashable {
    Combination of *uuid* and *generation* separated by *separator*.
    */
   internal var stringValue: String {
-    return "\(uuid)\(Peer.separator)\(String(generation, radix: 16))"
+    return "\(uuid)" + "\(Peer.separator)" + "\(String(generation, radix: 16))"
   }
 
   // MARK: - Private state
@@ -100,7 +100,7 @@ public struct Peer: Hashable {
     guard peerParts.count == 2 else {
       throw ThaliCoreError.IllegalPeerID
     }
-    guard let uuid = NSUUID(uuidString: peerParts[0]) else {
+    guard let uuid = UUID(uuidString: peerParts[0]) else {
       throw ThaliCoreError.IllegalPeerID
     }
     guard let generation = Int(peerParts[1], radix: 16) else {

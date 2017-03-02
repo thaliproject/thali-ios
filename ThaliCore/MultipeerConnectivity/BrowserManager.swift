@@ -134,17 +134,23 @@ public final class BrowserManager {
                                          _ port: UInt16?) -> Void) {
 
     guard let currentBrowser = self.currentBrowser else {
-      completion(syncValue, ThaliCoreError.StartListeningNotActive, nil)
+      completion(syncValue,
+                 ThaliCoreError.StartListeningNotActive,
+                 nil)
       return
     }
 
     if let activeRelay = activeRelays.value[peerIdentifier] {
-      completion(syncValue, nil, activeRelay.listenerPort)
+      completion(syncValue,
+                 nil,
+                 activeRelay.listenerPort)
       return
     }
 
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peerIdentifier) else {
-      completion(syncValue, ThaliCoreError.ConnectionFailed, nil)
+      completion(syncValue,
+                 ThaliCoreError.ConnectionFailed,
+                 nil)
       return
     }
 
@@ -172,13 +178,16 @@ public final class BrowserManager {
                                           $0.removeValue(forKey: peerIdentifier)
                                         }
                                       })
+
       activeRelays.modify {
         let relay = BrowserRelay(with: nonTCPsession,
                                  createVirtualSocketTimeout: self.inputStreamReceiveTimeout)
         $0[peerIdentifier] = relay
       }
     } catch let error {
-        completion(syncValue, error, nil)
+      completion(syncValue,
+                 error,
+                 nil)
     }
   }
 
@@ -186,11 +195,12 @@ public final class BrowserManager {
    - parameters:
      - peerIdentifer:
        A value mapped to the UUID part of the remote peer's MCPeerID.
-  */
+   */
   public func disconnect(_ peerIdentifer: String) {
     guard let relay = activeRelays.value[peerIdentifer] else {
       return
     }
+
     relay.disconnectNonTCPSession()
   }
 
@@ -226,6 +236,7 @@ public final class BrowserManager {
    */
   fileprivate func handleFound(_ peer: Peer) {
     availablePeers.modify { $0.append(peer) }
+
     let updatedPeerAvailability = PeerAvailability(peer: peer, available: true)
     peerAvailabilityChangedHandler([updatedPeerAvailability])
   }
