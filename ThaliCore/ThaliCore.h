@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import <ThaliCore/NetworkReachability.h>
+#import <CocoaAsyncSocket/GCDAsyncSocket.h>
 
 //! Project version number for ThaliCore.
 FOUNDATION_EXPORT double ThaliCoreVersionNumber;
