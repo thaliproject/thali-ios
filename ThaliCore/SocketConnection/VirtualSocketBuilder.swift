@@ -65,7 +65,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
   /**
    Timeout to receive *inputStream* back.
    */
-  fileprivate let streamReceivedBackTimeout: TimeInterval
+  fileprivate let streamReceivedBackTimeout: DispatchTimeInterval
 
   /**
    Called when creation of VirtualSocket is completed.
@@ -102,7 +102,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
    */
   init(with nonTCPsession: Session, streamName: String, streamReceivedBackTimeout: TimeInterval) {
     self.streamName = streamName
-    self.streamReceivedBackTimeout = streamReceivedBackTimeout
+    self.streamReceivedBackTimeout = .seconds(Int(streamReceivedBackTimeout))
     super.init(with: nonTCPsession)
   }
 
@@ -123,9 +123,8 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
       let outputStream = try nonTCPsession.startOutputStream(with: streamName)
       self.outputStream = outputStream
 
-      let streamReceivedBackTimeout =
-        DispatchTime.now() +
-        Double(Int64(self.streamReceivedBackTimeout * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+      let streamReceivedBackTimeout: DispatchTime = .now() + self.streamReceivedBackTimeout
+
       DispatchQueue.main.asyncAfter(deadline: streamReceivedBackTimeout) {
         [weak self] in
         guard let strongSelf = self else { return }
