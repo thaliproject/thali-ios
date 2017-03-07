@@ -53,7 +53,7 @@ public final class AdvertiserManager {
   /**
    Timeout after which advertiser gets disposed of.
    */
-  fileprivate let disposeTimeout: TimeInterval
+  fileprivate let disposeTimeout: DispatchTimeInterval
 
   // MARK: - Initialization
 
@@ -72,7 +72,7 @@ public final class AdvertiserManager {
    */
   public init(serviceType: String, disposeAdvertiserTimeout: TimeInterval) {
     self.serviceType = serviceType
-    self.disposeTimeout = disposeAdvertiserTimeout
+    self.disposeTimeout = .seconds(Int(disposeAdvertiserTimeout))
   }
 
   // MARK: - Public methods
@@ -179,9 +179,7 @@ public final class AdvertiserManager {
   fileprivate func disposeOfAdvertiserAfterTimeoutToFinishInvites(
     _ advertiserToBeDisposedOf: Advertiser) {
 
-    let disposeTimeout =
-      DispatchTime.now() +
-      Double(Int64(self.disposeTimeout * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+    let disposeTimeout: DispatchTime = .now() + self.disposeTimeout
 
     DispatchQueue.main.asyncAfter(deadline: disposeTimeout) {
       [weak self,
