@@ -504,7 +504,7 @@
 				CCA5728F1D4A327E00FBEC41 /* Headers */,
 				CCA572901D4A327E00FBEC41 /* Resources */,
 				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
-				1C4023261E6F013B00C60594 /* Carthage copy frameworks */,
+				1C40232E1E716B7800C60594 /* Carthage copy frameworks */,
 			);
 			buildRules = (
 			);
@@ -598,13 +598,12 @@
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
-		1C4023261E6F013B00C60594 /* Carthage copy frameworks */ = {
+		1C40232E1E716B7800C60594 /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"",
 				"$(SRCROOT)/Carthage/Build/iOS/CocoaAsyncSocket.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftXCTest.framework",
 			);
