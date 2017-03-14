@@ -590,7 +590,6 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos/CocoaAsyncSocket.framework",
-				"$(SRCROOT)/Carthage/Build/XCTest/Release-iphoneos/SwiftXCTest.framework",
 			);
 			name = "Carthage copy frameworks";
 			outputPaths = (
