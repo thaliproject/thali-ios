@@ -15,6 +15,9 @@
 		1C148DDA1DA55D4900E0E1AC /* Dictionary+KeyForValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */; };
 		1C17AE391DA79DBE00763619 /* BrowserRelayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C17AE381DA79DBE00763619 /* BrowserRelayTests.swift */; };
 		1C17AE3B1DA79F6400763619 /* AdvertiserRelayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C17AE3A1DA79F6400763619 /* AdvertiserRelayTests.swift */; };
+		1C33304D1E79812900EEB2B2 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C33304C1E79812900EEB2B2 /* CocoaAsyncSocket.framework */; };
+		1C33304E1E79813A00EEB2B2 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C33304C1E79812900EEB2B2 /* CocoaAsyncSocket.framework */; };
+		1C3330501E79813F00EEB2B2 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C33304F1E79813F00EEB2B2 /* SwiftXCTest.framework */; };
 		1C3367201D703EE900143BCF /* NetworkReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C33671E1D703EE900143BCF /* NetworkReachability.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3367211D703EE900143BCF /* NetworkReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33671F1D703EE900143BCF /* NetworkReachability.m */; };
 		1C38DDD41D74153900418F15 /* BluetoothHardwareControlManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C38DDD11D74153900418F15 /* BluetoothHardwareControlManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -34,9 +37,6 @@
 		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CD4C0AF1DA68E7B005FFC3B /* AdvertiserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */; };
 		1CD4C0B21DA68E86005FFC3B /* BrowserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */; };
-		1CDF64281E7958880044E183 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4023271E7158A400C60594 /* CocoaAsyncSocket.framework */; };
-		1CDF64291E79588F0044E183 /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C40232A1E715E8D00C60594 /* SwiftXCTest.framework */; };
-		1CDF642A1E7958910044E183 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4023271E7158A400C60594 /* CocoaAsyncSocket.framework */; };
 		1CEBB3FA1D997BF700B229C9 /* TCPListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3F91D997BF700B229C9 /* TCPListener.swift */; };
 		1CEBB3FD1D997CB200B229C9 /* VirtualSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3FC1D997CB200B229C9 /* VirtualSocket.swift */; };
 		1CEBB4001D997CF500B229C9 /* PeerAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBB3FF1D997CF500B229C9 /* PeerAvailability.swift */; };
@@ -103,13 +103,13 @@
 		1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+KeyForValue.swift"; sourceTree = "<group>"; };
 		1C17AE381DA79DBE00763619 /* BrowserRelayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BrowserRelayTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1C17AE3A1DA79F6400763619 /* AdvertiserRelayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AdvertiserRelayTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		1C33304C1E79812900EEB2B2 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = "Carthage/Build/CocoaAsyncSocket/Release-iphoneos/CocoaAsyncSocket.framework"; sourceTree = "<group>"; };
+		1C33304F1E79813F00EEB2B2 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = "Carthage/Build/XCTest/Release-iphoneos/SwiftXCTest.framework"; sourceTree = "<group>"; };
 		1C33671E1D703EE900143BCF /* NetworkReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkReachability.h; path = Utils/NetworkReachability/NetworkReachability.h; sourceTree = "<group>"; };
 		1C33671F1D703EE900143BCF /* NetworkReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkReachability.m; path = Utils/NetworkReachability/NetworkReachability.m; sourceTree = "<group>"; };
 		1C38DDD11D74153900418F15 /* BluetoothHardwareControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothHardwareControlManager.h; path = Utils/HardwareControl/Bluetooth/BluetoothHardwareControlManager.h; sourceTree = "<group>"; };
 		1C38DDD21D74153900418F15 /* BluetoothHardwareControlManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BluetoothHardwareControlManager.m; path = Utils/HardwareControl/Bluetooth/BluetoothHardwareControlManager.m; sourceTree = "<group>"; };
 		1C38DDD31D74153900418F15 /* BluetoothHardwareControlObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothHardwareControlObserver.h; path = Utils/HardwareControl/Bluetooth/BluetoothHardwareControlObserver.h; sourceTree = "<group>"; };
-		1C4023271E7158A400C60594 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/iOS/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
-		1C40232A1E715E8D00C60594 /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = Carthage/Build/iOS/SwiftXCTest.framework; sourceTree = "<group>"; };
 		1C5E18BD1D780D5400518DB8 /* BluetoothHardwareControlObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothHardwareControlObserver.m; sourceTree = "<group>"; };
 		1CB9B4201D7063C700C59CCF /* BluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothManager.h; path = Utils/HardwareControl/Bluetooth/PrivateAPI/BluetoothManager.h; sourceTree = "<group>"; };
 		1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertiserRelay.swift; sourceTree = "<group>"; };
@@ -161,7 +161,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CDF64281E7958880044E183 /* CocoaAsyncSocket.framework in Frameworks */,
+				1C33304D1E79812900EEB2B2 /* CocoaAsyncSocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,8 +178,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				19A1D24F1DEC75CC00598612 /* ThaliCore.framework in Frameworks */,
-				1CDF64291E79588F0044E183 /* SwiftXCTest.framework in Frameworks */,
-				1CDF642A1E7958910044E183 /* CocoaAsyncSocket.framework in Frameworks */,
+				1C33304E1E79813A00EEB2B2 /* CocoaAsyncSocket.framework in Frameworks */,
+				1C3330501E79813F00EEB2B2 /* SwiftXCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,8 +189,8 @@
 		19A1D24C1DEC703F00598612 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1C40232A1E715E8D00C60594 /* SwiftXCTest.framework */,
-				1C4023271E7158A400C60594 /* CocoaAsyncSocket.framework */,
+				1C33304F1E79813F00EEB2B2 /* SwiftXCTest.framework */,
+				1C33304C1E79812900EEB2B2 /* CocoaAsyncSocket.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -866,7 +866,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos",
 					"$(PROJECT_DIR)/Carthage/Build/XCTest/Release-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "ThaliCore/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -890,7 +889,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos",
 					"$(PROJECT_DIR)/Carthage/Build/XCTest/Release-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "ThaliCore/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -943,7 +941,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos",
 					"$(PROJECT_DIR)/Carthage/Build/XCTest/Release-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ThaliCoreCITests/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -968,7 +965,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos",
 					"$(PROJECT_DIR)/Carthage/Build/XCTest/Release-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ThaliCoreCITests/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
