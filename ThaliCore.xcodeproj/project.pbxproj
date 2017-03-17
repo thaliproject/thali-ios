@@ -52,6 +52,9 @@
 		1CAA29D81E7BCF610011E58B /* Dictionary+KeyForValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */; };
 		1CAA29D91E7BCF650011E58B /* NetworkReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C33671E1D703EE900143BCF /* NetworkReachability.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CAA29DA1E7BCF650011E58B /* NetworkReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33671F1D703EE900143BCF /* NetworkReachability.m */; };
+		1CAA29DB1E7BD3330011E58B /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA572921D4A327E00FBEC41 /* ThaliCore.framework */; };
+		1CAA29DC1E7BD3420011E58B /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C733ED41E79870F0088D19A /* SwiftXCTest.framework */; };
+		1CAA29DD1E7BD3560011E58B /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C733ED11E7986FD0088D19A /* CocoaAsyncSocket.framework */; };
 		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CD4C0AF1DA68E7B005FFC3B /* AdvertiserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */; };
 		1CD4C0B21DA68E86005FFC3B /* BrowserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */; };
@@ -68,7 +71,6 @@
 		3AD347581DA048BF006F1126 /* TCPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD347571DA048BF006F1126 /* TCPClientTests.swift */; };
 		3AD3475E1DA192B3006F1126 /* MCSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD3475D1DA192B3006F1126 /* MCSessionMock.swift */; };
 		CCA571C01D4787A900FBEC41 /* ThaliCore.h in Headers */ = {isa = PBXBuildFile; fileRef = CCA571BF1D4787A900FBEC41 /* ThaliCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CCA571C71D4787A900FBEC41 /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA571BC1D4787A900FBEC41 /* ThaliCore.framework */; };
 		CCA573021D4B9E5300FBEC41 /* ThaliCore.h in Headers */ = {isa = PBXBuildFile; fileRef = CCA572FB1D4B9E5300FBEC41 /* ThaliCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3E699F81D798F93005D5315 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD84F3454375EE4974B67 /* Atomic.swift */; };
 		FAADD04D8930DF3297562D09 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAADD342AF116FCE3B46A03D /* Session.swift */; };
@@ -187,7 +189,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCA571C71D4787A900FBEC41 /* ThaliCore.framework in Frameworks */,
+				1CAA29DB1E7BD3330011E58B /* ThaliCore.framework in Frameworks */,
+				1CAA29DC1E7BD3420011E58B /* SwiftXCTest.framework in Frameworks */,
+				1CAA29DD1E7BD3560011E58B /* CocoaAsyncSocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -943,7 +947,12 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 65Y83XEN2Z;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/XCTest/Release-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos",
+				);
 				INFOPLIST_FILE = "ThaliCoreTests/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
@@ -960,7 +969,12 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 65Y83XEN2Z;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/XCTest/Release-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/CocoaAsyncSocket/Release-iphoneos",
+				);
 				INFOPLIST_FILE = "ThaliCoreTests/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.thali.ThaliCoreTests;
