@@ -478,6 +478,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA571D01D4787A900FBEC41 /* Build configuration list for PBXNativeTarget "ThaliCore" */;
 			buildPhases = (
+				1C4459921E82887100369A25 /* Carthage checkout and build dependencies */,
 				CCA571B71D4787A900FBEC41 /* Sources */,
 				CCA571B81D4787A900FBEC41 /* Frameworks */,
 				CCA571B91D4787A900FBEC41 /* Headers */,
@@ -516,13 +517,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA572971D4A327E00FBEC41 /* Build configuration list for PBXNativeTarget "ThaliCoreCITests" */;
 			buildPhases = (
+				1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */,
 				CC3FECCB1DFACF6B00474101 /* Generate Test Cases */,
 				CCA5728D1D4A327E00FBEC41 /* Sources */,
 				CCA5728E1D4A327E00FBEC41 /* Frameworks */,
 				CCA5728F1D4A327E00FBEC41 /* Headers */,
 				CCA572901D4A327E00FBEC41 /* Resources */,
 				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
-				1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */,
 				1C733ED71E79873E0088D19A /* Carthage copy frameworks */,
 			);
 			buildRules = (
@@ -602,6 +603,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1C4459921E82887100369A25 /* Carthage checkout and build dependencies */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Carthage checkout and build dependencies";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\n$CARTHAGE update --configuration \"{CONFIGURATION}\" --platform iOS";
+		};
 		1C733ED61E7987190088D19A /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -645,7 +660,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\n$CARTHAGE bootstrap --configuration \"{CONFIGURATION}\" --platform iOS";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\n$CARTHAGE update --configuration \"{CONFIGURATION}\" --platform iOS";
 		};
 		CC3FECCB1DFACF6B00474101 /* Generate Test Cases */ = {
 			isa = PBXShellScriptBuildPhase;
