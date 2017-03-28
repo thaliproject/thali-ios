@@ -48,7 +48,7 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
   
   /// The user-info dictionary.
   public var errorUserInfo: [String : Any] {
-    return ["NSLocalizedDescriptionKey": errorDescription ?? description]
+    return [NSLocalizedDescriptionKey: errorDescription ?? description]
   }
   
   public var description: String {
