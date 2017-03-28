@@ -20,7 +20,7 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
   case IllegalPeerID = "Illegal peerID"
   
   public static var errorDomain: String {
-    return "ThaliCoreError"
+    return "org.thaliproject.ThaliCoreError"
   }
   
   public var errorCode: Int {
@@ -48,7 +48,7 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
   
   /// The user-info dictionary.
   public var errorUserInfo: [String : Any] {
-    return ["ErrorDescription": description]
+    return ["NSLocalizedDescriptionKey": errorDescription ?? description]
   }
   
   public var description: String {
