@@ -104,12 +104,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CCA571C81D4787A900FBEC41 /* PBXContainerItemProxy */ = {
+		1CEA19A91E8AD3D9008C9226 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CCA571B31D4787A900FBEC41 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CCA571BB1D4787A900FBEC41;
-			remoteInfo = ThaliCore;
+			remoteGlobalIDString = CCA572911D4A327E00FBEC41;
+			remoteInfo = ThaliCoreCITests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -506,7 +506,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				CCA571C91D4787A900FBEC41 /* PBXTargetDependency */,
+				1CEA19AA1E8AD3D9008C9226 /* PBXTargetDependency */,
 			);
 			name = ThaliCoreTests;
 			productName = ThaliCoreTests;
@@ -814,10 +814,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CCA571C91D4787A900FBEC41 /* PBXTargetDependency */ = {
+		1CEA19AA1E8AD3D9008C9226 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CCA571BB1D4787A900FBEC41 /* ThaliCore */;
-			targetProxy = CCA571C81D4787A900FBEC41 /* PBXContainerItemProxy */;
+			target = CCA572911D4A327E00FBEC41 /* ThaliCoreCITests */;
+			targetProxy = 1CEA19A91E8AD3D9008C9226 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

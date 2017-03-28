@@ -29,20 +29,6 @@
                ReferencedContainer = "container:ThaliCore.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CCA571C51D4787A900FBEC41"
-               BuildableName = "ThaliCoreTests.xctest"
-               BlueprintName = "ThaliCoreTests"
-               ReferencedContainer = "container:ThaliCore.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
