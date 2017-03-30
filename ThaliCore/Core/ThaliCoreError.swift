@@ -18,11 +18,11 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
   case RadioTurnedOff = "Radio Turned Off"
   case UnspecifiedRadioError = "Unspecified Error with Radio infrastructure"
   case IllegalPeerID = "Illegal peerID"
-  
+
   public static var errorDomain: String {
     return "org.thaliproject.ThaliCoreError"
   }
-  
+
   public var errorCode: Int {
     switch self {
     case .StartListeningNotActive:
@@ -45,16 +45,16 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
       return 8
     }
   }
-  
+
   /// The user-info dictionary.
   public var errorUserInfo: [String : Any] {
     return [NSLocalizedDescriptionKey: errorDescription ?? description]
   }
-  
+
   public var description: String {
     return rawValue
   }
-  
+
   public var errorDescription: String? {
     return description
   }
