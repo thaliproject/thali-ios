@@ -615,7 +615,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\n$CARTHAGE update --configuration \"{CONFIGURATION}\" --platform iOS";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS";
 		};
 		1C733ED61E7987190088D19A /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -660,7 +660,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\n$CARTHAGE update --configuration \"{CONFIGURATION}\" --platform iOS";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS\n";
 		};
 		CC3FECCB1DFACF6B00474101 /* Generate Test Cases */ = {
 			isa = PBXShellScriptBuildPhase;
