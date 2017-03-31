@@ -144,7 +144,7 @@ extension Advertiser: MCNearbyServiceAdvertiserDelegate {
 
     let mcSession = MCSession(peer: advertiser.myPeerID,
                               securityIdentity: nil,
-                              encryptionPreference: .none)
+                              encryptionPreference: .optional)
 
     let session = Session(session: mcSession,
                           identifier: peerID,
