@@ -245,7 +245,7 @@ class SessionTests: XCTestCase {
         XCTFail("startOutputStream method threw error, but this is not ThaliCoreError")
         return
       }
-      XCTAssertEqual(error, ThaliCoreError.ConnectionFailed)
+      XCTAssertEqual(error, ThaliCoreError.connectionFailed)
     }
   }
 }

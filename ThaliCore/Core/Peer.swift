@@ -66,13 +66,13 @@ public struct Peer: Hashable {
        An integer which counts changes in the peer's database.
 
    - throws:
-     IllegalPeerID error if uuidIdentifier is invalid string.
+     illegalPeerID error if uuidIdentifier is invalid string.
 
    - returns: An initialized `Peer` object.
    */
   public init(uuidIdentifier: String, generation: Int) throws {
     guard let _ = UUID(uuidString: uuidIdentifier) else {
-      throw ThaliCoreError.IllegalPeerID
+      throw ThaliCoreError.illegalPeerID
     }
     self.uuid = uuidIdentifier
     self.generation = generation
@@ -86,7 +86,7 @@ public struct Peer: Hashable {
        String that represents combination of *uuid* and *generation* separated by *separator*.
 
    - throws:
-     IllegalPeerID error in following cases:
+     illegalPeerID error in following cases:
        * *stringValue* doesn't have separator, or have more than one
        * uuid part in *stringValue* is invalid string
        * generation part in *stringValue* is not hex-number
@@ -98,13 +98,13 @@ public struct Peer: Hashable {
                     .split { $0 == Peer.separator }
                     .map(String.init)
     guard peerParts.count == 2 else {
-      throw ThaliCoreError.IllegalPeerID
+      throw ThaliCoreError.illegalPeerID
     }
     guard let uuid = UUID(uuidString: peerParts[0]) else {
-      throw ThaliCoreError.IllegalPeerID
+      throw ThaliCoreError.illegalPeerID
     }
     guard let generation = Int(peerParts[1], radix: 16) else {
-      throw ThaliCoreError.IllegalPeerID
+      throw ThaliCoreError.illegalPeerID
     }
     self.uuid = uuid.uuidString
     self.generation = generation

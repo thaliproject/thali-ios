@@ -323,9 +323,9 @@ class BrowserTests: XCTestCase {
                                           sessionNotConnected: unexpectedDisconnectHandler)
     } catch let error as ThaliCoreError {
       // Then
-      XCTAssertEqual(error, ThaliCoreError.IllegalPeerID)
+      XCTAssertEqual(error, ThaliCoreError.illegalPeerID)
     } catch let error {
-      XCTFail("inviteToConnect didn't return IllegalPeerID error. Unexpected error: \(error)")
+      XCTFail("inviteToConnect didn't return illegalPeerID error. Unexpected error: \(error)")
     }
   }
 

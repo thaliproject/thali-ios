@@ -35,7 +35,7 @@ class TCPClient: NSObject {
       try socket.connect(toHost: "127.0.0.1", onPort: port)
       completion(socket, port, nil)
     } catch _ {
-      completion(nil, port, ThaliCoreError.ConnectionFailed)
+      completion(nil, port, ThaliCoreError.connectionFailed)
     }
   }
 

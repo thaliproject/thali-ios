@@ -46,7 +46,7 @@ class PeerTests: XCTestCase {
       parsingError = peerErr
     } catch _ {
     }
-    XCTAssertEqual(parsingError, .IllegalPeerID)
+    XCTAssertEqual(parsingError, .illegalPeerID)
   }
 
   func testInitWithStringHasNoSeparatorCausesError() {
@@ -58,7 +58,7 @@ class PeerTests: XCTestCase {
       parsingError = peerErr
     } catch _ {
     }
-    XCTAssertEqual(parsingError, .IllegalPeerID)
+    XCTAssertEqual(parsingError, .illegalPeerID)
   }
 
   func testInitWithStringHasInvalidUUIDPartCausesError() {
@@ -70,7 +70,7 @@ class PeerTests: XCTestCase {
       parsingError = peerErr
     } catch _ {
     }
-    XCTAssertEqual(parsingError, .IllegalPeerID)
+    XCTAssertEqual(parsingError, .illegalPeerID)
   }
 
   func testInitWithStringHasNotNumberGenerationCausesError() {
@@ -82,7 +82,7 @@ class PeerTests: XCTestCase {
       parsingError = peerErr
     } catch _ {
     }
-    XCTAssertEqual(parsingError, .IllegalPeerID)
+    XCTAssertEqual(parsingError, .illegalPeerID)
   }
 
   func testGenerationsEquality() {
