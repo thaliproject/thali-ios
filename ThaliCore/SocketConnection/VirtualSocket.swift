@@ -41,7 +41,7 @@ class VirtualSocket: NSObject {
   func openStreams() {
     if !opened {
       opened = true
-      let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
+      let queue = DispatchQueue.global(qos: .default)
       queue.async(execute: {
         self.inputStream.delegate = self
         self.inputStream.schedule(in: RunLoop.current,
