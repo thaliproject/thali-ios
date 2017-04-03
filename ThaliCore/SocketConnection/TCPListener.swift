@@ -71,7 +71,7 @@ class TCPListener: NSObject {
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPListener: GCDAsyncSocketDelegate {
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
     if sock == socket {
       socket.delegate = nil
       socket.delegateQueue = nil
