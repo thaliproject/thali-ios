@@ -140,7 +140,6 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.errorOccurred:
       closeStreams()
     case Stream.Event.endEncountered:
-      closeStreams()
     default:
       break
     }
@@ -158,7 +157,6 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.errorOccurred:
       closeStreams()
     case Stream.Event.endEncountered:
-      closeStreams()
     default:
       break
     }
