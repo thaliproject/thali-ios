@@ -99,7 +99,7 @@ class Session: NSObject {
        A name for the stream.
 
    - throws:
-     ConnectionFailed if a stream could not be established.
+     connectionFailed if a stream could not be established.
 
    - returns:
      `NSOutputStream` object upon success.
@@ -108,7 +108,7 @@ class Session: NSObject {
     do {
       return try session.startStream(withName: name, toPeer: identifier)
     } catch {
-      throw ThaliCoreError.ConnectionFailed
+      throw ThaliCoreError.connectionFailed
     }
   }
 

@@ -88,7 +88,7 @@ class VirtualSocketBuilderTests: XCTestCase {
       }
 
       XCTAssertEqual(thaliCoreError,
-        ThaliCoreError.ConnectionTimedOut,
+        ThaliCoreError.connectionTimedOut,
         "ThaliCoreError in completion is not ConnectionTimeout error")
       gotConnectionTimeoutErrorReturned.fulfill()
     }
@@ -99,7 +99,7 @@ class VirtualSocketBuilderTests: XCTestCase {
 
   func testConnectionFailedErrorWhenBrowserSocketBuilderCantStartStream() {
     // Expectations
-    let gotConnectionFailedErrorReturned = expectation(description: "Got .ConnectionFailed error")
+    let gotConnectionFailedErrorReturned = expectation(description: "Got .connectionFailed error")
 
     // Given
     mcSessionMock.errorOnStartStream = true
@@ -119,8 +119,8 @@ class VirtualSocketBuilderTests: XCTestCase {
       }
 
       XCTAssertEqual(thaliCoreError,
-        ThaliCoreError.ConnectionFailed,
-        "ThaliCoreError in completion is not ConnectionFailed error")
+        ThaliCoreError.connectionFailed,
+        "ThaliCoreError in completion is not connectionFailed error")
       gotConnectionFailedErrorReturned.fulfill()
     }
 

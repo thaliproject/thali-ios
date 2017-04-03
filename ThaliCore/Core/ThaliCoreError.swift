@@ -7,17 +7,17 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-public enum ThaliCoreError: String, CustomNSError, LocalizedError {
+public enum  ThaliCoreError: String, CustomNSError, LocalizedError {
 
-  case StartListeningNotActive = "startListeningForAdvertisements is not active"
-  case ConnectionFailed = "Connection could not be established"
-  case ConnectionTimedOut = "Connection wait timed out"
-  case MaxConnectionsReached = "Max connections reached"
-  case NoNativeNonTCPSupport = "No Native Non-TCP Support"
-  case NoAvailableTCPPorts = "No available TCP ports"
-  case RadioTurnedOff = "Radio Turned Off"
-  case UnspecifiedRadioError = "Unspecified Error with Radio infrastructure"
-  case IllegalPeerID = "Illegal peerID"
+  case startListeningNotActive = "startListeningForAdvertisements is not active"
+  case connectionFailed = "Connection could not be established"
+  case connectionTimedOut = "Connection wait timed out"
+  case maxConnectionsReached = "Max connections reached"
+  case noNativeNonTCPSupport = "No Native Non-TCP Support"
+  case noAvailableTCPPorts = "No available TCP ports"
+  case radioTurnedOff = "Radio Turned Off"
+  case unspecifiedRadioError = "Unspecified Error with Radio infrastructure"
+  case illegalPeerID = "Illegal peerID"
 
   public static var errorDomain: String {
     return "org.thaliproject.ThaliCoreError"
@@ -25,23 +25,23 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
 
   public var errorCode: Int {
     switch self {
-    case .StartListeningNotActive:
+    case .startListeningNotActive:
       return 0
-    case .ConnectionFailed:
+    case .connectionFailed:
       return 1
-    case .ConnectionTimedOut:
+    case .connectionTimedOut:
       return 2
-    case .MaxConnectionsReached:
+    case .maxConnectionsReached:
       return 3
-    case .NoNativeNonTCPSupport:
+    case .noNativeNonTCPSupport:
       return 4
-    case .NoAvailableTCPPorts:
+    case .noAvailableTCPPorts:
       return 5
-    case .RadioTurnedOff:
+    case .radioTurnedOff:
       return 6
-    case .UnspecifiedRadioError:
+    case .unspecifiedRadioError:
       return 7
-    case .IllegalPeerID:
+    case .illegalPeerID:
       return 8
     }
   }

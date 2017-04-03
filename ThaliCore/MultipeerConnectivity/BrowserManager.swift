@@ -98,7 +98,7 @@ public final class BrowserManager {
                           lostPeer: handleLost)
 
     guard let newBrowser = browser else {
-      errorHandler(ThaliCoreError.ConnectionFailed as Error)
+      errorHandler(ThaliCoreError.connectionFailed as Error)
       return
     }
 
@@ -135,7 +135,7 @@ public final class BrowserManager {
 
     guard let currentBrowser = self.currentBrowser else {
       completion(syncValue,
-                 ThaliCoreError.StartListeningNotActive,
+                 ThaliCoreError.startListeningNotActive,
                  nil)
       return
     }
@@ -149,7 +149,7 @@ public final class BrowserManager {
 
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peerIdentifier) else {
       completion(syncValue,
-                 ThaliCoreError.ConnectionFailed,
+                 ThaliCoreError.connectionFailed,
                  nil)
       return
     }

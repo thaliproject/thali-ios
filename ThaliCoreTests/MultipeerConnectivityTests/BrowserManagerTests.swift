@@ -139,7 +139,7 @@ class BrowserManagerTests: XCTestCase {
 
     // Then
     waitForExpectations(timeout: getErrorOnStartListeningTimeout, handler: nil)
-    XCTAssertEqual(connectionError, .StartListeningNotActive)
+    XCTAssertEqual(connectionError, .startListeningNotActive)
   }
 
   func testConnectToWrongPeerReturnsIllegalPeerIDError() {
@@ -163,7 +163,7 @@ class BrowserManagerTests: XCTestCase {
     // Then
     let getIllegalPeerTimeout: TimeInterval = 5
     waitForExpectations(timeout: getIllegalPeerTimeout, handler: nil)
-    XCTAssertEqual(connectionError, .ConnectionFailed)
+    XCTAssertEqual(connectionError, .connectionFailed)
   }
 
   func testPickLatestGenerationAdvertiserOnConnect() {

@@ -130,12 +130,12 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
         guard let strongSelf = self else { return }
 
         if strongSelf.streamReceivedBack.value == false {
-          strongSelf.completion?(nil, ThaliCoreError.ConnectionTimedOut)
+          strongSelf.completion?(nil, ThaliCoreError.connectionTimedOut)
           strongSelf.completion = nil
         }
       }
     } catch _ {
-      self.completion?(nil, ThaliCoreError.ConnectionFailed)
+      self.completion?(nil, ThaliCoreError.connectionFailed)
     }
   }
 
@@ -153,7 +153,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
     streamReceivedBack.modify { $0 = true }
 
     guard let outputStream = outputStream else {
-      completion?(nil, ThaliCoreError.ConnectionFailed)
+      completion?(nil, ThaliCoreError.connectionFailed)
       completion = nil
       return
     }

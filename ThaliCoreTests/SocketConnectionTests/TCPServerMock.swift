@@ -50,14 +50,14 @@ class TCPServerMock: NSObject {
      number of port that listens for connections.
 
    - throws:
-     ThaliCoreError.ConnectionFailed if can't start listener on given port
+     ThaliCoreError.connectionFailed if can't start listener on given port
    */
   func startListening(on port: UInt16 = 0) throws -> UInt16 {
     do {
       try tcpListener.accept(onPort: port)
       return tcpListener.localPort
     } catch _ {
-      throw ThaliCoreError.ConnectionFailed
+      throw ThaliCoreError.connectionFailed
     }
   }
 

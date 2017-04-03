@@ -55,7 +55,7 @@ class TCPListener: NSObject {
         completion(socket.localPort, nil)
       } catch _ {
         listening = false
-        completion(0, ThaliCoreError.ConnectionFailed)
+        completion(0, ThaliCoreError.connectionFailed)
       }
     }
   }
