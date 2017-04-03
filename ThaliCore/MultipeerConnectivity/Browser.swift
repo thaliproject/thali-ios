@@ -186,7 +186,7 @@ extension Browser: MCNearbyServiceBrowserDelegate {
   func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
     do {
       let peer = try Peer(mcPeerID: peerID)
-      availablePeers.modify { $0.removeValue(forKey: peer) }
+      _ = availablePeers.modify { $0.removeValue(forKey: peer) }
       didLosePeerHandler(peer)
     } catch let error {
       print("cannot parse identifier \"\(peerID.displayName)\" because of error: \(error)")

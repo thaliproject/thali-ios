@@ -162,7 +162,7 @@ final class BrowserRelay {
     virtualSocketBuilder.startBuilding {
       virtualSocket, error in
 
-      self.virtualSocketBuilders.modify {
+      _ = self.virtualSocketBuilders.modify {
         $0.removeValue(forKey: newStreamName)
       }
 
