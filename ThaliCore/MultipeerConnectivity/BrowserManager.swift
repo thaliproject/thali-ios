@@ -249,13 +249,19 @@ public final class BrowserManager {
        `Peer` object which was lost.
    */
   fileprivate func handleLost(_ peer: Peer) {
+    guard let lastGenerationPeer = self.lastGenerationPeer(for: peer.uuid) else {
+      return
+    }
+    
     availablePeers.modify {
       if let indexOfLostPeer = $0.index(of: peer) {
         $0.remove(at: indexOfLostPeer)
       }
     }
 
-    let updatedPeerAvailability = PeerAvailability(peer: peer, available: false)
-    peerAvailabilityChangedHandler([updatedPeerAvailability])
+    if peer == lastGenerationPeer {
+      let updatedPeerAvailability = PeerAvailability(peer: peer, available: false)
+      peerAvailabilityChangedHandler([updatedPeerAvailability])
+    }
   }
 }
