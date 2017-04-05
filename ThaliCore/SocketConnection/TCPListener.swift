@@ -39,6 +39,7 @@ class TCPListener: NSObject {
     didSocketDisconnectHandler = socketDisconnected
     didStoppedListeningHandler = stoppedListening
     super.init()
+    socket.autoDisconnectOnClosedReadStream = false
     socket.delegate = self
     socket.delegateQueue = socketQueue
   }
@@ -83,6 +84,7 @@ extension TCPListener: GCDAsyncSocketDelegate {
   }
 
   func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+    newSocket.autoDisconnectOnClosedReadStream = false
     activeConnections.modify { $0.append(newSocket) }
     didAcceptConnectionHandler?(newSocket)
   }

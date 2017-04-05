@@ -30,6 +30,7 @@ class TCPClient: NSObject {
 
     do {
       let socket = GCDAsyncSocket()
+      socket.autoDisconnectOnClosedReadStream = false
       socket.delegate = self
       socket.delegateQueue = socketQueue
       try socket.connect(toHost: "127.0.0.1", onPort: port)
