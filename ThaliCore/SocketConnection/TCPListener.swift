@@ -97,4 +97,8 @@ extension TCPListener: GCDAsyncSocketDelegate {
     didReadDataFromSocketHandler(sock, data)
     sock.readData(withTimeout: -1, tag: 0)
   }
+
+  func socketDidCloseReadStream(_ sock: GCDAsyncSocket) {
+    sock.disconnect()
+  }
 }
