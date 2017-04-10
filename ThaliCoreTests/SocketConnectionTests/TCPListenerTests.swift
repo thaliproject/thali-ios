@@ -340,17 +340,14 @@ class TCPListenerTests: XCTestCase {
       secondTcpListener.startListeningForConnections(on: potentiallyReleasedPort,
                                                      connectionAccepted: unexpectedAcceptConnectionHandler) {
           port, error in
-
           guard let _ = port, error == nil else {
             if listenCallsCount < maxListenCallsCount {
               listenCallsCount += 1
-              
               listenClosedPort()
             } else {
               XCTAssertNil(error)
               XCTAssertNotNil(port)
             }
-            
             return
           }
           
