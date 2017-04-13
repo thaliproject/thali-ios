@@ -104,11 +104,9 @@ class VirtualSocket: NSObject {
     var buffer = [UInt8](repeating: 0, count: maxReadBufferLength)
 
     let bytesReaded = self.inputStream.read(&buffer, maxLength: maxReadBufferLength)
-    if bytesReaded >= 0 {
+    if bytesReaded > 0 {
       let data = Data(bytes: buffer, count: bytesReaded)
       didReadDataFromStreamHandler?(self, data)
-    } else {
-      closeStreams()
     }
   }
 }
@@ -136,10 +134,11 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasBytesAvailable:
       readDataFromInputStream()
     case Stream.Event.hasSpaceAvailable:
-      closeStreams()
+      break
     case Stream.Event.errorOccurred:
       closeStreams()
     case Stream.Event.endEncountered:
+      break
     default:
       break
     }
@@ -151,12 +150,13 @@ extension VirtualSocket: StreamDelegate {
       outputStreamOpened = true
       didOpenStreamHandler()
     case Stream.Event.hasBytesAvailable:
-      readDataFromInputStream()
+      break
     case Stream.Event.hasSpaceAvailable:
       writePendingData()
     case Stream.Event.errorOccurred:
       closeStreams()
     case Stream.Event.endEncountered:
+      break
     default:
       break
     }
