@@ -24,6 +24,8 @@ class VirtualSocket: NSObject {
   fileprivate var inputStream: InputStream
   fileprivate var outputStream: OutputStream
 
+  fileprivate var runLoop: RunLoop?
+
   fileprivate var inputStreamOpened = false
   fileprivate var outputStreamOpened = false
 
@@ -43,13 +45,16 @@ class VirtualSocket: NSObject {
       opened = true
       let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
       queue.async(execute: {
+
+        self.runLoop = RunLoop.current
+
         self.inputStream.delegate = self
-        self.inputStream.schedule(in: RunLoop.current,
+        self.inputStream.schedule(in: self.runLoop!,
           forMode: RunLoopMode.defaultRunLoopMode)
         self.inputStream.open()
 
         self.outputStream.delegate = self
-        self.outputStream.schedule(in: RunLoop.current,
+        self.outputStream.schedule(in: self.runLoop!,
           forMode: RunLoopMode.defaultRunLoopMode)
         self.outputStream.open()
 
@@ -63,9 +68,11 @@ class VirtualSocket: NSObject {
       opened = false
 
       inputStream.close()
+      inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
       inputStreamOpened = false
 
       outputStream.close()
+      outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
       outputStreamOpened = false
 
       didCloseVirtualSocketHandler?(self)
@@ -73,7 +80,6 @@ class VirtualSocket: NSObject {
   }
 
   func writeDataToOutputStream(_ data: Data) {
-
     if !outputStream.hasSpaceAvailable {
       pendingDataToWrite?.append(data)
       return

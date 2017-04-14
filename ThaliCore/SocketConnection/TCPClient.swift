@@ -57,8 +57,6 @@ extension TCPClient: GCDAsyncSocketDelegate {
   }
 
   func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
-    sock.delegate = nil
-
     activeConnections.modify {
       if let indexOfDisconnectedSocket = $0.index(of: sock) {
         $0.remove(at: indexOfDisconnectedSocket)
@@ -79,5 +77,6 @@ extension TCPClient: GCDAsyncSocketDelegate {
 
   func socketDidCloseReadStream(_ sock: GCDAsyncSocket) {
     sock.disconnect()
+    sock.setDelegate(nil, delegateQueue: nil)
   }
 }
