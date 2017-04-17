@@ -72,15 +72,7 @@ class TCPListener: NSObject {
 extension TCPListener: GCDAsyncSocketDelegate {
 
   func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
-    if sock == socket {
-      socket.delegate = nil
-      socket.delegateQueue = nil
-      activeConnections.modify {
-        $0.forEach { $0.disconnect() }
-        $0.removeAll()
-      }
-      didStoppedListeningHandler()
-    } else {
+    if sock != socket {
       activeConnections.modify {
         if let indexOfDisconnectedSocket = $0.index(of: sock) {
           $0.remove(at: indexOfDisconnectedSocket)
@@ -93,6 +85,10 @@ extension TCPListener: GCDAsyncSocketDelegate {
   func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
     activeConnections.modify { $0.append(newSocket) }
     didAcceptConnectionHandler?(newSocket)
+  }
+
+  func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+    sock.readData(withTimeout: -1, tag: 0)
   }
 
   func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {

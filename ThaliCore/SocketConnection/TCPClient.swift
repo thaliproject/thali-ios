@@ -68,10 +68,11 @@ extension TCPClient: GCDAsyncSocketDelegate {
   }
 
   func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-
+    sock.readData(withTimeout: -1, tag: 0)
   }
 
   func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+    sock.readData(withTimeout: -1, tag: 0)
     didReadDataHandler(sock, data)
   }
 }
