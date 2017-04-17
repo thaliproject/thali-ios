@@ -350,16 +350,16 @@ class TCPListenerTests: XCTestCase {
             }
             return
           }
-          
+
           TCPListenerIsListening?.fulfill()
       }
-      
+
       self.waitForExpectations(timeout: self.startListeningTimeout) {
         error in
         TCPListenerIsListening = nil
       }
     }
-    
+
     listenClosedPort()
   }
 
