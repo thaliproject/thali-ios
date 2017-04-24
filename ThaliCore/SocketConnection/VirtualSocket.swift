@@ -73,7 +73,6 @@ class VirtualSocket: NSObject {
   }
 
   func writeDataToOutputStream(_ data: Data) {
-
     if !outputStream.hasSpaceAvailable {
       pendingDataToWrite?.append(data)
       return
@@ -118,7 +117,6 @@ extension VirtualSocket: StreamDelegate {
 
   // MARK: - Delegate methods
   internal func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-
     if aStream == self.inputStream {
       handleEventOnInputStream(eventCode)
     } else if aStream == self.outputStream {

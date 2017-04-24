@@ -141,9 +141,8 @@ final class BrowserRelay {
   }
 
   // MARK: - Private methods
-  fileprivate func createVirtualSocket(with
-                                       completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-
+  fileprivate func createVirtualSocket(
+                      with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     guard virtualSockets.value.count <= maxVirtualSocketsCount else {
       completion(nil, ThaliCoreError.connectionFailed)
       return

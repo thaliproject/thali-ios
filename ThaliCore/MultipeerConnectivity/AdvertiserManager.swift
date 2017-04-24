@@ -176,8 +176,7 @@ public final class AdvertiserManager {
        `Advertiser` object that should be disposed of after `disposeTimeout`.
    */
   fileprivate func disposeOfAdvertiserAfterTimeoutToFinishInvites(
-    _ advertiserToBeDisposedOf: Advertiser) {
-
+                      _ advertiserToBeDisposedOf: Advertiser) {
     let disposeTimeout: DispatchTime = .now() + self.disposeTimeout
 
     DispatchQueue.main.asyncAfter(deadline: disposeTimeout) {

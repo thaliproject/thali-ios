@@ -149,7 +149,6 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
        *inputStream* object.
    */
   func completeVirtualSocket(with inputStream: InputStream) {
-
     streamReceivedBack.modify { $0 = true }
 
     guard let outputStream = outputStream else {

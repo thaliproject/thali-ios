@@ -28,7 +28,6 @@ class TCPClient: NSObject {
   func connectToLocalhost(onPort port: UInt16,
                           completion: (_ socket: GCDAsyncSocket?, _ port: UInt16?, _ error: Error?)
                           -> Void) {
-
     do {
       let socket = GCDAsyncSocket()
       socket.delegate = self

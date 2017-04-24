@@ -83,7 +83,6 @@ final class Advertiser: NSObject {
                  serviceType: String,
                  receivedInvitation: @escaping (_ session: Session) -> Void,
                  sessionNotConnected: @escaping () -> Void) {
-
     guard String.isValidServiceType(serviceType) else {
       return nil
     }
@@ -141,7 +140,6 @@ extension Advertiser: MCNearbyServiceAdvertiserDelegate {
                   didReceiveInvitationFromPeer peerID: MCPeerID,
                   withContext context: Data?,
                   invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-
     let mcSession = MCSession(peer: advertiser.myPeerID,
                               securityIdentity: nil,
                               encryptionPreference: .none)

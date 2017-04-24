@@ -98,9 +98,7 @@ final class AdvertiserRelay {
     virtualSockBuilder.createVirtualSocket(with: inputStream, inputStreamName: inputStreamName)
   }
 
-  fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
-
-  }
+  fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
 
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
     virtualSockets.modify {

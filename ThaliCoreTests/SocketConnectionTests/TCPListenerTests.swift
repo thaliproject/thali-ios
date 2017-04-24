@@ -10,6 +10,8 @@
 @testable import ThaliCore
 import SwiftXCTest
 
+// swiftlint:disable type_body_length
+
 class TCPListenerTests: XCTestCase {
 
   // MARK: - State
@@ -313,10 +315,10 @@ class TCPListenerTests: XCTestCase {
 
     var listenClosedPort = {}
     listenClosedPort = {
-      secondTcpListener.startListeningForConnections(on: potentiallyReleasedPort,
-                                                     connectionAccepted: unexpectedAcceptConnectionHandler) {
-          port, error in
-          guard let _ = port, error == nil else {
+      secondTcpListener.startListeningForConnections(
+                            on: potentiallyReleasedPort,
+                            connectionAccepted: unexpectedAcceptConnectionHandler) { port, error in
+          guard port != nil, error == nil else {
             if listenCallsCount < maxListenCallsCount {
               listenCallsCount += 1
               listenClosedPort()
@@ -330,8 +332,7 @@ class TCPListenerTests: XCTestCase {
           TCPListenerIsListening?.fulfill()
       }
 
-      self.waitForExpectations(timeout: self.startListeningTimeout) {
-        error in
+      self.waitForExpectations(timeout: self.startListeningTimeout) { _ in
         TCPListenerIsListening = nil
       }
     }
