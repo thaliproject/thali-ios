@@ -10,15 +10,16 @@
 class TCPClient: NSObject {
 
   // MARK: - Private state
-  fileprivate let socketQueue = DispatchQueue(label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
-                                                  attributes: DispatchQueue.Attributes.concurrent)
+  fileprivate let socketQueue = DispatchQueue(
+                                            label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
+                                            attributes: DispatchQueue.Attributes.concurrent)
   fileprivate var activeConnections: Atomic<[GCDAsyncSocket]> = Atomic([])
   fileprivate var didReadDataHandler: ((GCDAsyncSocket, Data) -> Void)
   fileprivate var didDisconnectHandler: ((GCDAsyncSocket) -> Void)
 
   // MARK: - Public methods
   required init(with didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
-                     didDisconnect: @escaping (GCDAsyncSocket) -> Void) {
+                didDisconnect: @escaping (GCDAsyncSocket) -> Void) {
     didReadDataHandler = didReadData
     didDisconnectHandler = didDisconnect
     super.init()

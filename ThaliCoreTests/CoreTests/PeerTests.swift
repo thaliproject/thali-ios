@@ -35,6 +35,8 @@ class PeerTests: XCTestCase {
     }
   }
 
+  // swiftlint:disable redundant_discardable_let
+
   func testInitWithStringHasTwoSeparatorsCausesError() {
     let string = String.random(length: 4) + ":" +
       String.random(length: 4) + ":" +
@@ -84,6 +86,8 @@ class PeerTests: XCTestCase {
     }
     XCTAssertEqual(parsingError, .illegalPeerID)
   }
+
+  // swiftlint:enable redundant_discardable_let
 
   func testGenerationsEquality() {
     let peerID1 = Peer()

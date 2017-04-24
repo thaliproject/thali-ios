@@ -47,7 +47,7 @@ final class Advertiser: NSObject {
   /**
    Handle failing advertisement.
    */
-  fileprivate var startAdvertisingErrorHandler: ((Error) -> Void)? = nil
+  fileprivate var startAdvertisingErrorHandler: ((Error) -> Void)?
 
   // MARK: - Initialization
 

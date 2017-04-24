@@ -110,7 +110,7 @@ extension TestRunner: XCTestObservation {
   public func testCase(_ testCase: XCTestCase,
                        didFailWithDescription description: String,
                        inFile filePath: String?, atLine lineNumber: UInt) {
-    print("\(testCase.name): \(description) in file: \(filePath), at line: \(lineNumber)")
+    print("\(testCase.name): \(description) in file: \(filePath ?? "nil"), at line: \(lineNumber)")
   }
 
   public func testCaseDidFinish(_ testCase: XCTestCase) {

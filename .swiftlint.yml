@@ -6,6 +6,7 @@ opt_in_rules: # some rules are only opt-in
   - force_unwrapping: warning
   - function_parameter_count
   - missing_docs
+  - conditional_returns_on_newline
 
 included: # paths to include during linting. `--path` is ignored if present.
   - ThaliCore

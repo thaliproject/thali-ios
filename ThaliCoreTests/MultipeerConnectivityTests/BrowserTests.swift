@@ -192,8 +192,7 @@ class BrowserTests: XCTestCase {
 
     // Given
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
-                             foundPeer: {
-                               [weak foundPeer] _ in
+                             foundPeer: { [weak foundPeer] _ in
                                foundPeer?.fulfill()
                              },
                              lostPeer: unexpectedLostPeerHandler)
@@ -217,8 +216,7 @@ class BrowserTests: XCTestCase {
     // Given
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
                              foundPeer: unexpectedFoundPeerHandler,
-                             lostPeer: {
-                               [weak lostPeer] _ in
+                             lostPeer: { [weak lostPeer] _ in
                                lostPeer?.fulfill()
                              })
 
@@ -302,6 +300,8 @@ class BrowserTests: XCTestCase {
     }
   }
 
+  // swiftlint:disable redundant_discardable_let
+
   func testInviteToConnectWrongPeerReturnsIllegalPeerIDError() {
     // Given
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
@@ -325,6 +325,8 @@ class BrowserTests: XCTestCase {
       XCTFail("inviteToConnect didn't return illegalPeerID error. Unexpected error: \(error)")
     }
   }
+
+  // swiftlint:enable redundant_discardable_let
 
   // MARK: - Private methods and handlers of unexpected events
   fileprivate func unexpectedFoundPeerHandler(_ peer: Peer) {

@@ -196,7 +196,8 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
    - returns:
      An initialized `AdvertiserVirtualSocketBuilder` object.
    */
-  required init(with nonTCPsession: Session, completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+  required init(with nonTCPsession: Session,
+                completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     self.completion = completion
     super.init(with: nonTCPsession)
   }

@@ -80,9 +80,9 @@ class VirtualSocket: NSObject {
     }
 
     let dataLength = data.count
+    let startDataPointer = (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count)
     let buffer: [UInt8] = Array(
-      UnsafeBufferPointer(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count),
-        count: dataLength)
+      UnsafeBufferPointer(start: startDataPointer, count: dataLength)
     )
 
     let bytesWritten = outputStream.write(buffer, maxLength: dataLength)

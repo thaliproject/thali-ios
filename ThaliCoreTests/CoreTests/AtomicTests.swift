@@ -67,8 +67,9 @@ class AtomicTests: XCTestCase {
           atomicArray.withValue {
             let initialValue = $0.count
             // Doing some time consuming work
-            for j in 0..<loopIterationsCount {
-              let _ = 42.0 / Double(j)
+            var unusedResult = 0.78
+            for _ in 0..<loopIterationsCount {
+              unusedResult = 42.0 / unusedResult
             }
             XCTAssertEqual($0.count, initialValue)
           }
@@ -77,9 +78,13 @@ class AtomicTests: XCTestCase {
       }
     }
 
+    // swiftlint:disable redundant_discardable_let
+
     // Wating for async block execution completion
     for _ in 0..<queuesCount {
       let _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     }
+
+    // swiftlint:enable redundant_discardable_let
   }
 }

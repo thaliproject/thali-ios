@@ -10,6 +10,8 @@
 @testable import ThaliCore
 import SwiftXCTest
 
+// swiftlint:disable type_body_length
+
 class BrowserManagerTests: XCTestCase {
 
   // MARK: - State
@@ -319,12 +321,14 @@ class BrowserManagerTests: XCTestCase {
     let peerAvailabilityChangedToFalse =
       expectation(description: "PeerAvailability changed to false")
 
+    // swiftlint:disable closure_parameter_position
+
     // Given
     let browserManager = BrowserManager(
       serviceType: serviceType,
       inputStreamReceiveTimeout: 1,
-      peerAvailabilityChanged: { [weak advertiserManager, weak peerAvailabilityChangedToFalse] peerAvailability in
-
+      peerAvailabilityChanged: { [weak advertiserManager,
+                                  weak peerAvailabilityChangedToFalse] peerAvailability in
         if let peerAvailability = peerAvailability.first {
           if peerAvailability.available {
             // When
@@ -334,6 +338,8 @@ class BrowserManagerTests: XCTestCase {
           }
         }
       })
+
+    // swiftlint:enable closure_parameter_position
 
     browserManager.startListeningForAdvertisements(unexpectedErrorHandler)
     advertiserManager.startUpdateAdvertisingAndListening(onPort: 42,
