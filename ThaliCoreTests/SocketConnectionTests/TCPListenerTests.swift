@@ -308,19 +308,35 @@ class TCPListenerTests: XCTestCase {
                                         socketDisconnected: unexpectedSocketDisconnectHandler,
                                         stoppedListening: unexpectedStopListeningHandler)
 
-    // When
-    secondTcpListener.startListeningForConnections(
-                            on: potentiallyReleasedPort,
-                            connectionAccepted: unexpectedAcceptConnectionHandler) { port, error in
-        XCTAssertNil(error)
-        XCTAssertNotNil(port)
-        TCPListenerIsListening?.fulfill()
+    var listenCallsCount = 1
+    let maxListenCallsCount = 5
+
+    var listenClosedPort = {}
+    listenClosedPort = {
+      secondTcpListener.startListeningForConnections(on: potentiallyReleasedPort,
+                                                     connectionAccepted: unexpectedAcceptConnectionHandler) {
+          port, error in
+          guard let _ = port, error == nil else {
+            if listenCallsCount < maxListenCallsCount {
+              listenCallsCount += 1
+              listenClosedPort()
+            } else {
+              XCTAssertNil(error)
+              XCTAssertNotNil(port)
+            }
+            return
+          }
+
+          TCPListenerIsListening?.fulfill()
+      }
+
+      self.waitForExpectations(timeout: self.startListeningTimeout) {
+        error in
+        TCPListenerIsListening = nil
+      }
     }
 
-    // Then
-    waitForExpectations(timeout: startListeningTimeout) { _ in
-      TCPListenerIsListening = nil
-    }
+    listenClosedPort()
   }
 
   func testStopListeningForConnectionsDisconnectsClient() {
