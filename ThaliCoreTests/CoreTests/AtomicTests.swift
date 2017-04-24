@@ -78,13 +78,10 @@ class AtomicTests: XCTestCase {
       }
     }
 
-    // swiftlint:disable redundant_discardable_let
-
     // Wating for async block execution completion
     for _ in 0..<queuesCount {
-      let _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+      _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     }
 
-    // swiftlint:enable redundant_discardable_let
   }
 }

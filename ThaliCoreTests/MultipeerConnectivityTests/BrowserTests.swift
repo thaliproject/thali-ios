@@ -300,8 +300,6 @@ class BrowserTests: XCTestCase {
     }
   }
 
-  // swiftlint:disable redundant_discardable_let
-
   func testInviteToConnectWrongPeerReturnsIllegalPeerIDError() {
     // Given
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
@@ -315,7 +313,7 @@ class BrowserTests: XCTestCase {
 
     // When
     do {
-      let _ = try browser.inviteToConnect(randomlyGeneratedPeer,
+      _ = try browser.inviteToConnect(randomlyGeneratedPeer,
                                           sessionConnected: unexpectedConnectHandler,
                                           sessionNotConnected: unexpectedDisconnectHandler)
     } catch let error as ThaliCoreError {
@@ -325,8 +323,6 @@ class BrowserTests: XCTestCase {
       XCTFail("inviteToConnect didn't return illegalPeerID error. Unexpected error: \(error)")
     }
   }
-
-  // swiftlint:enable redundant_discardable_let
 
   // MARK: - Private methods and handlers of unexpected events
   fileprivate func unexpectedFoundPeerHandler(_ peer: Peer) {

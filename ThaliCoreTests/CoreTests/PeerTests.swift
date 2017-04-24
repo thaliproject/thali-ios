@@ -35,15 +35,13 @@ class PeerTests: XCTestCase {
     }
   }
 
-  // swiftlint:disable redundant_discardable_let
-
   func testInitWithStringHasTwoSeparatorsCausesError() {
     let string = String.random(length: 4) + ":" +
       String.random(length: 4) + ":" +
       String.random(length: 4)
     var parsingError: ThaliCoreError?
     do {
-      let _ = try Peer(stringValue: string)
+      _ = try Peer(stringValue: string)
     } catch let peerErr as ThaliCoreError {
       parsingError = peerErr
     } catch _ {
@@ -55,7 +53,7 @@ class PeerTests: XCTestCase {
     let string = String.random(length: 4)
     var parsingError: ThaliCoreError?
     do {
-      let _ = try Peer(stringValue: string)
+      _ = try Peer(stringValue: string)
     } catch let peerErr as ThaliCoreError {
       parsingError = peerErr
     } catch _ {
@@ -67,7 +65,7 @@ class PeerTests: XCTestCase {
     let string = "---" + ":" + "0"
     var parsingError: ThaliCoreError?
     do {
-      let _ = try Peer(stringValue: string)
+      _ = try Peer(stringValue: string)
     } catch let peerErr as ThaliCoreError {
       parsingError = peerErr
     } catch _ {
@@ -79,15 +77,13 @@ class PeerTests: XCTestCase {
     let string = String.random(length: 4) + ":" + "not_a_number"
     var parsingError: ThaliCoreError?
     do {
-      let _ = try Peer(stringValue: string)
+      _ = try Peer(stringValue: string)
     } catch let peerErr as ThaliCoreError {
       parsingError = peerErr
     } catch _ {
     }
     XCTAssertEqual(parsingError, .illegalPeerID)
   }
-
-  // swiftlint:enable redundant_discardable_let
 
   func testGenerationsEquality() {
     let peerID1 = Peer()

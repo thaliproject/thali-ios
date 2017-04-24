@@ -221,8 +221,6 @@ class SessionTests: XCTestCase {
     XCTAssertEqual(session.sessionState.value, MCSessionState.connecting)
   }
 
-  // swiftlint:disable redundant_discardable_let
-
   func testCreateOutputStreamMethodThrowsThaliCoreError() {
     // Given
     mcSession.errorOnStartStream = true
@@ -235,7 +233,7 @@ class SessionTests: XCTestCase {
     do {
       // When
       let outputStreamName = UUID().uuidString
-      let _ = try session.startOutputStream(with: outputStreamName)
+      _ = try session.startOutputStream(with: outputStreamName)
       XCTFail("startOutputStream method threw error, but this is not ThaliCoreError")
     } catch let error {
       // Then
@@ -246,6 +244,4 @@ class SessionTests: XCTestCase {
       XCTAssertEqual(error, ThaliCoreError.connectionFailed)
     }
   }
-
-  // swiftlint:enable redundant_discardable_let
 }
