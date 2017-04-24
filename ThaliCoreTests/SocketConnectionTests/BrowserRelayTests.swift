@@ -195,7 +195,6 @@ class BrowserRelayTests: XCTestCase {
     let browserManager = BrowserManager(serviceType: randomlyGeneratedServiceType,
                                         inputStreamReceiveTimeout: streamReceivedTimeout,
                                         peerAvailabilityChanged: { peerAvailability in
-
                                           guard let peer = peerAvailability.first else {
                                             XCTFail("Browser didn't find Advertiser peer")
                                             return
@@ -227,7 +226,6 @@ class BrowserRelayTests: XCTestCase {
 
     var browserNativeTCPListenerPort: UInt16 = 0
     browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") { _, _, port in
-
       guard let port = port else {
         XCTFail("Port must not be nil")
         return

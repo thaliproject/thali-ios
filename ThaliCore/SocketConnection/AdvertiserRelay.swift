@@ -69,7 +69,6 @@ final class AdvertiserRelay {
 
       strongSelf.tcpClient.connectToLocalhost(onPort: strongSelf.clientPort,
                                               completion: { socket, _, _ in
-
         guard let socket = socket else {
           return
         }

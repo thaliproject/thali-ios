@@ -293,7 +293,6 @@ class BrowserManagerTests: XCTestCase {
       serviceType: serviceType,
       inputStreamReceiveTimeout: 1,
       peerAvailabilityChanged: { [weak peerAvailabilityChangedToTrue] peerAvailability in
-
         if let peerAvailability = peerAvailability.first {
           if peerAvailability.available {
             // When
@@ -366,7 +365,6 @@ class BrowserManagerTests: XCTestCase {
     let browserManager = BrowserManager(serviceType: serviceType,
                                         inputStreamReceiveTimeout: 5,
                                         peerAvailabilityChanged: { peerAvailability in
-
                                           guard let peer = peerAvailability.first else {
                                             XCTFail("Browser didn't find Advertiser peer")
                                             return
@@ -391,7 +389,6 @@ class BrowserManagerTests: XCTestCase {
     // When
     let peerToConnect = browserManager.availablePeers.value.first!
     browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") { _, error, _ in
-
       guard error == nil else {
         XCTFail("Error during connection: \(error.debugDescription)")
         return

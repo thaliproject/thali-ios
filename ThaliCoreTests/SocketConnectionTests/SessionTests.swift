@@ -171,8 +171,7 @@ class SessionTests: XCTestCase {
 
     var receivedStreamName: String?
     session.didReceiveInputStreamHandler = {
-      [weak didReceiveInputStreamHandlerInvoked] stream, name in
-
+              [weak didReceiveInputStreamHandlerInvoked] stream, name in
       receivedStreamName = name
       didReceiveInputStreamHandlerInvoked?.fulfill()
     }
