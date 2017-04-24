@@ -74,9 +74,4 @@ extension TCPClient: GCDAsyncSocketDelegate {
     sock.readData(withTimeout: -1, tag: 0)
     didReadDataHandler(sock, data)
   }
-
-  func socketDidCloseReadStream(_ sock: GCDAsyncSocket) {
-    sock.disconnect()
-    sock.setDelegate(nil, delegateQueue: nil)
-  }
 }
