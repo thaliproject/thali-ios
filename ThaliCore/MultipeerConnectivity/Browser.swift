@@ -52,7 +52,7 @@ final class Browser: NSObject {
   /**
    Handle failing browsing.
    */
-  fileprivate var startBrowsingErrorHandler: ((Error) -> Void)? = nil
+  fileprivate var startBrowsingErrorHandler: ((Error) -> Void)?
 
   // MARK: - Initialization
 

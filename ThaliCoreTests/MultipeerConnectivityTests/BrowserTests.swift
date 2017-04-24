@@ -250,8 +250,7 @@ class BrowserTests: XCTestCase {
       return
     }
 
-    browser.startListening {
-      [weak failedStartBrowsing] error in
+    browser.startListening { [weak failedStartBrowsing] _ in
       failedStartBrowsing?.fulfill()
     }
 
@@ -274,12 +273,10 @@ class BrowserTests: XCTestCase {
     // Given
     // Firsly we have to "find" peer and get handler called
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
-                             foundPeer: {
-                              [weak foundPeer] foundedPeer in
-
-                              XCTAssertEqual(foundedPeer, self.randomlyGeneratedPeer)
-                              foundPeer?.fulfill()
-      },
+                             foundPeer: { [weak foundPeer] foundedPeer in
+                               XCTAssertEqual(foundedPeer, self.randomlyGeneratedPeer)
+                               foundPeer?.fulfill()
+                             },
                              lostPeer: unexpectedLostPeerHandler)
 
     guard let browser = newBrowser else {

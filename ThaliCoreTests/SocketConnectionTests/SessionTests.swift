@@ -110,8 +110,7 @@ class SessionTests: XCTestCase {
     mcSession.delegate?.session(mcSession, peer: peerID, didChange: .connected)
 
     // Then
-    waitForExpectations(timeout: connectTimeout) {
-      error in
+    waitForExpectations(timeout: connectTimeout) { _ in
       connectHandlerInvoked = nil
     }
     XCTAssertEqual(session.sessionState.value, MCSessionState.connected)
@@ -136,8 +135,7 @@ class SessionTests: XCTestCase {
     mcSession.delegate?.session(mcSession, peer: peerID, didChange: .notConnected)
 
     // Then
-    waitForExpectations(timeout: disconnectTimeout) {
-      error in
+    waitForExpectations(timeout: disconnectTimeout) { _ in
       disconnectHandlerInvoked = nil
     }
     XCTAssertEqual(session.sessionState.value, MCSessionState.notConnected)
@@ -190,8 +188,7 @@ class SessionTests: XCTestCase {
                                 fromPeer: peerID)
 
     // Then
-    waitForExpectations(timeout: receiveInputStreamTimeout) {
-      error in
+    waitForExpectations(timeout: receiveInputStreamTimeout) { _ in
       didReceiveInputStreamHandlerInvoked = nil
     }
     XCTAssertEqual(randomlyGeneratedStreamName, receivedStreamName)
@@ -218,8 +215,7 @@ class SessionTests: XCTestCase {
     mcSession.delegate?.session(mcSession, peer: peerID, didChange: .connecting)
 
     // Then
-    waitForExpectations(timeout: changeStateTimeout) {
-      error in
+    waitForExpectations(timeout: changeStateTimeout) { _ in
       didChangeStateHandlerInvoked = nil
     }
     XCTAssertEqual(session.sessionState.value, MCSessionState.connecting)

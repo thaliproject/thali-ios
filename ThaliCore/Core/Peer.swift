@@ -71,7 +71,7 @@ public struct Peer: Hashable {
    - returns: An initialized `Peer` object.
    */
   public init(uuidIdentifier: String, generation: Int) throws {
-    guard let _ = UUID(uuidString: uuidIdentifier) else {
+    guard nil != UUID(uuidString: uuidIdentifier) else {
       throw ThaliCoreError.illegalPeerID
     }
     self.uuid = uuidIdentifier

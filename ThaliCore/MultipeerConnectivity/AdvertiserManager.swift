@@ -102,8 +102,7 @@ public final class AdvertiserManager {
 
     let advertiser = Advertiser(peer: newPeer,
                                 serviceType: serviceType,
-                                receivedInvitation: {
-                                  [weak self] session in
+                                receivedInvitation: { [weak self] session in
                                   guard let strongSelf = self else { return }
 
                                   strongSelf.activeRelays.modify {

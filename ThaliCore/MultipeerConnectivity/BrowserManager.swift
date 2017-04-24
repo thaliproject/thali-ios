@@ -130,8 +130,8 @@ public final class BrowserManager {
   public func connectToPeer(_ peerIdentifier: String,
                             syncValue: String,
                             completion: @escaping (_ syncValue: String,
-                                         _ error: Error?,
-                                         _ port: UInt16?) -> Void) {
+                                                   _ error: Error?,
+                                                   _ port: UInt16?) -> Void) {
 
     guard let currentBrowser = self.currentBrowser else {
       completion(syncValue,
@@ -162,8 +162,7 @@ public final class BrowserManager {
                                         guard let strongSelf = self else { return }
 
                                         let relay = strongSelf.activeRelays.value[peerIdentifier]
-                                        relay?.openRelay {
-                                          port, error in
+                                        relay?.openRelay { port, error in
                                           completion(syncValue, error, port)
                                         }
                                       },

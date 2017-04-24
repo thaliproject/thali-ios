@@ -32,8 +32,8 @@ class TCPListener: NSObject {
 
   // MARK: - Initialization
   required init(with didReadDataFromSocket: @escaping (GCDAsyncSocket, Data) -> Void,
-                     socketDisconnected: @escaping (GCDAsyncSocket) -> Void,
-                     stoppedListening: @escaping () -> Void) {
+                socketDisconnected: @escaping (GCDAsyncSocket) -> Void,
+                stoppedListening: @escaping () -> Void) {
     socket = GCDAsyncSocket()
     didReadDataFromSocketHandler = didReadDataFromSocket
     didSocketDisconnectHandler = socketDisconnected
@@ -45,8 +45,8 @@ class TCPListener: NSObject {
 
   // MARK: - Internal methods
   func startListeningForConnections(on port: UInt16,
-                                       connectionAccepted: @escaping (GCDAsyncSocket) -> Void,
-                                       completion: (_ port: UInt16?, _ error: Error?) -> Void) {
+                                    connectionAccepted: @escaping (GCDAsyncSocket) -> Void,
+                                    completion: (_ port: UInt16?, _ error: Error?) -> Void) {
     if !listening {
       do {
         try socket.accept(onPort: port)

@@ -45,8 +45,7 @@ class VirtualSocketBuilderTests: XCTestCase {
     let virtualSocketCreated = expectation(description: "Virtual socket is created")
 
     // Given
-    let socketBuilder = AdvertiserVirtualSocketBuilder(with: nonTCPSession) {
-      virtualSocket, error in
+    let socketBuilder = AdvertiserVirtualSocketBuilder(with: nonTCPSession) { _, error in
       XCTAssertNil(error, "Virtual Socket is not created")
       virtualSocketCreated.fulfill()
     }
@@ -78,8 +77,7 @@ class VirtualSocketBuilderTests: XCTestCase {
                                   streamName: UUID().uuidString,
                                   streamReceivedBackTimeout: streamReceivedTimeout)
     // When
-    socketBuilder.startBuilding {
-      virtualSocket, error in
+    socketBuilder.startBuilding { _, error in
       XCTAssertNotNil(error, "Got error in completion")
 
       guard let thaliCoreError = error as? ThaliCoreError else {
@@ -109,8 +107,7 @@ class VirtualSocketBuilderTests: XCTestCase {
                                   streamReceivedBackTimeout: streamReceivedTimeout)
 
     // When
-    socketBuilder.startBuilding {
-      virtualSocket, error in
+    socketBuilder.startBuilding { _, error in
       XCTAssertNotNil(error, "Got error in completion")
 
       guard let thaliCoreError = error as? ThaliCoreError else {
@@ -125,8 +122,6 @@ class VirtualSocketBuilderTests: XCTestCase {
     }
 
     // Then
-    waitForExpectations(timeout: streamReceivedTimeout, handler: {
-      error in
-    })
+    waitForExpectations(timeout: streamReceivedTimeout, handler: { _ in })
   }
 }

@@ -18,8 +18,7 @@ func createMPCFPeers(with browsingCompletion: @escaping (PeerAvailability) -> Vo
 
     let browserManager = BrowserManager(serviceType: serviceType,
                                         inputStreamReceiveTimeout: 5,
-                                        peerAvailabilityChanged: {
-                                          peerAvailability in
+                                        peerAvailabilityChanged: { peerAvailability in
                                           browsingCompletion(peerAvailability.first!)
                                         })
     browserManager.startListeningForAdvertisements(unexpectedErrorHandler)
