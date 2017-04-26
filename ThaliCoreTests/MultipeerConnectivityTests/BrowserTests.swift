@@ -192,8 +192,7 @@ class BrowserTests: XCTestCase {
 
     // Given
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
-                             foundPeer: {
-                               [weak foundPeer] _ in
+                             foundPeer: { [weak foundPeer] _ in
                                foundPeer?.fulfill()
                              },
                              lostPeer: unexpectedLostPeerHandler)
@@ -217,8 +216,7 @@ class BrowserTests: XCTestCase {
     // Given
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
                              foundPeer: unexpectedFoundPeerHandler,
-                             lostPeer: {
-                               [weak lostPeer] _ in
+                             lostPeer: { [weak lostPeer] _ in
                                lostPeer?.fulfill()
                              })
 
@@ -250,8 +248,7 @@ class BrowserTests: XCTestCase {
       return
     }
 
-    browser.startListening {
-      [weak failedStartBrowsing] error in
+    browser.startListening { [weak failedStartBrowsing] _ in
       failedStartBrowsing?.fulfill()
     }
 
@@ -274,12 +271,10 @@ class BrowserTests: XCTestCase {
     // Given
     // Firsly we have to "find" peer and get handler called
     let newBrowser = Browser(serviceType: randomlyGeneratedServiceType,
-                             foundPeer: {
-                              [weak foundPeer] foundedPeer in
-
-                              XCTAssertEqual(foundedPeer, self.randomlyGeneratedPeer)
-                              foundPeer?.fulfill()
-      },
+                             foundPeer: { [weak foundPeer] foundedPeer in
+                               XCTAssertEqual(foundedPeer, self.randomlyGeneratedPeer)
+                               foundPeer?.fulfill()
+                             },
                              lostPeer: unexpectedLostPeerHandler)
 
     guard let browser = newBrowser else {
@@ -318,7 +313,7 @@ class BrowserTests: XCTestCase {
 
     // When
     do {
-      let _ = try browser.inviteToConnect(randomlyGeneratedPeer,
+      _ = try browser.inviteToConnect(randomlyGeneratedPeer,
                                           sessionConnected: unexpectedConnectHandler,
                                           sessionNotConnected: unexpectedDisconnectHandler)
     } catch let error as ThaliCoreError {

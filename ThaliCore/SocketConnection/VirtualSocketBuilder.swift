@@ -149,7 +149,6 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
        *inputStream* object.
    */
   func completeVirtualSocket(with inputStream: InputStream) {
-
     streamReceivedBack.modify { $0 = true }
 
     guard let outputStream = outputStream else {
@@ -196,7 +195,8 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
    - returns:
      An initialized `AdvertiserVirtualSocketBuilder` object.
    */
-  required init(with nonTCPsession: Session, completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+  required init(with nonTCPsession: Session,
+                completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     self.completion = completion
     super.init(with: nonTCPsession)
   }

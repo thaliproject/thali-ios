@@ -54,9 +54,9 @@ final class AdvertiserRelay {
   }
 
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
-                                                   inputStreamName: String) {
-    createVirtualSocket(with: inputStream, inputStreamName: inputStreamName) {
-      [weak self] virtualSocket, error in
+                                                       inputStreamName: String) {
+    createVirtualSocket(with: inputStream,
+                        inputStreamName: inputStreamName) { [weak self] virtualSocket, error in
       guard let strongSelf = self else { return }
 
       guard error == nil else {
@@ -67,9 +67,8 @@ final class AdvertiserRelay {
         return
       }
 
-      strongSelf.tcpClient.connectToLocalhost(onPort: strongSelf.clientPort, completion: {
-        socket, port, error in
-
+      strongSelf.tcpClient.connectToLocalhost(onPort: strongSelf.clientPort,
+                                              completion: { socket, _, _ in
         guard let socket = socket else {
           return
         }
@@ -88,19 +87,17 @@ final class AdvertiserRelay {
   }
 
   fileprivate func createVirtualSocket(with inputStream: InputStream,
-                                        inputStreamName: String,
-                                        completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-    let virtualSockBuilder = AdvertiserVirtualSocketBuilder(with: nonTCPsession) {
-      virtualSocket, error in
+                                       inputStreamName: String,
+                                       completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+    let virtualSockBuilder = AdvertiserVirtualSocketBuilder(
+                                                    with: nonTCPsession) { virtualSocket, error in
       completion(virtualSocket, error)
     }
 
     virtualSockBuilder.createVirtualSocket(with: inputStream, inputStreamName: inputStreamName)
   }
 
-  fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
-
-  }
+  fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
 
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
     virtualSockets.modify {

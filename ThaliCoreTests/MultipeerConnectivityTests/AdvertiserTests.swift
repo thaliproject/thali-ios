@@ -232,8 +232,7 @@ class AdvertiserTests: XCTestCase {
       return
     }
 
-    advertiser.startAdvertising {
-      [weak startAdvertisingErrorHandlerCalled] error in
+    advertiser.startAdvertising { [weak startAdvertisingErrorHandlerCalled] _ in
       startAdvertisingErrorHandlerCalled?.fulfill()
     }
 
@@ -249,8 +248,7 @@ class AdvertiserTests: XCTestCase {
     advertiser.advertiser(mcAdvertiser, didNotStartAdvertisingPeer: error)
 
     // Then
-    waitForExpectations(timeout: startAdvertisingErrorTimeout) {
-      error in
+    waitForExpectations(timeout: startAdvertisingErrorTimeout) { _ in
       startAdvertisingErrorHandlerCalled = nil
     }
   }

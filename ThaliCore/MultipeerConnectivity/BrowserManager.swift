@@ -115,6 +115,13 @@ public final class BrowserManager {
   }
 
   /**
+   Handle successful connection to peer.
+   */
+  public typealias ConnectToPeerCompletionHandler = (_ syncValue: String,
+                                                     _ error: Error?,
+                                                     _ port: UInt16?) -> Void
+
+  /**
    Establish a non-TCP/IP connection to the identified peer and then create a
    TCP/IP bridge on top of that connection which can be accessed by
    opening a TCP/IP connection to the port returned in the callback.
@@ -129,10 +136,7 @@ public final class BrowserManager {
    */
   public func connectToPeer(_ peerIdentifier: String,
                             syncValue: String,
-                            completion: @escaping (_ syncValue: String,
-                                         _ error: Error?,
-                                         _ port: UInt16?) -> Void) {
-
+                            completion: @escaping ConnectToPeerCompletionHandler) {
     guard let currentBrowser = self.currentBrowser else {
       completion(syncValue,
                  ThaliCoreError.startListeningNotActive,
@@ -162,8 +166,7 @@ public final class BrowserManager {
                                         guard let strongSelf = self else { return }
 
                                         let relay = strongSelf.activeRelays.value[peerIdentifier]
-                                        relay?.openRelay {
-                                          port, error in
+                                        relay?.openRelay { port, error in
                                           completion(syncValue, error, port)
                                         }
                                       },

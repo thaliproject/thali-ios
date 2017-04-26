@@ -10,6 +10,8 @@
 @testable import ThaliCore
 import SwiftXCTest
 
+// swiftlint:disable type_body_length
+
 class BrowserManagerTests: XCTestCase {
 
   // MARK: - State
@@ -30,8 +32,7 @@ class BrowserManagerTests: XCTestCase {
     advertiserManager = AdvertiserManager(serviceType: serviceType,
                                           disposeAdvertiserTimeout: disposeTimeout)
 
-    browserManager = BrowserManager(serviceType: serviceType,
-                                    inputStreamReceiveTimeout: 1) { peers in }
+    browserManager = BrowserManager(serviceType: serviceType, inputStreamReceiveTimeout: 1) { _ in }
   }
 
   override func tearDown() {
@@ -129,8 +130,9 @@ class BrowserManagerTests: XCTestCase {
     XCTAssertFalse(browserManager.listening)
 
     // When
-    browserManager.connectToPeer(Peer().uuid, syncValue: "0") {
-      [weak getStartListeningNotActiveError] syncValue, error, port in
+    browserManager.connectToPeer(
+                            Peer().uuid,
+                            syncValue: "0") { [weak getStartListeningNotActiveError] _, error, _ in
       if let error = error as? ThaliCoreError {
         connectionError = error
         getStartListeningNotActiveError?.fulfill()
@@ -152,8 +154,8 @@ class BrowserManagerTests: XCTestCase {
 
     // When
     let notDiscoveredPeer = Peer()
-    browserManager.connectToPeer(notDiscoveredPeer.uuid, syncValue: "0") {
-      [weak getIllegalPeerIDError] syncValue, error, port in
+    browserManager.connectToPeer(notDiscoveredPeer.uuid,
+                                 syncValue: "0") { [weak getIllegalPeerIDError] _, error, _ in
       if let error = error as? ThaliCoreError {
         connectionError = error
         getIllegalPeerIDError?.fulfill()
@@ -198,9 +200,7 @@ class BrowserManagerTests: XCTestCase {
     let browserManager = BrowserManager(
       serviceType: serviceType,
       inputStreamReceiveTimeout: 1,
-      peerAvailabilityChanged: {
-        [weak foundTwoAdvertisers] peerAvailability in
-
+      peerAvailabilityChanged: { [weak foundTwoAdvertisers] peerAvailability in
         if let
           availability = peerAvailability.first,
           availability.peerIdentifier == secondGenerationAdvertiserIdentifier.uuid {
@@ -236,13 +236,13 @@ class BrowserManagerTests: XCTestCase {
                                                          errorHandler: unexpectedErrorHandler)
 
     // When
-    let browserManager = BrowserManager(serviceType: serviceType,
-                                        inputStreamReceiveTimeout: 1,
-                                        peerAvailabilityChanged: {
-                                          [weak foundPeer] peerAvailability in
-                                          advertiserPeerAvailability = peerAvailability.first
-                                          foundPeer?.fulfill()
-                                        })
+    let browserManager = BrowserManager(
+                                    serviceType: serviceType,
+                                    inputStreamReceiveTimeout: 1,
+                                    peerAvailabilityChanged: { [weak foundPeer] peerAvailability in
+                                      advertiserPeerAvailability = peerAvailability.first
+                                      foundPeer?.fulfill()
+                                    })
     browserManager.startListeningForAdvertisements(unexpectedErrorHandler)
 
     // Then
@@ -264,8 +264,7 @@ class BrowserManagerTests: XCTestCase {
     let MPCFConnectionCreated = expectation(description: "MPCF connection is created")
 
     // Given
-    let (advertiserManager, browserManager) = createMPCFPeers {
-      peerAvailability in
+    let (advertiserManager, browserManager) = createMPCFPeers { _ in
       MPCFConnectionCreated.fulfill()
     }
 
@@ -293,9 +292,7 @@ class BrowserManagerTests: XCTestCase {
     let browserManager = BrowserManager(
       serviceType: serviceType,
       inputStreamReceiveTimeout: 1,
-      peerAvailabilityChanged: {
-        [weak peerAvailabilityChangedToTrue] peerAvailability in
-
+      peerAvailabilityChanged: { [weak peerAvailabilityChangedToTrue] peerAvailability in
         if let peerAvailability = peerAvailability.first {
           if peerAvailability.available {
             // When
@@ -323,14 +320,14 @@ class BrowserManagerTests: XCTestCase {
     let peerAvailabilityChangedToFalse =
       expectation(description: "PeerAvailability changed to false")
 
+    // swiftlint:disable closure_parameter_position
+
     // Given
     let browserManager = BrowserManager(
       serviceType: serviceType,
       inputStreamReceiveTimeout: 1,
-      peerAvailabilityChanged: {
-        [weak advertiserManager, weak peerAvailabilityChangedToFalse]
-        peerAvailability in
-
+      peerAvailabilityChanged: { [weak advertiserManager,
+                                  weak peerAvailabilityChangedToFalse] peerAvailability in
         if let peerAvailability = peerAvailability.first {
           if peerAvailability.available {
             // When
@@ -340,6 +337,8 @@ class BrowserManagerTests: XCTestCase {
           }
         }
       })
+
+    // swiftlint:enable closure_parameter_position
 
     browserManager.startListeningForAdvertisements(unexpectedErrorHandler)
     advertiserManager.startUpdateAdvertisingAndListening(onPort: 42,
@@ -365,9 +364,7 @@ class BrowserManagerTests: XCTestCase {
     // Start listening for advertisements on browser
     let browserManager = BrowserManager(serviceType: serviceType,
                                         inputStreamReceiveTimeout: 5,
-                                        peerAvailabilityChanged: {
-                                          peerAvailability in
-
+                                        peerAvailabilityChanged: { peerAvailability in
                                           guard let peer = peerAvailability.first else {
                                             XCTFail("Browser didn't find Advertiser peer")
                                             return
@@ -383,8 +380,7 @@ class BrowserManagerTests: XCTestCase {
     advertiserManager.startUpdateAdvertisingAndListening(onPort: 0,
                                                          errorHandler: unexpectedErrorHandler)
 
-    waitForExpectations(timeout: browserConnectTimeout) {
-      error in
+    waitForExpectations(timeout: browserConnectTimeout) { _ in
       MPCFBrowserFoundAdvertiser = nil
     }
 
@@ -392,9 +388,7 @@ class BrowserManagerTests: XCTestCase {
 
     // When
     let peerToConnect = browserManager.availablePeers.value.first!
-    browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") {
-      syncValue, error, port in
-
+    browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") { _, error, _ in
       guard error == nil else {
         XCTFail("Error during connection: \(error.debugDescription)")
         return
@@ -404,8 +398,7 @@ class BrowserManagerTests: XCTestCase {
     }
 
     // Then
-    waitForExpectations(timeout: browserConnectTimeout) {
-      error in
+    waitForExpectations(timeout: browserConnectTimeout) { error in
       guard error == nil else {
         XCTFail("Browser couldn't connect to peer")
         return

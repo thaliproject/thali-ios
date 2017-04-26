@@ -6,6 +6,7 @@ opt_in_rules: # some rules are only opt-in
   - force_unwrapping: warning
   - function_parameter_count
   - missing_docs
+  - conditional_returns_on_newline
 
 included: # paths to include during linting. `--path` is ignored if present.
   - ThaliCore
@@ -81,31 +82,31 @@ vertical_whitespace: warning
 custom_rules:
   comments_space:
     name: "Space After Comment"
-    regex: "(^ *//\w+)"
+    regex: '(^ *//\w+)'
     message: "There should be a space after //"
     severity: error
   empty_first_line:
     name: "Empty First Line"
-    regex: "(^[ a-zA-Z ]*(?:protocol|extension|class|struct|enum) (?!(?:var|let))[ a-zA-Z:]*\{\n *\S+)"
+    regex: '(^[ a-zA-Z ]*(?:protocol|extension|class|struct|enum) (?!(?:var|let))[ a-zA-Z:]*\{\n *\S+)'
     message: "There should be an empty line after a declaration"
     severity: error
   empty_line_after_guard:
     name: "Empty Line After Guard"
-    regex: "(^ *guard[ a-zA-Z0-9=?.\(\),><!]*\{[ a-zA-Z0-9=?.\(\),><!]*\}\n *(?!(?:return|guard))\S+)"
+    regex: '(^ *guard[ a-zA-Z0-9=?.\(\),><!]*\{[ a-zA-Z0-9=?.\(\),><!]*\}\n *(?!(?:return|guard))\S+)'
     message: "There should be an empty line after a guard"
     severity: error
   multiple_empty_lines:
     name: "Multiple Empty Lines"
-    regex: "((?:\s*\n){4,})"
+    regex: '((?:\s*\n){4,})'
     message: "There are too many line breaks"
     severity: warning
   unnecessary_type:
     name: "Unnecessary Type"
-    regex: "[ a-zA-Z0-9]*(?:let|var) [ a-zA-Z0-9]*: ([a-zA-Z0-9]*)[\? ]*= \1"
+    regex: '[ a-zA-Z0-9]*(?:let|var) [ a-zA-Z0-9]*: ([a-zA-Z0-9]*)[\? ]*= \1'
     message: "Type Definition Not Needed"
     severity: error
   closure_void_syntax:
     name: "Closure Void Syntax"
-    regex: "(->\s*\n*\(\s*\))"
+    regex: '(->\s*\n*\(\s*\))'
     message: "We should use following syntax: \"(A, B, C) -> Void\" in case of empty result and \"() -> Void\" in case of empty parameters."
     severity: warning

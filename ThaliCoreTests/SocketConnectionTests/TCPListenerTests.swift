@@ -10,6 +10,8 @@
 @testable import ThaliCore
 import SwiftXCTest
 
+// swiftlint:disable type_body_length
+
 class TCPListenerTests: XCTestCase {
 
   // MARK: - State
@@ -49,19 +51,16 @@ class TCPListenerTests: XCTestCase {
                                   socketDisconnected: { _ in },
                                   stoppedListening: unexpectedStopListeningHandler)
     tcpListener.startListeningForConnections(on: anyAvailablePort,
-                                             connectionAccepted: {
-                                               socket in
+                                             connectionAccepted: { _ in
                                                acceptNewConnectionHandlerInvoked?.fulfill()
-                                             }) {
-      port, error in
+                                             }) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
@@ -81,8 +80,7 @@ class TCPListenerTests: XCTestCase {
     clientMock.connectToLocalHost(on: portToConnect, errorHandler: unexpectedErrorHandler)
 
     // Then
-    waitForExpectations(timeout: acceptConnectionTimeout) {
-      error in
+    waitForExpectations(timeout: acceptConnectionTimeout) { _ in
       acceptNewConnectionHandlerInvoked = nil
     }
   }
@@ -97,9 +95,7 @@ class TCPListenerTests: XCTestCase {
     TCPListenerIsListening = expectation(description: "TCP Listener is listenining")
 
     var listenerPort: UInt16? = nil
-    let tcpListener = TCPListener(with: {
-                                    socket, data in
-
+    let tcpListener = TCPListener(with: { _, data in
                                     let receivedMessage = String(data: data,
                                                                  encoding: String.Encoding.utf8)
                                     XCTAssertEqual(self.randomMessage,
@@ -111,20 +107,17 @@ class TCPListenerTests: XCTestCase {
                                   stoppedListening: unexpectedStopListeningHandler)
 
     tcpListener.startListeningForConnections(on: anyAvailablePort,
-                                             connectionAccepted: {
-                                               socket in
+                                             connectionAccepted: { socket in
                                                socket.readData(withTimeout: -1, tag: 0)
                                                acceptNewConnectionHandlerInvoked?.fulfill()
-                                             }) {
-      port, error in
+                                             }) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: acceptConnectionTimeout) {
-      error in
+    waitForExpectations(timeout: acceptConnectionTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
@@ -143,8 +136,7 @@ class TCPListenerTests: XCTestCase {
 
     clientMock.connectToLocalHost(on: portToConnect, errorHandler: unexpectedErrorHandler)
 
-    waitForExpectations(timeout: acceptConnectionTimeout) {
-      error in
+    waitForExpectations(timeout: acceptConnectionTimeout) { _ in
       acceptNewConnectionHandlerInvoked = nil
     }
 
@@ -155,8 +147,7 @@ class TCPListenerTests: XCTestCase {
     clientMock.send(randomMessage)
 
     // Then
-    waitForExpectations(timeout: readDataTimeout) {
-      error in
+    waitForExpectations(timeout: readDataTimeout) { _ in
       readDataHandlerInvoked = nil
     }
   }
@@ -172,25 +163,21 @@ class TCPListenerTests: XCTestCase {
 
     var listenerPort: UInt16? = nil
     let tcpListener = TCPListener(with: unexpectedReadDataHandler,
-                                  socketDisconnected: {
-                                    socket in
+                                  socketDisconnected: { _ in
                                     disconnectHandlerInvoked?.fulfill()
                                   },
                                   stoppedListening: unexpectedStopListeningHandler)
     tcpListener.startListeningForConnections(on: anyAvailablePort,
-                                             connectionAccepted: {
-                                               _ in
+                                             connectionAccepted: { _ in
                                                acceptNewConnectionHandlerInvoked?.fulfill()
-                                             }) {
-      port, error in
+                                             }) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
@@ -209,8 +196,7 @@ class TCPListenerTests: XCTestCase {
 
     clientMock.connectToLocalHost(on: portToConnect, errorHandler: unexpectedErrorHandler)
 
-    waitForExpectations(timeout: acceptConnectionTimeout) {
-      error in
+    waitForExpectations(timeout: acceptConnectionTimeout) { _ in
       acceptNewConnectionHandlerInvoked = nil
     }
 
@@ -221,8 +207,7 @@ class TCPListenerTests: XCTestCase {
     clientMock.disconnect()
 
     // Then
-    waitForExpectations(timeout: disconnectTimeout) {
-      error in
+    waitForExpectations(timeout: disconnectTimeout) { _ in
       disconnectHandlerInvoked = nil
     }
   }
@@ -241,17 +226,15 @@ class TCPListenerTests: XCTestCase {
                                        socketDisconnected: unexpectedSocketDisconnectHandler,
                                        stoppedListening: unexpectedStopListeningHandler)
     firstTcpListener.startListeningForConnections(
-                                          on: anyAvailablePort,
-                                          connectionAccepted: unexpectedAcceptConnectionHandler) {
-      port, error in
+                            on: anyAvailablePort,
+                            connectionAccepted: unexpectedAcceptConnectionHandler) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
@@ -269,17 +252,15 @@ class TCPListenerTests: XCTestCase {
 
     // When
     secondTcpListener.startListeningForConnections(
-                                          on: busyPort,
-                                          connectionAccepted: unexpectedAcceptConnectionHandler) {
-      port, error in
+                            on: busyPort,
+                            connectionAccepted: unexpectedAcceptConnectionHandler) { port, error in
       XCTAssertNotNil(error)
       XCTAssertEqual(0, port)
       TCPListenerCantStartListening?.fulfill()
     }
 
     // Then
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerCantStartListening = nil
     }
   }
@@ -299,24 +280,21 @@ class TCPListenerTests: XCTestCase {
                                          TCPListenerIsStopped?.fulfill()
                                        })
     firstTcpListener.startListeningForConnections(
-                                          on: anyAvailablePort,
-                                          connectionAccepted: unexpectedAcceptConnectionHandler) {
-      port, error in
+                            on: anyAvailablePort,
+                            connectionAccepted: unexpectedAcceptConnectionHandler) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
     TCPListenerIsStopped = expectation(description: "TCP Listener is stopped")
     firstTcpListener.stopListeningForConnectionsAndDisconnectClients()
-    waitForExpectations(timeout: stopListeningTimeout) {
-      error in
+    waitForExpectations(timeout: stopListeningTimeout) { _ in
       TCPListenerIsStopped = nil
     }
 
@@ -337,10 +315,10 @@ class TCPListenerTests: XCTestCase {
 
     var listenClosedPort = {}
     listenClosedPort = {
-      secondTcpListener.startListeningForConnections(on: potentiallyReleasedPort,
-                                                     connectionAccepted: unexpectedAcceptConnectionHandler) {
-          port, error in
-          guard let _ = port, error == nil else {
+      secondTcpListener.startListeningForConnections(
+                            on: potentiallyReleasedPort,
+                            connectionAccepted: unexpectedAcceptConnectionHandler) { port, error in
+          guard port != nil, error == nil else {
             if listenCallsCount < maxListenCallsCount {
               listenCallsCount += 1
               listenClosedPort()
@@ -354,8 +332,7 @@ class TCPListenerTests: XCTestCase {
           TCPListenerIsListening?.fulfill()
       }
 
-      self.waitForExpectations(timeout: self.startListeningTimeout) {
-        error in
+      self.waitForExpectations(timeout: self.startListeningTimeout) { _ in
         TCPListenerIsListening = nil
       }
     }
@@ -374,24 +351,19 @@ class TCPListenerTests: XCTestCase {
 
     var listenerPort: UInt16? = nil
     let tcpListener = TCPListener(with: unexpectedReadDataHandler,
-                                  socketDisconnected: {
-                                    socket in
-                                  },
+                                  socketDisconnected: { _ in },
                                   stoppedListening: {})
     tcpListener.startListeningForConnections(on: anyAvailablePort,
-                                             connectionAccepted: {
-                                                _ in
+                                             connectionAccepted: { _ in
                                                 acceptNewConnectionHandlerInvoked?.fulfill()
-                                              }) {
-      port, error in
+                                              }) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
@@ -412,8 +384,7 @@ class TCPListenerTests: XCTestCase {
 
     clientMock.connectToLocalHost(on: portToConnect, errorHandler: unexpectedErrorHandler)
 
-    waitForExpectations(timeout: acceptConnectionTimeout) {
-      error in
+    waitForExpectations(timeout: acceptConnectionTimeout) { _ in
       acceptNewConnectionHandlerInvoked = nil
     }
 
@@ -423,8 +394,7 @@ class TCPListenerTests: XCTestCase {
     tcpListener.stopListeningForConnectionsAndDisconnectClients()
 
     // Then
-    waitForExpectations(timeout: disconnectTimeout) {
-      error in
+    waitForExpectations(timeout: disconnectTimeout) { _ in
       clientDisconnectHandlerInvoked = nil
     }
   }
@@ -440,24 +410,19 @@ class TCPListenerTests: XCTestCase {
 
     var listenerPort: UInt16? = nil
     let tcpListener = TCPListener(with: unexpectedReadDataHandler,
-                                  socketDisconnected: {
-                                    socket in
-                                  },
+                                  socketDisconnected: { _ in },
                                   stoppedListening: {})
     tcpListener.startListeningForConnections(on: anyAvailablePort,
-                                             connectionAccepted: {
-                                               _ in
+                                             connectionAccepted: { _ in
                                                acceptNewConnectionHandlerInvoked?.fulfill()
-                                             }) {
-      port, error in
+                                             }) { port, error in
       XCTAssertNil(error)
       XCTAssertNotNil(port)
       listenerPort = port
       TCPListenerIsListening?.fulfill()
     }
 
-    waitForExpectations(timeout: startListeningTimeout) {
-      error in
+    waitForExpectations(timeout: startListeningTimeout) { _ in
       TCPListenerIsListening = nil
     }
 
@@ -478,8 +443,7 @@ class TCPListenerTests: XCTestCase {
 
     clientMock.connectToLocalHost(on: portToConnect, errorHandler: unexpectedErrorHandler)
 
-    waitForExpectations(timeout: acceptConnectionTimeout) {
-      error in
+    waitForExpectations(timeout: acceptConnectionTimeout) { _ in
       acceptNewConnectionHandlerInvoked = nil
     }
 
@@ -490,8 +454,7 @@ class TCPListenerTests: XCTestCase {
     tcpListener.stopListeningForConnectionsAndDisconnectClients()
 
     // Then
-    waitForExpectations(timeout: disconnectTimeout) {
-      error in
+    waitForExpectations(timeout: disconnectTimeout) { _ in
       clientDisconnectHandlerInvoked = nil
     }
   }
