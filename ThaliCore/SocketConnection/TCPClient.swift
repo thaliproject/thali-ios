@@ -30,6 +30,7 @@ class TCPClient: NSObject {
                           -> Void) {
     do {
       let socket = GCDAsyncSocket()
+      socket.autoDisconnectOnClosedReadStream = false
       socket.delegate = self
       socket.delegateQueue = socketQueue
       try socket.connect(toHost: "127.0.0.1", onPort: port)
@@ -55,9 +56,7 @@ extension TCPClient: GCDAsyncSocketDelegate {
     sock.readData(withTimeout: -1, tag: 0)
   }
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-    sock.delegate = nil
-
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
     activeConnections.modify {
       if let indexOfDisconnectedSocket = $0.index(of: sock) {
         $0.remove(at: indexOfDisconnectedSocket)
@@ -68,10 +67,11 @@ extension TCPClient: GCDAsyncSocketDelegate {
   }
 
   func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-
+    sock.readData(withTimeout: -1, tag: 0)
   }
 
   func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+    sock.readData(withTimeout: -1, tag: 0)
     didReadDataHandler(sock, data)
   }
 }

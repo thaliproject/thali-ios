@@ -123,6 +123,14 @@ class Session: NSObject {
 // MARK: - MCSessionDelegate - Handling events for MCSession
 extension Session: MCSessionDelegate {
 
+  func session(_ session: MCSession,
+               didReceiveCertificate certificate: [Any]?,
+               fromPeer peerID: MCPeerID,
+               certificateHandler: @escaping (Bool) -> Void) {
+    print("[iOS NATIVE]: [Session]: \(#function)")
+    certificateHandler(true)
+  }
+
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     assert(identifier.displayName == peerID.displayName)
 

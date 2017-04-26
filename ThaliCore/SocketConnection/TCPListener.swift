@@ -40,6 +40,7 @@ class TCPListener: NSObject {
     didSocketDisconnectHandler = socketDisconnected
     didStoppedListeningHandler = stoppedListening
     super.init()
+    socket.autoDisconnectOnClosedReadStream = false
     socket.delegate = self
     socket.delegateQueue = socketQueue
   }
@@ -72,16 +73,8 @@ class TCPListener: NSObject {
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPListener: GCDAsyncSocketDelegate {
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-    if sock == socket {
-      socket.delegate = nil
-      socket.delegateQueue = nil
-      activeConnections.modify {
-        $0.forEach { $0.disconnect() }
-        $0.removeAll()
-      }
-      didStoppedListeningHandler()
-    } else {
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
+    if sock != socket {
       activeConnections.modify {
         if let indexOfDisconnectedSocket = $0.index(of: sock) {
           $0.remove(at: indexOfDisconnectedSocket)
@@ -92,8 +85,13 @@ extension TCPListener: GCDAsyncSocketDelegate {
   }
 
   func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+    newSocket.autoDisconnectOnClosedReadStream = false
     activeConnections.modify { $0.append(newSocket) }
     didAcceptConnectionHandler?(newSocket)
+  }
+
+  func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+    sock.readData(withTimeout: -1, tag: 0)
   }
 
   func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {

@@ -24,6 +24,8 @@ class VirtualSocket: NSObject {
   fileprivate var inputStream: InputStream
   fileprivate var outputStream: OutputStream
 
+  fileprivate var runLoop: RunLoop?
+
   fileprivate var inputStreamOpened = false
   fileprivate var outputStreamOpened = false
 
@@ -43,13 +45,16 @@ class VirtualSocket: NSObject {
       opened = true
       let queue = DispatchQueue.global(qos: .default)
       queue.async(execute: {
+
+        self.runLoop = RunLoop.current
+
         self.inputStream.delegate = self
-        self.inputStream.schedule(in: RunLoop.current,
+        self.inputStream.schedule(in: self.runLoop!,
           forMode: RunLoopMode.defaultRunLoopMode)
         self.inputStream.open()
 
         self.outputStream.delegate = self
-        self.outputStream.schedule(in: RunLoop.current,
+        self.outputStream.schedule(in: self.runLoop!,
           forMode: RunLoopMode.defaultRunLoopMode)
         self.outputStream.open()
 
@@ -63,9 +68,11 @@ class VirtualSocket: NSObject {
       opened = false
 
       inputStream.close()
+      inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
       inputStreamOpened = false
 
       outputStream.close()
+      outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
       outputStreamOpened = false
 
       didCloseVirtualSocketHandler?(self)
@@ -103,11 +110,9 @@ class VirtualSocket: NSObject {
     var buffer = [UInt8](repeating: 0, count: maxReadBufferLength)
 
     let bytesReaded = self.inputStream.read(&buffer, maxLength: maxReadBufferLength)
-    if bytesReaded >= 0 {
+    if bytesReaded > 0 {
       let data = Data(bytes: buffer, count: bytesReaded)
       didReadDataFromStreamHandler?(self, data)
-    } else {
-      closeStreams()
     }
   }
 }
@@ -134,11 +139,11 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasBytesAvailable:
       readDataFromInputStream()
     case Stream.Event.hasSpaceAvailable:
-      closeStreams()
+      break
     case Stream.Event.errorOccurred:
       closeStreams()
     case Stream.Event.endEncountered:
-      closeStreams()
+      break
     default:
       break
     }
@@ -150,13 +155,13 @@ extension VirtualSocket: StreamDelegate {
       outputStreamOpened = true
       didOpenStreamHandler()
     case Stream.Event.hasBytesAvailable:
-      readDataFromInputStream()
+      break
     case Stream.Event.hasSpaceAvailable:
       writePendingData()
     case Stream.Event.errorOccurred:
       closeStreams()
     case Stream.Event.endEncountered:
-      closeStreams()
+      break
     default:
       break
     }
