@@ -13,13 +13,11 @@ import SwiftXCTest
 
 func createMPCFPeers(with browsingCompletion: @escaping (PeerAvailability) -> Void)
                      -> (AdvertiserManager, BrowserManager) {
-
     let serviceType = String.randomValidServiceType(length: 7)
 
     let browserManager = BrowserManager(serviceType: serviceType,
                                         inputStreamReceiveTimeout: 5,
-                                        peerAvailabilityChanged: {
-                                          peerAvailability in
+                                        peerAvailabilityChanged: { peerAvailability in
                                           browsingCompletion(peerAvailability.first!)
                                         })
     browserManager.startListeningForAdvertisements(unexpectedErrorHandler)

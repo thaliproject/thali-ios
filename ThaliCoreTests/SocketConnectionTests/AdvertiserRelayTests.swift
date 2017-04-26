@@ -58,8 +58,7 @@ class AdvertiserRelayTests: XCTestCase {
     // Given
     // Start listening on fake node server
     let advertiserNodeMock = TCPServerMock(didAcceptConnection: { },
-                                           didReadData: {
-                                             [weak self] socket, data in
+                                           didReadData: { [weak self] _, data in
                                              guard let strongSelf = self else { return }
 
                                              let receivedMessage = String(
@@ -90,9 +89,7 @@ class AdvertiserRelayTests: XCTestCase {
     // Start listening for advertisements on Browser's side
     let browserManager = BrowserManager(serviceType: randomlyGeneratedServiceType,
                                         inputStreamReceiveTimeout: streamReceivedTimeout,
-                                        peerAvailabilityChanged: {
-                                          peerAvailability in
-
+                                        peerAvailabilityChanged: { peerAvailability in
                                           guard let peer = peerAvailability.first else {
                                             XCTFail("Browser didn't find Advertiser peer")
                                             return
@@ -102,8 +99,7 @@ class AdvertiserRelayTests: XCTestCase {
                                         })
     browserManager.startListeningForAdvertisements(unexpectedErrorHandler)
 
-    waitForExpectations(timeout: browserFindPeerTimeout) {
-      error in
+    waitForExpectations(timeout: browserFindPeerTimeout) { _ in
       MPCFBrowserFoundAdvertiser = nil
     }
 
@@ -118,9 +114,7 @@ class AdvertiserRelayTests: XCTestCase {
     browserManagerConnected = expectation(description: "BrowserManager is connected")
 
     var browserNativeTCPListenerPort: UInt16 = 0
-    browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") {
-      syncValue, error, port in
-
+    browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") { _, _, port in
       guard let port = port else {
         XCTFail("Port must not be nil")
         return
@@ -130,8 +124,7 @@ class AdvertiserRelayTests: XCTestCase {
       browserManagerConnected?.fulfill()
     }
 
-    waitForExpectations(timeout: browserConnectTimeout) {
-      error in
+    waitForExpectations(timeout: browserConnectTimeout) { error in
       guard error == nil else {
         XCTFail("Browser could not connect to peer")
         return
@@ -174,8 +167,7 @@ class AdvertiserRelayTests: XCTestCase {
     browserNodeClientMock.send(self.randomMessage)
 
     // Then
-    waitForExpectations(timeout: receiveMessageTimeout) {
-      error in
+    waitForExpectations(timeout: receiveMessageTimeout) { _ in
       advertisersNodeServerReceivedMessage = nil
     }
   }

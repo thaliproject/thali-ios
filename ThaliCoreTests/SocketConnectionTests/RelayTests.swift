@@ -73,8 +73,7 @@ class RelayTests: XCTestCase {
     // Start listening on fake node server
     let advertiserNodeMock =
       TCPServerMock(didAcceptConnection: { },
-                    didReadData: {
-                      [weak self] socket, data in
+                    didReadData: { [weak self] _, data in
                       guard let strongSelf = self else { return }
 
                       let receivedMessage = String(data: data, encoding: String.Encoding.utf8)
@@ -104,9 +103,7 @@ class RelayTests: XCTestCase {
     // Start listening for advertisements on browser
     let browserManager = BrowserManager(serviceType: randomGeneratedServiceType,
                                         inputStreamReceiveTimeout: streamReceivedTimeout,
-                                        peerAvailabilityChanged: {
-                                          peerAvailability in
-
+                                        peerAvailabilityChanged: { peerAvailability in
                                           guard let peer = peerAvailability.first else {
                                             XCTFail("Browser didn't find Advertiser peer")
                                             return
@@ -122,8 +119,7 @@ class RelayTests: XCTestCase {
     advertiserManager.startUpdateAdvertisingAndListening(onPort: advertiserNodeListenerPort,
                                                          errorHandler: unexpectedErrorHandler)
 
-    waitForExpectations(timeout: browserFindPeerTimeout) {
-      error in
+    waitForExpectations(timeout: browserFindPeerTimeout) { _ in
       MPCFBrowserFoundAdvertiser = nil
     }
 
@@ -138,9 +134,7 @@ class RelayTests: XCTestCase {
     browserManagerConnected = expectation(description: "BrowserManager is connected")
 
     var browserNativeTCPListenerPort: UInt16 = 0
-    browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") {
-      syncValue, error, port in
-
+    browserManager.connectToPeer(peerToConnect.uuid, syncValue: "0") { _, _, port in
       guard let port = port else {
         XCTFail("Port must not be nil")
         return
@@ -150,8 +144,7 @@ class RelayTests: XCTestCase {
       browserManagerConnected?.fulfill()
     }
 
-    waitForExpectations(timeout: browserConnectTimeout) {
-      error in
+    waitForExpectations(timeout: browserConnectTimeout) { _ in
       browserManager.stopListeningForAdvertisements()
       browserManagerConnected = nil
     }
@@ -193,8 +186,7 @@ class RelayTests: XCTestCase {
     advertisersNodeServerReceivedMessage =
       expectation(description: "Advertiser's fake node server received a message")
 
-    waitForExpectations(timeout: moveDataTimeout) {
-      error in
+    waitForExpectations(timeout: moveDataTimeout) { _ in
       advertisersNodeServerReceivedMessage = nil
     }
 

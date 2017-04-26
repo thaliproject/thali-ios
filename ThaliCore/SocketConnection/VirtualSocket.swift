@@ -41,7 +41,7 @@ class VirtualSocket: NSObject {
   func openStreams() {
     if !opened {
       opened = true
-      let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
+      let queue = DispatchQueue.global(qos: .default)
       queue.async(execute: {
         self.inputStream.delegate = self
         self.inputStream.schedule(in: RunLoop.current,
@@ -73,16 +73,15 @@ class VirtualSocket: NSObject {
   }
 
   func writeDataToOutputStream(_ data: Data) {
-
     if !outputStream.hasSpaceAvailable {
       pendingDataToWrite?.append(data)
       return
     }
 
     let dataLength = data.count
+    let startDataPointer = (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count)
     let buffer: [UInt8] = Array(
-      UnsafeBufferPointer(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count),
-        count: dataLength)
+      UnsafeBufferPointer(start: startDataPointer, count: dataLength)
     )
 
     let bytesWritten = outputStream.write(buffer, maxLength: dataLength)
@@ -118,7 +117,6 @@ extension VirtualSocket: StreamDelegate {
 
   // MARK: - Delegate methods
   internal func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-
     if aStream == self.inputStream {
       handleEventOnInputStream(eventCode)
     } else if aStream == self.outputStream {

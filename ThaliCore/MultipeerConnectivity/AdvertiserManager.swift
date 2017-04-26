@@ -102,8 +102,7 @@ public final class AdvertiserManager {
 
     let advertiser = Advertiser(peer: newPeer,
                                 serviceType: serviceType,
-                                receivedInvitation: {
-                                  [weak self] session in
+                                receivedInvitation: { [weak self] session in
                                   guard let strongSelf = self else { return }
 
                                   strongSelf.activeRelays.modify {
@@ -177,8 +176,7 @@ public final class AdvertiserManager {
        `Advertiser` object that should be disposed of after `disposeTimeout`.
    */
   fileprivate func disposeOfAdvertiserAfterTimeoutToFinishInvites(
-    _ advertiserToBeDisposedOf: Advertiser) {
-
+                      _ advertiserToBeDisposedOf: Advertiser) {
     let disposeTimeout: DispatchTime = .now() + self.disposeTimeout
 
     DispatchQueue.main.asyncAfter(deadline: disposeTimeout) {

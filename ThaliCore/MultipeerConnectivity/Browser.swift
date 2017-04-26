@@ -52,7 +52,7 @@ final class Browser: NSObject {
   /**
    Handle failing browsing.
    */
-  fileprivate var startBrowsingErrorHandler: ((Error) -> Void)? = nil
+  fileprivate var startBrowsingErrorHandler: ((Error) -> Void)?
 
   // MARK: - Initialization
 
@@ -146,7 +146,6 @@ final class Browser: NSObject {
   func inviteToConnect(_ peer: Peer,
                        sessionConnected: @escaping () -> Void,
                        sessionNotConnected: @escaping () -> Void) throws -> Session {
-
     let mcSession = MCSession(peer: browser.myPeerID,
                               securityIdentity: nil,
                               encryptionPreference: .none)
@@ -186,7 +185,7 @@ extension Browser: MCNearbyServiceBrowserDelegate {
   func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
     do {
       let peer = try Peer(mcPeerID: peerID)
-      availablePeers.modify { $0.removeValue(forKey: peer) }
+      _ = availablePeers.modify { $0.removeValue(forKey: peer) }
       didLosePeerHandler(peer)
     } catch let error {
       print("cannot parse identifier \"\(peerID.displayName)\" because of error: \(error)")

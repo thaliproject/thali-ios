@@ -41,9 +41,9 @@ final class BrowserRelay {
   // MARK: - Internal methods
   func openRelay(with completion: @escaping (_ port: UInt16?, _ error: Error?) -> Void) {
     let anyAvailablePort: UInt16 = 0
-    tcpListener.startListeningForConnections(on: anyAvailablePort,
-                                             connectionAccepted: didAcceptConnectionHandler) {
-      port, error in
+    tcpListener.startListeningForConnections(
+                                   on: anyAvailablePort,
+                                   connectionAccepted: didAcceptConnectionHandler) { port, error in
       completion(port, error)
     }
   }
@@ -58,7 +58,7 @@ final class BrowserRelay {
 
   // MARK: - Private handlers
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
-                                                   inputStreamName: String) {
+                                                       inputStreamName: String) {
     if let builder = virtualSocketBuilders.value[inputStreamName] {
       builder.completeVirtualSocket(with: inputStream)
     } else {
@@ -77,8 +77,7 @@ final class BrowserRelay {
   }
 
   fileprivate func didAcceptConnectionHandler(_ socket: GCDAsyncSocket) {
-    createVirtualSocket {
-      [weak self] virtualSocket, error in
+    createVirtualSocket { [weak self] virtualSocket, error in
       guard let strongSelf = self else { return }
 
       guard error == nil else {
@@ -142,8 +141,8 @@ final class BrowserRelay {
   }
 
   // MARK: - Private methods
-  fileprivate func createVirtualSocket(with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-
+  fileprivate func createVirtualSocket(
+                      with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     guard virtualSockets.value.count <= maxVirtualSocketsCount else {
       completion(nil, ThaliCoreError.connectionFailed)
       return
@@ -159,10 +158,8 @@ final class BrowserRelay {
       $0[virtualSocketBuilder.streamName] = virtualSocketBuilder
     }
 
-    virtualSocketBuilder.startBuilding {
-      virtualSocket, error in
-
-      self.virtualSocketBuilders.modify {
+    virtualSocketBuilder.startBuilding { virtualSocket, error in
+      _ = self.virtualSocketBuilders.modify {
         $0.removeValue(forKey: newStreamName)
       }
 
