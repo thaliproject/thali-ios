@@ -483,7 +483,6 @@
 				CCA571B81D4787A900FBEC41 /* Frameworks */,
 				CCA571B91D4787A900FBEC41 /* Headers */,
 				CCA571BA1D4787A900FBEC41 /* Resources */,
-				1C733ED61E7987190088D19A /* Carthage copy frameworks */,
 			);
 			buildRules = (
 			);
@@ -616,21 +615,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS";
-		};
-		1C733ED61E7987190088D19A /* Carthage copy frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/CocoaAsyncSocket.framework",
-			);
-			name = "Carthage copy frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 		1C733ED71E79873E0088D19A /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
