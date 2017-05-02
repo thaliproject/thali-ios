@@ -483,6 +483,7 @@
 				CCA571B81D4787A900FBEC41 /* Frameworks */,
 				CCA571B91D4787A900FBEC41 /* Headers */,
 				CCA571BA1D4787A900FBEC41 /* Resources */,
+				00B672AB1EB8B4BD00191A79 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -602,6 +603,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		00B672AB1EB8B4BD00191A79 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -R \"${BUILT_PRODUCTS_DIR}/\" \"${SRCROOT}/Products/\"";
+		};
 		1C4459921E82887100369A25 /* Carthage checkout and build dependencies */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -614,7 +628,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS --no-build";
 		};
 		1C733ED71E79873E0088D19A /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
