@@ -483,7 +483,7 @@
 				CCA571B81D4787A900FBEC41 /* Frameworks */,
 				CCA571B91D4787A900FBEC41 /* Headers */,
 				CCA571BA1D4787A900FBEC41 /* Resources */,
-				00B672AB1EB8B4BD00191A79 /* ShellScript */,
+				00B672AB1EB8B4BD00191A79 /* Copy Products */,
 			);
 			buildRules = (
 			);
@@ -525,6 +525,7 @@
 				CCA572901D4A327E00FBEC41 /* Resources */,
 				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
 				1C733ED71E79873E0088D19A /* Carthage copy frameworks */,
+				00B672AC1EB8E7A500191A79 /* Copy Products */,
 			);
 			buildRules = (
 			);
@@ -603,13 +604,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00B672AB1EB8B4BD00191A79 /* ShellScript */ = {
+		00B672AB1EB8B4BD00191A79 /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Copy Products";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -R \"${BUILT_PRODUCTS_DIR}/\" \"${SRCROOT}/Products/\"";
+		};
+		00B672AC1EB8E7A500191A79 /* Copy Products */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Products";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
