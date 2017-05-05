@@ -50,8 +50,6 @@
 		1CAA29D91E7BCF650011E58B /* NetworkReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C33671E1D703EE900143BCF /* NetworkReachability.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CAA29DA1E7BCF650011E58B /* NetworkReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33671F1D703EE900143BCF /* NetworkReachability.m */; };
 		1CAA29DB1E7BD3330011E58B /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA572921D4A327E00FBEC41 /* ThaliCore.framework */; };
-		1CADF1321E81862800C5226A /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CADF1311E81862800C5226A /* CocoaAsyncSocket.framework */; };
-		1CADF1341E81862A00C5226A /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CADF1331E81862A00C5226A /* SwiftXCTest.framework */; };
 		1CADF1351E8186B000C5226A /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CADF1311E81862800C5226A /* CocoaAsyncSocket.framework */; };
 		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CD4C0AF1DA68E7B005FFC3B /* AdvertiserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */; };
@@ -225,8 +223,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CADF1321E81862800C5226A /* CocoaAsyncSocket.framework in Frameworks */,
-				1CADF1341E81862A00C5226A /* SwiftXCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,15 +725,13 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/CocoaAsyncSocket.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/SwiftXCTest.framework",
 			);
 			name = "Carthage copy frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "#/usr/local/bin/carthage copy-frameworks";
 		};
 		1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */ = {
 			isa = PBXShellScriptBuildPhase;
