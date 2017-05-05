@@ -567,14 +567,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA572971D4A327E00FBEC41 /* Build configuration list for PBXNativeTarget "ThaliCoreCITests" */;
 			buildPhases = (
+				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
 				1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */,
 				CC3FECCB1DFACF6B00474101 /* Generate Test Cases */,
 				CCA5728D1D4A327E00FBEC41 /* Sources */,
 				CCA5728E1D4A327E00FBEC41 /* Frameworks */,
 				CCA5728F1D4A327E00FBEC41 /* Headers */,
 				CCA572901D4A327E00FBEC41 /* Resources */,
-				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
-				1C733ED71E79873E0088D19A /* Carthage copy frameworks */,
 			);
 			buildRules = (
 			);
@@ -722,20 +721,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-		1C733ED71E79873E0088D19A /* Carthage copy frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Carthage copy frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#/usr/local/bin/carthage copy-frameworks";
 		};
 		1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */ = {
 			isa = PBXShellScriptBuildPhase;
