@@ -745,7 +745,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS\n";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS --no-build --no-use-binaries\n";
 		};
 		CC3FECCB1DFACF6B00474101 /* Generate Test Cases */ = {
 			isa = PBXShellScriptBuildPhase;
