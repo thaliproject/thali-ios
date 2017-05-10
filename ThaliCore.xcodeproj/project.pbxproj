@@ -50,9 +50,6 @@
 		1CAA29D91E7BCF650011E58B /* NetworkReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C33671E1D703EE900143BCF /* NetworkReachability.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CAA29DA1E7BCF650011E58B /* NetworkReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C33671F1D703EE900143BCF /* NetworkReachability.m */; };
 		1CAA29DB1E7BD3330011E58B /* ThaliCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA572921D4A327E00FBEC41 /* ThaliCore.framework */; };
-		1CADF1321E81862800C5226A /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CADF1311E81862800C5226A /* CocoaAsyncSocket.framework */; };
-		1CADF1341E81862A00C5226A /* SwiftXCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CADF1331E81862A00C5226A /* SwiftXCTest.framework */; };
-		1CADF1351E8186B000C5226A /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CADF1311E81862800C5226A /* CocoaAsyncSocket.framework */; };
 		1CB9B4211D7063C700C59CCF /* BluetoothManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CB9B4201D7063C700C59CCF /* BluetoothManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CD4C0AF1DA68E7B005FFC3B /* AdvertiserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */; };
 		1CD4C0B21DA68E86005FFC3B /* BrowserRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */; };
@@ -104,6 +101,55 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1C2CEB5A1EC062EE00FF5B96 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6CD9900F1B77868C0011A685;
+			remoteInfo = "iOS CocoaAsyncSocket";
+		};
+		1C2CEB5C1EC0632600FF5B96 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B341EBCB7A700902F90 /* XCTest.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 19D66F931DE6F57E00C112C0;
+			remoteInfo = "SwiftXCTest-iOS";
+		};
+		1C2CEB601EC0673200FF5B96 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6CD9900F1B77868C0011A685;
+			remoteInfo = "iOS CocoaAsyncSocket";
+		};
+		1C391B2E1EBCB79D00902F90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6CD990101B77868C0011A685;
+			remoteInfo = "iOS CocoaAsyncSocket";
+		};
+		1C391B301EBCB79D00902F90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FC41F131B9D965000578BEB;
+			remoteInfo = "Mac CocoaAsyncSocket";
+		};
+		1C391B321EBCB79D00902F90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D8B70C41BCFA15700D8E273;
+			remoteInfo = "tvOS CocoaAsyncSocket";
+		};
+		1C391B391EBCB7A700902F90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C391B341EBCB7A700902F90 /* XCTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 19D66FB91DE6F57E00C112C0;
+			remoteInfo = "SwiftXCTest-iOS";
+		};
 		1CEA19A91E8AD3D9008C9226 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CCA571B31D4787A900FBEC41 /* Project object */;
@@ -126,6 +172,8 @@
 		1C38DDD11D74153900418F15 /* BluetoothHardwareControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothHardwareControlManager.h; path = Utils/HardwareControl/Bluetooth/BluetoothHardwareControlManager.h; sourceTree = "<group>"; };
 		1C38DDD21D74153900418F15 /* BluetoothHardwareControlManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BluetoothHardwareControlManager.m; path = Utils/HardwareControl/Bluetooth/BluetoothHardwareControlManager.m; sourceTree = "<group>"; };
 		1C38DDD31D74153900418F15 /* BluetoothHardwareControlObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothHardwareControlObserver.h; path = Utils/HardwareControl/Bluetooth/BluetoothHardwareControlObserver.h; sourceTree = "<group>"; };
+		1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CocoaAsyncSocket.xcodeproj; path = Carthage/Checkouts/CocoaAsyncSocket/CocoaAsyncSocket.xcodeproj; sourceTree = "<group>"; };
+		1C391B341EBCB7A700902F90 /* XCTest.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCTest.xcodeproj; path = "Carthage/Checkouts/swift-corelibs-xctest/XCTest.xcodeproj"; sourceTree = "<group>"; };
 		1C5E18BD1D780D5400518DB8 /* BluetoothHardwareControlObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothHardwareControlObserver.m; sourceTree = "<group>"; };
 		1CADF1311E81862800C5226A /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/iOS/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		1CADF1331E81862A00C5226A /* SwiftXCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftXCTest.framework; path = Carthage/Build/iOS/SwiftXCTest.framework; sourceTree = "<group>"; };
@@ -179,7 +227,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CADF1351E8186B000C5226A /* CocoaAsyncSocket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,8 +242,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CADF1321E81862800C5226A /* CocoaAsyncSocket.framework in Frameworks */,
-				1CADF1341E81862A00C5226A /* SwiftXCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +272,24 @@
 				1C33671F1D703EE900143BCF /* NetworkReachability.m */,
 			);
 			name = NetworkReachability;
+			sourceTree = "<group>";
+		};
+		1C391B291EBCB79C00902F90 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1C391B2F1EBCB79D00902F90 /* CocoaAsyncSocket.framework */,
+				1C391B311EBCB79D00902F90 /* CocoaAsyncSocket.framework */,
+				1C391B331EBCB79D00902F90 /* CocoaAsyncSocket.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1C391B351EBCB7A700902F90 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1C391B3A1EBCB7A700902F90 /* SwiftXCTest.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1CB9B4101D70636F00C59CCF /* Utils */ = {
@@ -279,6 +342,8 @@
 		CCA571B21D4787A900FBEC41 = {
 			isa = PBXGroup;
 			children = (
+				1C391B341EBCB7A700902F90 /* XCTest.xcodeproj */,
+				1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */,
 				CCA571BE1D4787A900FBEC41 /* ThaliCore */,
 				CCA571CA1D4787A900FBEC41 /* ThaliCoreTests */,
 				CCA572F71D4B9E5300FBEC41 /* ThaliCoreCITests */,
@@ -483,11 +548,11 @@
 				CCA571B81D4787A900FBEC41 /* Frameworks */,
 				CCA571B91D4787A900FBEC41 /* Headers */,
 				CCA571BA1D4787A900FBEC41 /* Resources */,
-				1C733ED61E7987190088D19A /* Carthage copy frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1C2CEB611EC0673200FF5B96 /* PBXTargetDependency */,
 			);
 			name = ThaliCore;
 			productName = ThaliCore;
@@ -517,18 +582,19 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA572971D4A327E00FBEC41 /* Build configuration list for PBXNativeTarget "ThaliCoreCITests" */;
 			buildPhases = (
+				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
 				1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */,
 				CC3FECCB1DFACF6B00474101 /* Generate Test Cases */,
 				CCA5728D1D4A327E00FBEC41 /* Sources */,
 				CCA5728E1D4A327E00FBEC41 /* Frameworks */,
 				CCA5728F1D4A327E00FBEC41 /* Headers */,
 				CCA572901D4A327E00FBEC41 /* Resources */,
-				CCA5729C1D4A32E100FBEC41 /* SwiftLint */,
-				1C733ED71E79873E0088D19A /* Carthage copy frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1C2CEB5D1EC0632600FF5B96 /* PBXTargetDependency */,
+				1C2CEB5B1EC062EE00FF5B96 /* PBXTargetDependency */,
 			);
 			name = ThaliCoreCITests;
 			productName = ThaliCoreWithTests;
@@ -569,6 +635,16 @@
 			mainGroup = CCA571B21D4787A900FBEC41;
 			productRefGroup = CCA571BD1D4787A900FBEC41 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1C391B291EBCB79C00902F90 /* Products */;
+					ProjectRef = 1C391B281EBCB79C00902F90 /* CocoaAsyncSocket.xcodeproj */;
+				},
+				{
+					ProductGroup = 1C391B351EBCB7A700902F90 /* Products */;
+					ProjectRef = 1C391B341EBCB7A700902F90 /* XCTest.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				CCA571BB1D4787A900FBEC41 /* ThaliCore */,
@@ -577,6 +653,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1C391B2F1EBCB79D00902F90 /* CocoaAsyncSocket.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CocoaAsyncSocket.framework;
+			remoteRef = 1C391B2E1EBCB79D00902F90 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C391B311EBCB79D00902F90 /* CocoaAsyncSocket.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CocoaAsyncSocket.framework;
+			remoteRef = 1C391B301EBCB79D00902F90 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C391B331EBCB79D00902F90 /* CocoaAsyncSocket.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CocoaAsyncSocket.framework;
+			remoteRef = 1C391B321EBCB79D00902F90 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C391B3A1EBCB7A700902F90 /* SwiftXCTest.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftXCTest.framework;
+			remoteRef = 1C391B391EBCB7A700902F90 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CCA571BA1D4787A900FBEC41 /* Resources */ = {
@@ -615,38 +722,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS";
-		};
-		1C733ED61E7987190088D19A /* Carthage copy frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/CocoaAsyncSocket.framework",
-			);
-			name = "Carthage copy frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-		1C733ED71E79873E0088D19A /* Carthage copy frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/CocoaAsyncSocket.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/SwiftXCTest.framework",
-			);
-			name = "Carthage copy frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --no-build";
 		};
 		1CADF1301E81832B00C5226A /* Carthage checkout and build dependencies */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -660,7 +736,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --configuration \"${CONFIGURATION}\" --platform iOS\n";
+			shellScript = "CARTHAGE=/usr/local/bin/carthage\n\nrm -rf \"${SRCROOT}/Carthage\"\n$CARTHAGE update --no-build";
 		};
 		CC3FECCB1DFACF6B00474101 /* Generate Test Cases */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -766,54 +842,69 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CAA29D51E7BCF610011E58B /* Peer.swift in Sources */,
-				1C38DDD51D74153900418F15 /* BluetoothHardwareControlManager.m in Sources */,
-				1CAA29CD1E7BCF570011E58B /* TCPListener.swift in Sources */,
-				1CAA29CF1E7BCF5E0011E58B /* Advertiser.swift in Sources */,
-				1CAA29D41E7BCF610011E58B /* ApplicationStateNotificationsManager.swift in Sources */,
-				1C6D71421DAFBBD100802569 /* TCPClientMock.swift in Sources */,
-				1C40E5F81DA24B0A00DA369E /* MCSessionMock.swift in Sources */,
-				1C5E18BE1D780D5400518DB8 /* BluetoothHardwareControlObserver.m in Sources */,
-				1CAA29D21E7BCF5E0011E58B /* BrowserManager.swift in Sources */,
-				1C6D713D1DAF9BCD00802569 /* BrowserRelayTests.swift in Sources */,
-				1C6D713E1DAF9BCF00802569 /* VirtualSocketTests.swift in Sources */,
-				1CAA29CA1E7BCF570011E58B /* AdvertiserRelay.swift in Sources */,
-				1C6D713F1DAF9BD200802569 /* TCPClientTests.swift in Sources */,
-				FAADD14FB68CA0A056A2EFAF /* AtomicTests.swift in Sources */,
-				FAADDB1A4C19C000CBA8C6A5 /* PeerTests.swift in Sources */,
-				1922722F1DF05F0D0099BF47 /* TestRunner.swift in Sources */,
-				FAADD7417CEB0C20CC94F301 /* AppStateNotificationsManagerTests.swift in Sources */,
-				1CAA29CB1E7BCF570011E58B /* BrowserRelay.swift in Sources */,
-				1C6D71431DAFBBDC00802569 /* TCPServerMock.swift in Sources */,
-				1CAA29D11E7BCF5E0011E58B /* AdvertiserManager.swift in Sources */,
-				1C6D71401DAF9BD400802569 /* TCPListenerTests.swift in Sources */,
-				1C6D713B1DAF9BC800802569 /* RelayTests.swift in Sources */,
-				1C6D71411DAF9BDB00802569 /* StringRandomTests.swift in Sources */,
-				FAADD1BED4E04EEC9EE07240 /* BrowserManagerTests.swift in Sources */,
-				FAADD601541D22571D092A0D /* BrowserTests.swift in Sources */,
-				1C6D713C1DAF9BCB00802569 /* AdvertiserRelayTests.swift in Sources */,
-				19A1D26D1DEEE41200598612 /* TestCases.swift in Sources */,
 				1CAA29D31E7BCF610011E58B /* ThaliCoreError.swift in Sources */,
-				1CAA29D71E7BCF610011E58B /* Atomic.swift in Sources */,
-				FAADD38EEA68209A678157F2 /* AdvertiserTests.swift in Sources */,
-				1CAA29DA1E7BCF650011E58B /* NetworkReachability.m in Sources */,
-				1CAA29C81E7BCF570011E58B /* Session.swift in Sources */,
-				FAADD2472EF20C245A535EB0 /* AdvertiserManagerTests.swift in Sources */,
-				1CAA29D01E7BCF5E0011E58B /* Browser.swift in Sources */,
 				1CAA29D81E7BCF610011E58B /* Dictionary+KeyForValue.swift in Sources */,
+				1CAA29D41E7BCF610011E58B /* ApplicationStateNotificationsManager.swift in Sources */,
 				1CAA29D61E7BCF610011E58B /* PeerAvailability.swift in Sources */,
-				FAADDC4F91EB0C57EF22ADEC /* VirtualSocketBuilderTests.swift in Sources */,
-				FAADD13A66AFF1807FF00499 /* SessionTests.swift in Sources */,
+				1CAA29D71E7BCF610011E58B /* Atomic.swift in Sources */,
+				1CAA29DA1E7BCF650011E58B /* NetworkReachability.m in Sources */,
+				1C38DDD51D74153900418F15 /* BluetoothHardwareControlManager.m in Sources */,
+				1C5E18BE1D780D5400518DB8 /* BluetoothHardwareControlObserver.m in Sources */,
+				1CAA29CD1E7BCF570011E58B /* TCPListener.swift in Sources */,
 				1CAA29CC1E7BCF570011E58B /* TCPClient.swift in Sources */,
-				FAADD5D92ED104DEF558A3A7 /* MultipeerConnectHelper.swift in Sources */,
 				1CAA29C91E7BCF570011E58B /* VirtualSocketBuilder.swift in Sources */,
 				1CAA29CE1E7BCF570011E58B /* VirtualSocket.swift in Sources */,
+				1CAA29CB1E7BCF570011E58B /* BrowserRelay.swift in Sources */,
+				1CAA29C81E7BCF570011E58B /* Session.swift in Sources */,
+				1CAA29CA1E7BCF570011E58B /* AdvertiserRelay.swift in Sources */,
+				1CAA29D01E7BCF5E0011E58B /* Browser.swift in Sources */,
+				1CAA29CF1E7BCF5E0011E58B /* Advertiser.swift in Sources */,
+				1CAA29D11E7BCF5E0011E58B /* AdvertiserManager.swift in Sources */,
+				1CAA29D21E7BCF5E0011E58B /* BrowserManager.swift in Sources */,
+				FAADD14FB68CA0A056A2EFAF /* AtomicTests.swift in Sources */,
+				FAADDB1A4C19C000CBA8C6A5 /* PeerTests.swift in Sources */,
 				FAADD49298025B4A03860D3A /* String+Random.swift in Sources */,
+				1C6D71411DAF9BDB00802569 /* StringRandomTests.swift in Sources */,
+				FAADD5D92ED104DEF558A3A7 /* MultipeerConnectHelper.swift in Sources */,
+				FAADD7417CEB0C20CC94F301 /* AppStateNotificationsManagerTests.swift in Sources */,
+				1C6D71421DAFBBD100802569 /* TCPClientMock.swift in Sources */,
+				1C40E5F81DA24B0A00DA369E /* MCSessionMock.swift in Sources */,
+				1C6D713D1DAF9BCD00802569 /* BrowserRelayTests.swift in Sources */,
+				1C6D713E1DAF9BCF00802569 /* VirtualSocketTests.swift in Sources */,
+				1C6D713F1DAF9BD200802569 /* TCPClientTests.swift in Sources */,
+				1C6D713B1DAF9BC800802569 /* RelayTests.swift in Sources */,
+				FAADDC4F91EB0C57EF22ADEC /* VirtualSocketBuilderTests.swift in Sources */,
+				1C6D71431DAFBBDC00802569 /* TCPServerMock.swift in Sources */,
+				FAADD13A66AFF1807FF00499 /* SessionTests.swift in Sources */,
+				1C6D713C1DAF9BCB00802569 /* AdvertiserRelayTests.swift in Sources */,
+				1C6D71401DAF9BD400802569 /* TCPListenerTests.swift in Sources */,
+				FAADD1BED4E04EEC9EE07240 /* BrowserManagerTests.swift in Sources */,
+				FAADD601541D22571D092A0D /* BrowserTests.swift in Sources */,
+				FAADD38EEA68209A678157F2 /* AdvertiserTests.swift in Sources */,
+				FAADD2472EF20C245A535EB0 /* AdvertiserManagerTests.swift in Sources */,
+				19A1D26D1DEEE41200598612 /* TestCases.swift in Sources */,
+				1922722F1DF05F0D0099BF47 /* TestRunner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1C2CEB5B1EC062EE00FF5B96 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "iOS CocoaAsyncSocket";
+			targetProxy = 1C2CEB5A1EC062EE00FF5B96 /* PBXContainerItemProxy */;
+		};
+		1C2CEB5D1EC0632600FF5B96 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SwiftXCTest-iOS";
+			targetProxy = 1C2CEB5C1EC0632600FF5B96 /* PBXContainerItemProxy */;
+		};
+		1C2CEB611EC0673200FF5B96 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "iOS CocoaAsyncSocket";
+			targetProxy = 1C2CEB601EC0673200FF5B96 /* PBXContainerItemProxy */;
+		};
 		1CEA19AA1E8AD3D9008C9226 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CCA572911D4A327E00FBEC41 /* ThaliCoreCITests */;
@@ -932,7 +1023,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(CONFIGURATION_BUILD_DIR)",
 				);
 				INFOPLIST_FILE = "ThaliCore/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -955,7 +1046,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(CONFIGURATION_BUILD_DIR)",
 				);
 				INFOPLIST_FILE = "ThaliCore/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1010,6 +1101,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1017,7 +1109,7 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(CONFIGURATION_BUILD_DIR)",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ThaliCoreCITests/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1041,7 +1133,7 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(CONFIGURATION_BUILD_DIR)",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ThaliCoreCITests/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

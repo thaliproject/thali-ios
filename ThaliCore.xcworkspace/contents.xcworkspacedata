@@ -4,10 +4,4 @@
    <FileRef
       location = "container:ThaliCore.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/CocoaAsyncSocket/CocoaAsyncSocket.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/swift-corelibs-xctest/XCTest.xcodeproj">
-   </FileRef>
 </Workspace>
