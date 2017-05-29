@@ -42,7 +42,7 @@ class BrowserRelayTests: XCTestCase {
     nonTCPSession = Session(session: mcSessionMock,
                             identifier: mcPeerID,
                             connected: {},
-                            notConnected: {})
+                            notConnected: {_ in })
   }
 
   override func tearDown() {
@@ -157,7 +157,7 @@ class BrowserRelayTests: XCTestCase {
 
     let clientMock = TCPClientMock(didReadData: unexpectedReadDataHandler,
                                    didConnect: unexpectedConnectHandler,
-                                   didDisconnect: {
+                                   didDisconnect: {_ in
                                      clientCantConnectToListener?.fulfill()
                                    })
 

@@ -25,7 +25,7 @@ final class Browser: NSObject {
   /**
    Timeout for inviting a remote peer to a MCSession.
    */
-  internal let invitePeerTimeout: TimeInterval = 30.0
+  internal let invitePeerTimeout: TimeInterval = 5.0
 
   // MARK: - Private state
 
@@ -145,7 +145,7 @@ final class Browser: NSObject {
    */
   func inviteToConnect(_ peer: Peer,
                        sessionConnected: @escaping () -> Void,
-                       sessionNotConnected: @escaping () -> Void) throws -> Session {
+                       sessionNotConnected: @escaping (_ previousState: MCSessionState?) -> Void) throws -> Session {
     let mcSession = MCSession(peer: browser.myPeerID,
                               securityIdentity: nil,
                               encryptionPreference: .optional)

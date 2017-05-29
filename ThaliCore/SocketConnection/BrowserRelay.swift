@@ -17,10 +17,10 @@ final class BrowserRelay {
   internal var listenerPort: UInt16 {
     return tcpListener.listenerPort
   }
+  internal var nonTCPsession: Session
 
   // MARK: - Private state
   fileprivate var tcpListener: TCPListener!
-  fileprivate var nonTCPsession: Session
   fileprivate var virtualSocketBuilders: Atomic<[String: BrowserVirtualSocketBuilder]>
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
   fileprivate let createVirtualSocketTimeout: TimeInterval

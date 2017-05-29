@@ -42,7 +42,7 @@ final class Advertiser: NSObject {
   /**
    Handle disconnecting session.
    */
-  fileprivate let didDisconnectHandler: () -> Void
+  fileprivate let didDisconnectHandler: (_ previousState: MCSessionState?) -> Void
 
   /**
    Handle failing advertisement.
@@ -82,7 +82,7 @@ final class Advertiser: NSObject {
   required init?(peer: Peer,
                  serviceType: String,
                  receivedInvitation: @escaping (_ session: Session) -> Void,
-                 sessionNotConnected: @escaping () -> Void) {
+                 sessionNotConnected: @escaping (_ previousState: MCSessionState?) -> Void) {
     guard String.isValidServiceType(serviceType) else {
       return nil
     }

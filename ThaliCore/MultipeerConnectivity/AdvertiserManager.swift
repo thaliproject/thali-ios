@@ -7,6 +7,8 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
+import MultipeerConnectivity
+
 /**
  Manages Thali advertiser's logic
  */
@@ -111,7 +113,7 @@ public final class AdvertiserManager {
                                   }
                                 },
                                 sessionNotConnected: {
-                                  [weak self] in
+                                  [weak self] (previousState: MCSessionState?) in
                                   guard let strongSelf = self else { return }
 
                                   strongSelf.activeRelays.modify {

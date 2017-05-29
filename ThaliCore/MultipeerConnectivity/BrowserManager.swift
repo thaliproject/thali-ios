@@ -7,6 +7,8 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
+import MultipeerConnectivity
+
 /**
  Manages Thali browser's logic
  */
@@ -171,8 +173,14 @@ public final class BrowserManager {
                                         }
                                       },
                                       sessionNotConnected: {
-                                        [weak self] in
+                                        [weak self] (previousState: MCSessionState?) in
                                         guard let strongSelf = self else { return }
+
+                                        if previousState == MCSessionState.notConnected {
+                                          print("[ThaliCore] Session.sessionNotConnected " +
+                                                  "failed to connect to peer")
+                                          completion(syncValue, ThaliCoreError.connectionFailed, nil)
+                                        }
 
                                         strongSelf.activeRelays.modify {
                                           if let relay = $0[peerIdentifier] {
@@ -188,23 +196,25 @@ public final class BrowserManager {
         $0[peerIdentifier] = relay
       }
     } catch let error {
-      completion(syncValue,
-                 error,
-                 nil)
+      completion(syncValue, error, nil)
     }
   }
 
   /**
    - parameters:
-     - peerIdentifer:
+     - peerIdentifier:
        A value mapped to the UUID part of the remote peer's MCPeerID.
    */
-  public func disconnect(_ peerIdentifer: String) {
-    guard let relay = activeRelays.value[peerIdentifer] else {
+  public func disconnect(_ peerIdentifier: String) {
+    guard let relay = activeRelays.value[peerIdentifier] else {
       return
     }
 
     relay.disconnectNonTCPSession()
+    relay.closeRelay()
+    activeRelays.modify {
+        $0[peerIdentifier] = nil
+    }
   }
 
   // MARK: - Internal methods

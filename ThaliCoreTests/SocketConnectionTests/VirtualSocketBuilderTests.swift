@@ -29,7 +29,7 @@ class VirtualSocketBuilderTests: XCTestCase {
     nonTCPSession = Session(session: mcSessionMock,
                             identifier: mcPeerID,
                             connected: {},
-                            notConnected: {})
+                            notConnected: {_ in })
   }
 
   override func tearDown() {

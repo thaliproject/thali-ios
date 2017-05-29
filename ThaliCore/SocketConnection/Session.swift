@@ -51,7 +51,7 @@ class Session: NSObject {
   /**
    Handles underlying *MCSessionStateNotConnected* state.
    */
-  fileprivate let didNotConnectHandler: () -> Void
+  fileprivate let didNotConnectHandler: (_ previousState: MCSessionState?) -> Void
 
   // MARK: - Public methods
 
@@ -82,7 +82,7 @@ class Session: NSObject {
   init(session: MCSession,
        identifier: MCPeerID,
        connected: @escaping () -> Void,
-       notConnected: @escaping () -> Void) {
+       notConnected: @escaping (_ previousState: MCSessionState?) -> Void) {
     self.session = session
     self.identifier = identifier
     self.didConnectHandler = connected
@@ -134,13 +134,15 @@ extension Session: MCSessionDelegate {
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     assert(identifier.displayName == peerID.displayName)
 
+    let currentState = self.sessionState.value
+
     sessionState.modify {
       $0 = state
       self.didChangeStateHandler?(state)
 
       switch state {
       case .notConnected:
-        self.didNotConnectHandler()
+        self.didNotConnectHandler(currentState)
       case .connected:
         self.didConnectHandler()
       case .connecting:
