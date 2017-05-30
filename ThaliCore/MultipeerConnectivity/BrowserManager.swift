@@ -93,6 +93,7 @@ public final class BrowserManager {
        Called when advertisement fails.
    */
   public func startListeningForAdvertisements(_ errorHandler: @escaping (Error) -> Void) {
+    print("[ThaliCore] BrowserManager.\(#function)")
     if currentBrowser != nil { return }
 
     let browser = Browser(serviceType: serviceType,
@@ -112,6 +113,7 @@ public final class BrowserManager {
    Stops listening for advertisements.
    */
   public func stopListeningForAdvertisements() {
+    print("[ThaliCore] BrowserManager.\(#function)")
     currentBrowser?.stopListening()
     currentBrowser = nil
   }
@@ -139,6 +141,7 @@ public final class BrowserManager {
   public func connectToPeer(_ peerIdentifier: String,
                             syncValue: String,
                             completion: @escaping ConnectToPeerCompletionHandler) {
+    print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier)")
     guard let currentBrowser = self.currentBrowser else {
       completion(syncValue,
                  ThaliCoreError.startListeningNotActive,
@@ -147,6 +150,7 @@ public final class BrowserManager {
     }
 
     if let activeRelay = activeRelays.value[peerIdentifier] {
+      print("[ThaliCore] BrowserManager.\(#function) found active relay")
       completion(syncValue,
                  nil,
                  activeRelay.listenerPort)
@@ -167,6 +171,9 @@ public final class BrowserManager {
                                         [weak self] in
                                         guard let strongSelf = self else { return }
 
+                                        print("[ThaliCore] Session.sessionConnected " +
+                                                "connected to peer:\(peerIdentifier)")
+
                                         let relay = strongSelf.activeRelays.value[peerIdentifier]
                                         relay?.openRelay { port, error in
                                           completion(syncValue, error, port)
@@ -178,8 +185,13 @@ public final class BrowserManager {
 
                                         if previousState == MCSessionState.notConnected {
                                           print("[ThaliCore] Session.sessionNotConnected " +
-                                                  "failed to connect to peer")
-                                          completion(syncValue, ThaliCoreError.connectionFailed, nil)
+                                                  "failed to connect to peer:\(peerIdentifier)")
+                                          completion(syncValue,
+                                                           ThaliCoreError.connectionFailed,
+                                                           nil)
+                                        } else {
+                                          print("[ThaliCore] Session.sessionNotConnected " +
+                                                  "peer:\(peerIdentifier)")
                                         }
 
                                         strongSelf.activeRelays.modify {
@@ -196,6 +208,7 @@ public final class BrowserManager {
         $0[peerIdentifier] = relay
       }
     } catch let error {
+      print("[ThaliCore] BrowserManager.\(#function) error: \(error)")
       completion(syncValue, error, nil)
     }
   }
@@ -206,7 +219,9 @@ public final class BrowserManager {
        A value mapped to the UUID part of the remote peer's MCPeerID.
    */
   public func disconnect(_ peerIdentifier: String) {
+    print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier)")
     guard let relay = activeRelays.value[peerIdentifier] else {
+      print("[ThaliCore] BrowserManager.\(#function) relay not found for peer:\(peerIdentifier)")
       return
     }
 
@@ -262,6 +277,7 @@ public final class BrowserManager {
        `Peer` object which was lost.
    */
   fileprivate func handleLost(_ peer: Peer) {
+    print("[ThaliCore] BrowserManager.\(#function) \(peer)")
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peer.uuid) else {
       return
     }

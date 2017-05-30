@@ -83,6 +83,7 @@ class Session: NSObject {
        identifier: MCPeerID,
        connected: @escaping () -> Void,
        notConnected: @escaping (_ previousState: MCSessionState?) -> Void) {
+    print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
     self.session = session
     self.identifier = identifier
     self.didConnectHandler = connected
@@ -105,6 +106,7 @@ class Session: NSObject {
      `NSOutputStream` object upon success.
    */
   func startOutputStream(with name: String) throws -> OutputStream {
+    print("[ThaliCore] Session.\(#function) peer:\(self.identifier.displayName)")
     do {
       return try session.startStream(withName: name, toPeer: identifier)
     } catch {
@@ -116,6 +118,7 @@ class Session: NSObject {
    Disconnects the local peer from the session.
    */
   func disconnect() {
+    print("[ThaliCore] Session.\(#function) peer:\(self.identifier.displayName)")
     session.disconnect()
   }
 }
@@ -127,11 +130,12 @@ extension Session: MCSessionDelegate {
                didReceiveCertificate certificate: [Any]?,
                fromPeer peerID: MCPeerID,
                certificateHandler: @escaping (Bool) -> Void) {
-    print("[iOS NATIVE]: [Session]: \(#function)")
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     certificateHandler(true)
   }
 
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
 
     let currentState = self.sessionState.value
@@ -155,11 +159,13 @@ extension Session: MCSessionDelegate {
                didReceive stream: InputStream,
                withName streamName: String,
                fromPeer peerID: MCPeerID) {
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
     didReceiveInputStreamHandler?(stream, streamName)
   }
 
   func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
   }
 
@@ -167,6 +173,7 @@ extension Session: MCSessionDelegate {
                didStartReceivingResourceWithName resourceName: String,
                fromPeer peerID: MCPeerID,
                with progress: Progress) {
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
   }
 
@@ -175,6 +182,7 @@ extension Session: MCSessionDelegate {
                fromPeer peerID: MCPeerID,
                at localURL: URL,
                withError error: Error?) {
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
   }
 }

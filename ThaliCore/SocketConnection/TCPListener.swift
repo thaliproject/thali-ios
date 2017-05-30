@@ -52,6 +52,7 @@ class TCPListener: NSObject {
     if !listening {
       do {
         try socket.accept(onPort: port)
+        print("[ThaliCore] TCPListener.\(#function) port:\(port) localport:\(socket.localPort)")
         listening = true
         didAcceptConnectionHandler = connectionAccepted
         completion(socket.localPort, nil)
@@ -64,6 +65,7 @@ class TCPListener: NSObject {
 
   func stopListeningForConnectionsAndDisconnectClients() {
     if listening {
+      print("[ThaliCore] TCPListener.\(#function) port:\(socket.localPort)")
       listening = false
       socket.disconnect()
     }
@@ -74,6 +76,7 @@ class TCPListener: NSObject {
 extension TCPListener: GCDAsyncSocketDelegate {
 
   func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
+    print("[ThaliCore] TCPListener.\(#function)")
     if sock != socket {
       activeConnections.modify {
         if let indexOfDisconnectedSocket = $0.index(of: sock) {
@@ -85,6 +88,7 @@ extension TCPListener: GCDAsyncSocketDelegate {
   }
 
   func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+    print("[ThaliCore] TCPListener.\(#function)")
     newSocket.autoDisconnectOnClosedReadStream = false
     activeConnections.modify { $0.append(newSocket) }
     didAcceptConnectionHandler?(newSocket)

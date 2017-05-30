@@ -49,10 +49,12 @@ final class BrowserRelay {
   }
 
   func closeRelay() {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     tcpListener.stopListeningForConnectionsAndDisconnectClients()
   }
 
   func disconnectNonTCPSession() {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     nonTCPsession.disconnect()
   }
 
@@ -112,6 +114,7 @@ final class BrowserRelay {
   }
 
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         socket.disconnect()
@@ -121,6 +124,7 @@ final class BrowserRelay {
   }
 
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     self.virtualSockets.modify {
       let virtualSocket = $0[socket]
       virtualSocket?.closeStreams()
@@ -143,6 +147,7 @@ final class BrowserRelay {
   // MARK: - Private methods
   fileprivate func createVirtualSocket(
                       with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     guard virtualSockets.value.count <= maxVirtualSocketsCount else {
       completion(nil, ThaliCoreError.connectionFailed)
       return

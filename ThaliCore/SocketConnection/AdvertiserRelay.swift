@@ -34,10 +34,12 @@ final class AdvertiserRelay {
 
   // MARK: - Internal methods
   func closeRelay() {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     tcpClient.disconnectClientsFromLocalhost()
   }
 
   func disconnectNonTCPSession() {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     nonTCPsession.disconnect()
   }
 
@@ -89,6 +91,7 @@ final class AdvertiserRelay {
   fileprivate func createVirtualSocket(with inputStream: InputStream,
                                        inputStreamName: String,
                                        completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     let virtualSockBuilder = AdvertiserVirtualSocketBuilder(
                                                     with: nonTCPsession) { virtualSocket, error in
       completion(virtualSocket, error)
@@ -100,6 +103,7 @@ final class AdvertiserRelay {
   fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
 
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         socket.disconnect()
@@ -117,6 +121,7 @@ final class AdvertiserRelay {
 
   // TODO: add unit test (issue #1358)
   fileprivate func didDisconnectHandler(_ socket: GCDAsyncSocket) {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     virtualSockets.modify {
       let virtualSocket = $0[socket]
       virtualSocket?.closeStreams()
