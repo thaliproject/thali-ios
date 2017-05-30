@@ -121,9 +121,11 @@ final class Browser: NSObject {
    It does not change state if `Browser` is already not listening.
    */
   func stopListening() {
-    browser.delegate = nil
-    browser.stopBrowsingForPeers()
-    listening = false
+    if listening {
+      browser.delegate = nil
+      browser.stopBrowsingForPeers()
+      listening = false
+    }
   }
 
   /**
