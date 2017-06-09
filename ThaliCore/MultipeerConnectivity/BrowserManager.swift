@@ -225,7 +225,6 @@ public final class BrowserManager {
       return
     }
 
-    relay.disconnectNonTCPSession()
     relay.closeRelay()
     activeRelays.modify {
         $0[peerIdentifier] = nil

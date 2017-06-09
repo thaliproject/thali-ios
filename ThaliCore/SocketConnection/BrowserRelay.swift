@@ -25,6 +25,7 @@ final class BrowserRelay {
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
   fileprivate let createVirtualSocketTimeout: TimeInterval
   fileprivate let maxVirtualSocketsCount = 16
+  fileprivate var disconnecting: Atomic<Bool>
 
   // MARK: - Initialization
   init(with session: Session, createVirtualSocketTimeout: TimeInterval) {
@@ -32,6 +33,7 @@ final class BrowserRelay {
     self.createVirtualSocketTimeout = createVirtualSocketTimeout
     self.virtualSockets = Atomic([:])
     self.virtualSocketBuilders = Atomic([:])
+    self.disconnecting = Atomic(false)
     nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
     tcpListener = TCPListener(with: didReadDataFromSocketHandler,
                               socketDisconnected: didSocketDisconnectHandler,
@@ -49,12 +51,33 @@ final class BrowserRelay {
   }
 
   func closeRelay() {
-    print("[ThaliCore] BrowserRelay.\(#function)")
-    tcpListener.stopListeningForConnectionsAndDisconnectClients()
-  }
+    print("[ThaliCore] BrowserRelay.\(#function) disconnecting:\(self.disconnecting.value)")
+    var proceed = false
+    self.disconnecting.modify {
+      if $0 == false {
+        $0 = true
+        proceed = true
+      }
+    }
 
-  func disconnectNonTCPSession() {
-    print("[ThaliCore] BrowserRelay.\(#function)")
+    guard proceed else {
+      return
+    }
+
+    tcpListener.stopListeningForConnectionsAndDisconnectClients()
+
+    for (_, virtualSocket) in self.virtualSockets.value.enumerated() {
+      virtualSocket.value.closeStreams()
+    }
+
+    self.virtualSockets.modify {
+      $0.removeAll()
+    }
+
+    self.virtualSocketBuilders.modify {
+      $0.removeAll()
+    }
+
     nonTCPsession.disconnect()
   }
 
@@ -113,8 +136,17 @@ final class BrowserRelay {
     virtualSocket.writeDataToOutputStream(data)
   }
 
+  // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
+    // This is a temporarily fix to avoid a deadlock when closeRelay() is called,
+    // but it doesn't prevent a deadlock if didCloseVirtualSocketHandler() or
+    // didDisconnectHandler() are called when an error occurs.
+
+    guard self.disconnecting.value == false else {
+      return
+    }
+
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         socket.disconnect()
@@ -123,6 +155,7 @@ final class BrowserRelay {
     }
   }
 
+  // Called by TCPListener
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
     self.virtualSockets.modify {
@@ -133,7 +166,12 @@ final class BrowserRelay {
   }
 
   fileprivate func didStopListeningForConnections() {
-    disconnectNonTCPSession()
+
+    guard self.disconnecting.value == false else {
+      return
+    }
+
+    closeRelay()
   }
 
   fileprivate func didInputStreamOpenedHandler(_ virtualSocket: VirtualSocket) {

@@ -19,15 +19,15 @@ final class AdvertiserRelay {
   // MARK: - Private state
   fileprivate var tcpClient: TCPClient!
   fileprivate var nonTCPsession: Session
-  fileprivate var virtualSocketsBuilders: Atomic<[String: AdvertiserVirtualSocketBuilder]>
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
+  fileprivate var disconnecting: Atomic<Bool>
 
   // MARK: - Initialization
   init(with session: Session, on port: UInt16) {
     nonTCPsession = session
     clientPort = port
-    virtualSocketsBuilders = Atomic([:])
     virtualSockets = Atomic([:])
+    disconnecting = Atomic(false)
     nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
     tcpClient = TCPClient(with: didReadDataHandler, didDisconnect: didDisconnectHandler)
   }
@@ -35,11 +35,28 @@ final class AdvertiserRelay {
   // MARK: - Internal methods
   func closeRelay() {
     print("[ThaliCore] AdvertiserRelay.\(#function)")
-    tcpClient.disconnectClientsFromLocalhost()
-  }
+    var proceed = false
+    self.disconnecting.modify {
+      if $0 == false {
+        $0 = true
+        proceed = true
+      }
+    }
 
-  func disconnectNonTCPSession() {
-    print("[ThaliCore] AdvertiserRelay.\(#function)")
+    guard proceed else {
+      return
+    }
+
+    tcpClient.disconnectClientsFromLocalhost()
+
+    for (_, virtualSocket) in self.virtualSockets.value.enumerated() {
+      virtualSocket.value.closeStreams()
+    }
+
+    self.virtualSockets.modify {
+      $0.removeAll()
+    }
+
     nonTCPsession.disconnect()
   }
 
@@ -102,7 +119,16 @@ final class AdvertiserRelay {
 
   fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
 
+  // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
+    // This is a temporarily fix to avoid a deadlock when closeRelay() is called,
+    // but it doesn't prevent a deadlock if didCloseVirtualSocketHandler() or
+    // didDisconnectHandler() are called when an error occurs.
+
+    guard self.disconnecting.value == false else {
+      return
+    }
+
     print("[ThaliCore] AdvertiserRelay.\(#function)")
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
@@ -112,6 +138,7 @@ final class AdvertiserRelay {
     }
   }
 
+  // Called by TCPClient
   fileprivate func didReadDataHandler(_ socket: GCDAsyncSocket, data: Data) {
     virtualSockets.withValue {
       let virtualSocket = $0[socket]
@@ -119,8 +146,13 @@ final class AdvertiserRelay {
     }
   }
 
-  // TODO: add unit test (issue #1358)
+  // Called by TCPClient.socketDidDisconnect()
   fileprivate func didDisconnectHandler(_ socket: GCDAsyncSocket) {
+
+    guard self.disconnecting.value == false else {
+      return
+    }
+
     print("[ThaliCore] AdvertiserRelay.\(#function)")
     virtualSockets.modify {
       let virtualSocket = $0[socket]

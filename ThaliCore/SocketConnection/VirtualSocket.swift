@@ -15,7 +15,7 @@
 class VirtualSocket: NSObject {
 
   // MARK: - Internal state
-  internal fileprivate(set) var opened = false
+  internal var opened: Atomic<Bool>
   internal var didOpenVirtualSocketHandler: ((VirtualSocket) -> Void)?
   internal var didReadDataFromStreamHandler: ((VirtualSocket, Data) -> Void)?
   internal var didCloseVirtualSocketHandler: ((VirtualSocket) -> Void)?
@@ -34,49 +34,74 @@ class VirtualSocket: NSObject {
 
   // MARK: - Initialize
   init(with inputStream: InputStream, outputStream: OutputStream) {
+    self.opened = Atomic(false)
     self.inputStream = inputStream
     self.outputStream = outputStream
     super.init()
   }
 
+  deinit {
+    print("[ThaliCore] VirtualSocket.\(#function)")
+  }
+
   // MARK: - Internal methods
   func openStreams() {
-    if !opened {
-      opened = true
-      let queue = DispatchQueue.global(qos: .default)
-      queue.async(execute: {
-
-        self.runLoop = RunLoop.current
-
-        self.inputStream.delegate = self
-        self.inputStream.schedule(in: self.runLoop!,
-          forMode: RunLoopMode.defaultRunLoopMode)
-        self.inputStream.open()
-
-        self.outputStream.delegate = self
-        self.outputStream.schedule(in: self.runLoop!,
-          forMode: RunLoopMode.defaultRunLoopMode)
-        self.outputStream.open()
-
-        RunLoop.current.run(until: Date.distantFuture)
-      })
+    var proceed = false
+    self.opened.modify {
+      if $0 == false {
+        $0 = true
+        proceed = true
+      }
     }
+
+    guard proceed else {
+      return
+    }
+
+    let queue = DispatchQueue.global(qos: .default)
+    queue.async(execute: {
+      self.runLoop = RunLoop.current
+
+      self.inputStream.delegate = self
+      self.inputStream.schedule(in: self.runLoop!,
+        forMode: RunLoopMode.defaultRunLoopMode)
+      self.inputStream.open()
+
+      self.outputStream.delegate = self
+      self.outputStream.schedule(in: self.runLoop!,
+        forMode: RunLoopMode.defaultRunLoopMode)
+      self.outputStream.open()
+
+      RunLoop.current.run(until: Date.distantFuture)
+      print("[ThaliCore] VirtualSocket exited RunLoop")
+    })
   }
 
   func closeStreams() {
-    if opened {
-      opened = false
-
-      inputStream.close()
-      inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
-      inputStreamOpened = false
-
-      outputStream.close()
-      outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
-      outputStreamOpened = false
-
-      didCloseVirtualSocketHandler?(self)
+    print("[ThaliCore] VirtualSocket.\(#function)")
+    var proceed = false
+    self.opened.modify {
+      if $0 == true {
+        $0 = false
+        proceed = true
+      }
     }
+
+    guard proceed else {
+      return
+    }
+
+    inputStream.close()
+    inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+    inputStreamOpened = false
+
+    outputStream.close()
+    outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+    outputStreamOpened = false
+
+    CFRunLoopStop(self.runLoop!.getCFRunLoop())
+
+    didCloseVirtualSocketHandler?(self)
   }
 
   func writeDataToOutputStream(_ data: Data) {
@@ -132,6 +157,11 @@ extension VirtualSocket: StreamDelegate {
   }
 
   fileprivate func handleEventOnInputStream(_ eventCode: Stream.Event) {
+
+    guard self.opened.value == true else {
+      return
+    }
+
     switch eventCode {
     case Stream.Event.openCompleted:
       inputStreamOpened = true
@@ -150,6 +180,11 @@ extension VirtualSocket: StreamDelegate {
   }
 
   fileprivate func handleEventOnOutputStream(_ eventCode: Stream.Event) {
+
+    guard self.opened.value == true else {
+      return
+    }
+
     switch eventCode {
     case Stream.Event.openCompleted:
       outputStreamOpened = true
