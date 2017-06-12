@@ -143,7 +143,7 @@ final class Browser: NSObject {
      - sessionNotConnected:
        Called when the nearby peer is not (or is no longer) in this session.
 
-   - throws: illegalPeerID
+   - throws: unavailablePeer
 
    - returns: Session object that manages MCSession between peers
    */
@@ -157,7 +157,7 @@ final class Browser: NSObject {
                               encryptionPreference: .optional)
 
     guard let mcPeerID = availablePeers.value[peer] else {
-      throw ThaliCoreError.illegalPeerID
+      throw ThaliCoreError.unavailablePeer
     }
 
     let session = Session(session: mcSession,
