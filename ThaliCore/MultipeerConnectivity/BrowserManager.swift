@@ -183,7 +183,11 @@ public final class BrowserManager {
                                         [weak self] (previousState: MCSessionState?) in
                                         guard let strongSelf = self else { return }
 
-                                        if previousState == MCSessionState.notConnected {
+                                        // An error may occur right away when the session is still
+                                        // in the .notConnected state, or after it has reached the
+                                        // .connecting state, in those two cases let's call the
+                                        // error handler.
+                                        if previousState != MCSessionState.connected {
                                           print("[ThaliCore] Session.sessionNotConnected " +
                                                   "failed to connect to peer:\(peerIdentifier)")
                                           completion(syncValue,
@@ -199,6 +203,8 @@ public final class BrowserManager {
                                             relay.closeRelay()
                                           }
                                           $0.removeValue(forKey: peerIdentifier)
+                                          print("[ThaliCore] Session.sessionNotConnected " +
+                                                  "removed peer:\(peerIdentifier)")
                                         }
                                       })
 
