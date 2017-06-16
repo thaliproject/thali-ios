@@ -91,12 +91,18 @@ class VirtualSocket: NSObject {
       return
     }
 
+    guard self.runLoop != nil else {
+      return
+    }
+
     inputStream.close()
     inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+    inputStream.delegate = nil
     inputStreamOpened = false
 
     outputStream.close()
     outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+    outputStream.delegate = nil
     outputStreamOpened = false
 
     CFRunLoopStop(self.runLoop!.getCFRunLoop())
