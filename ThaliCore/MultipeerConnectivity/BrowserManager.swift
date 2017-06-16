@@ -97,8 +97,8 @@ public final class BrowserManager {
     if currentBrowser != nil { return }
 
     let browser = Browser(serviceType: serviceType,
-                          foundPeer: handleFound,
-                          lostPeer: handleLost)
+                          foundPeer: foundPeerHandler,
+                          lostPeer: lostPeerHandler)
 
     guard let newBrowser = browser else {
       errorHandler(ThaliCoreError.connectionFailed as Error)
@@ -267,7 +267,7 @@ public final class BrowserManager {
      - peer:
        `Peer` object which was founded.
    */
-  fileprivate func handleFound(_ peer: Peer) {
+  fileprivate func foundPeerHandler(_ peer: Peer) {
     print("[ThaliCore] BrowserManager.\(#function) peer:\(peer)")
     availablePeers.modify { $0.append(peer) }
 
@@ -282,7 +282,7 @@ public final class BrowserManager {
      - peer:
        `Peer` object which was lost.
    */
-  fileprivate func handleLost(_ peer: Peer) {
+  fileprivate func lostPeerHandler(_ peer: Peer) {
     print("[ThaliCore] BrowserManager.\(#function) peer:\(peer)")
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peer.uuid) else {
       return
