@@ -111,7 +111,7 @@ final class Advertiser: NSObject {
    */
   func startAdvertising(_ startAdvertisingErrorHandler: @escaping (Error) -> Void) {
     if !advertising {
-      print("[ThaliCore] Advertiser.\(#function)")
+      print("[ThaliCore] Advertiser.\(#function) with peerID:\(self.peer.uuid)")
       self.startAdvertisingErrorHandler = startAdvertisingErrorHandler
       advertiser.delegate = self
       advertiser.startAdvertisingPeer()

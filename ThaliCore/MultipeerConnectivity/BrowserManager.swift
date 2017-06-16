@@ -268,6 +268,7 @@ public final class BrowserManager {
        `Peer` object which was founded.
    */
   fileprivate func handleFound(_ peer: Peer) {
+    print("[ThaliCore] BrowserManager.\(#function) peer:\(peer)")
     availablePeers.modify { $0.append(peer) }
 
     let updatedPeerAvailability = PeerAvailability(peer: peer, available: true)
@@ -282,7 +283,7 @@ public final class BrowserManager {
        `Peer` object which was lost.
    */
   fileprivate func handleLost(_ peer: Peer) {
-    print("[ThaliCore] BrowserManager.\(#function) \(peer)")
+    print("[ThaliCore] BrowserManager.\(#function) peer:\(peer)")
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peer.uuid) else {
       return
     }

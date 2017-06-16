@@ -116,6 +116,7 @@ public final class AdvertiserManager {
                                   [weak self] (previousState: MCSessionState?) in
                                   guard let strongSelf = self else { return }
 
+                                  print("[ThaliCore] Advertiser: session NOT connected peer:\(newPeer.uuid)")
                                   strongSelf.activeRelays.modify {
                                     if let relay = $0[newPeer.uuid] {
                                       relay.closeRelay()
