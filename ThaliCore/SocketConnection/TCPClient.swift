@@ -56,10 +56,12 @@ extension TCPClient: GCDAsyncSocketDelegate {
     sock.readData(withTimeout: -1, tag: 0)
   }
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+    print("[ThaliCore] TCPClient.\(#function) error:\(err)")
     activeConnections.modify {
       if let indexOfDisconnectedSocket = $0.index(of: sock) {
         $0.remove(at: indexOfDisconnectedSocket)
+        print("[ThaliCore] TCPClient.\(#function) client disconnected")
       }
     }
 

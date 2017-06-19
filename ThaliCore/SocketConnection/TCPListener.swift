@@ -75,8 +75,8 @@ class TCPListener: NSObject {
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPListener: GCDAsyncSocketDelegate {
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
-    print("[ThaliCore] TCPListener.\(#function)")
+  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+    print("[ThaliCore] TCPListener.\(#function) error:\(err)")
     if sock != socket {
       activeConnections.modify {
         if let indexOfDisconnectedSocket = $0.index(of: sock) {

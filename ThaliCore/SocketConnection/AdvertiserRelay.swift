@@ -61,6 +61,8 @@ final class AdvertiserRelay {
   }
 
   // MARK: - Private handlers
+
+  // Called by VirtualSocket.readDataFromInputStream()
   fileprivate func didReadDataFromStreamHandler(_ virtualSocket: VirtualSocket, data: Data) {
     guard let socket = virtualSockets.value.key(for: virtualSocket) else {
       virtualSocket.closeStreams()
@@ -121,15 +123,11 @@ final class AdvertiserRelay {
 
   // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
-    // This is a temporarily fix to avoid a deadlock when closeRelay() is called,
-    // but it doesn't prevent a deadlock if didCloseVirtualSocketHandler() or
-    // didDisconnectHandler() are called when an error occurs.
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
 
     guard self.disconnecting.value == false else {
       return
     }
-
-    print("[ThaliCore] AdvertiserRelay.\(#function)")
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         socket.disconnect()
@@ -148,16 +146,16 @@ final class AdvertiserRelay {
 
   // Called by TCPClient.socketDidDisconnect()
   fileprivate func didDisconnectHandler(_ socket: GCDAsyncSocket) {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
 
     guard self.disconnecting.value == false else {
       return
     }
 
-    print("[ThaliCore] AdvertiserRelay.\(#function)")
-    virtualSockets.modify {
-      let virtualSocket = $0[socket]
-      virtualSocket?.closeStreams()
-      $0.removeValue(forKey: socket)
+    var virtualSocket: VirtualSocket?
+    virtualSockets.withValue {
+      virtualSocket = $0[socket]
     }
+    virtualSocket?.closeStreams()
   }
 }
