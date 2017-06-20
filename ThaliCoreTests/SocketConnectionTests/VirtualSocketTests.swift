@@ -53,7 +53,7 @@ class VirtualSocketTests: XCTestCase {
       let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
 
       // Then
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
     } catch {
       XCTFail("Can't create output stream on mock Session")
     }
@@ -68,11 +68,11 @@ class VirtualSocketTests: XCTestCase {
       let inputStream = InputStream(data: emptyData)
 
       let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
 
       // When
       virtualSocket.openStreams()
-      XCTAssertTrue(virtualSocket.opened.value)
+      XCTAssertTrue(virtualSocket.streamsOpened)
     } catch {
       XCTFail("Can't create output stream on mock Session")
     }
@@ -87,15 +87,15 @@ class VirtualSocketTests: XCTestCase {
       let inputStream = InputStream(data: emptyData)
 
       let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
       virtualSocket.openStreams()
-      XCTAssertTrue(virtualSocket.opened.value)
+      XCTAssertTrue(virtualSocket.streamsOpened)
 
       // When
       virtualSocket.closeStreams()
 
       // Then
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
     } catch {
       XCTFail("Can't create output stream on mock Session")
     }
@@ -110,14 +110,14 @@ class VirtualSocketTests: XCTestCase {
       let inputStream = InputStream(data: emptyData)
 
       let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
 
       // When
       virtualSocket.openStreams()
       virtualSocket.openStreams()
 
       // Then
-      XCTAssertTrue(virtualSocket.opened.value)
+      XCTAssertTrue(virtualSocket.streamsOpened)
 
     } catch {
       XCTFail("Can't create output stream on mock Session")
@@ -133,16 +133,15 @@ class VirtualSocketTests: XCTestCase {
       let inputStream = InputStream(data: emptyData)
 
       let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
       virtualSocket.openStreams()
-      XCTAssertTrue(virtualSocket.opened.value)
 
       // When
       virtualSocket.closeStreams()
       virtualSocket.closeStreams()
 
       // Then
-      XCTAssertFalse(virtualSocket.opened.value)
+      XCTAssertFalse(virtualSocket.streamsOpened)
 
     } catch {
       XCTFail("Can't create output stream on mock Session")

@@ -15,14 +15,14 @@
 class VirtualSocket: NSObject {
 
   // MARK: - Internal state
-  internal var opened: Atomic<Bool>
+  internal fileprivate(set) var streamsOpened: Bool
   internal var didOpenVirtualSocketHandler: ((VirtualSocket) -> Void)?
   internal var didReadDataFromStreamHandler: ((VirtualSocket, Data) -> Void)?
   internal var didCloseVirtualSocketHandler: ((VirtualSocket) -> Void)?
 
   // MARK: - Private state
-  fileprivate var inputStream: InputStream
-  fileprivate var outputStream: OutputStream
+  fileprivate var inputStream: InputStream?
+  fileprivate var outputStream: OutputStream?
 
   fileprivate var runLoop: RunLoop?
 
@@ -31,12 +31,14 @@ class VirtualSocket: NSObject {
 
   let maxReadBufferLength = 1024
   fileprivate var pendingDataToWrite: NSMutableData?
+  fileprivate let lock: PosixThreadMutex
 
   // MARK: - Initialize
   init(with inputStream: InputStream, outputStream: OutputStream) {
-    self.opened = Atomic(false)
+    self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
+    self.lock = PosixThreadMutex()
     super.init()
   }
 
@@ -46,31 +48,28 @@ class VirtualSocket: NSObject {
 
   // MARK: - Internal methods
   func openStreams() {
-    var proceed = false
-    self.opened.modify {
-      if $0 == false {
-        $0 = true
-        proceed = true
-      }
-    }
+    lock.lock()
+    defer { lock.unlock() }
 
-    guard proceed else {
+    guard self.streamsOpened == false else {
       return
     }
+
+    self.streamsOpened = true
 
     let queue = DispatchQueue.global(qos: .default)
     queue.async(execute: {
       self.runLoop = RunLoop.current
 
-      self.inputStream.delegate = self
-      self.inputStream.schedule(in: self.runLoop!,
+      self.inputStream?.delegate = self
+      self.inputStream?.schedule(in: self.runLoop!,
         forMode: RunLoopMode.defaultRunLoopMode)
-      self.inputStream.open()
+      self.inputStream?.open()
 
-      self.outputStream.delegate = self
-      self.outputStream.schedule(in: self.runLoop!,
+      self.outputStream?.delegate = self
+      self.outputStream?.schedule(in: self.runLoop!,
         forMode: RunLoopMode.defaultRunLoopMode)
-      self.outputStream.open()
+      self.outputStream?.open()
 
       RunLoop.current.run(until: Date.distantFuture)
       print("[ThaliCore] VirtualSocket exited RunLoop")
@@ -79,31 +78,32 @@ class VirtualSocket: NSObject {
 
   func closeStreams() {
     print("[ThaliCore] VirtualSocket.\(#function)")
-    var proceed = false
-    self.opened.modify {
-      if $0 == true {
-        $0 = false
-        proceed = true
-      }
-    }
+    lock.lock()
+    defer { lock.unlock() }
 
-    guard proceed else {
+    guard self.streamsOpened == true else {
       return
     }
+
+    self.streamsOpened = false
 
     guard self.runLoop != nil else {
       return
     }
 
-    inputStream.close()
-    inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
-    inputStream.delegate = nil
-    inputStreamOpened = false
+    if inputStreamOpened == true {
+      inputStream?.close()
+      inputStream?.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+      inputStream?.delegate = nil
+      inputStreamOpened = false
+    }
 
-    outputStream.close()
-    outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
-    outputStream.delegate = nil
-    outputStreamOpened = false
+    if outputStreamOpened == true {
+      outputStream?.close()
+      outputStream?.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+      outputStream?.delegate = nil
+      outputStreamOpened = false
+    }
 
     CFRunLoopStop(self.runLoop!.getCFRunLoop())
 
@@ -111,7 +111,12 @@ class VirtualSocket: NSObject {
   }
 
   func writeDataToOutputStream(_ data: Data) {
-    if !outputStream.hasSpaceAvailable {
+
+    guard let strongOuputStream = self.outputStream else {
+      return
+    }
+
+    if !strongOuputStream.hasSpaceAvailable {
       pendingDataToWrite?.append(data)
       return
     }
@@ -122,7 +127,7 @@ class VirtualSocket: NSObject {
       UnsafeBufferPointer(start: startDataPointer, count: dataLength)
     )
 
-    let bytesWritten = outputStream.write(buffer, maxLength: dataLength)
+    let bytesWritten = strongOuputStream.write(buffer, maxLength: dataLength)
     if bytesWritten < 0 {
       closeStreams()
     }
@@ -138,9 +143,14 @@ class VirtualSocket: NSObject {
   }
 
   fileprivate func readDataFromInputStream() {
+
+    guard let strongInputStream = self.inputStream else {
+      return
+    }
+
     var buffer = [UInt8](repeating: 0, count: maxReadBufferLength)
 
-    let bytesReaded = self.inputStream.read(&buffer, maxLength: maxReadBufferLength)
+    let bytesReaded = strongInputStream.read(&buffer, maxLength: maxReadBufferLength)
     if bytesReaded > 0 {
       let data = Data(bytes: buffer, count: bytesReaded)
       didReadDataFromStreamHandler?(self, data)
@@ -164,7 +174,8 @@ extension VirtualSocket: StreamDelegate {
 
   fileprivate func handleEventOnInputStream(_ eventCode: Stream.Event) {
 
-    guard self.opened.value == true else {
+    guard self.streamsOpened == true else {
+      print("[ThaliCore] VirtualSocket.\(#function) streams are closed")
       return
     }
 
@@ -187,7 +198,8 @@ extension VirtualSocket: StreamDelegate {
 
   fileprivate func handleEventOnOutputStream(_ eventCode: Stream.Event) {
 
-    guard self.opened.value == true else {
+    guard self.streamsOpened == true else {
+      print("[ThaliCore] VirtualSocket.\(#function) streams are closed")
       return
     }
 
