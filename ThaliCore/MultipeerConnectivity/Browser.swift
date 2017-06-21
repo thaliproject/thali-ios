@@ -149,7 +149,8 @@ final class Browser: NSObject {
    */
   func inviteToConnect(_ peer: Peer,
                        sessionConnected: @escaping () -> Void,
-                       sessionNotConnected: @escaping (_ previousState: MCSessionState?) -> Void) throws -> Session {
+                       sessionNotConnected: @escaping (_ previousState: MCSessionState?) ->
+                                                                    Void) throws -> Session {
     print("[ThaliCore] Browser.\(#function) \(peer)")
 
     let mcSession = MCSession(peer: browser.myPeerID,

@@ -41,7 +41,7 @@ class VirtualSocketBuilder {
    - returns:
      An initialized `VirtualSocketBuilder` object.
    */
-  init(with nonTCPsession: Session) {
+  init(nonTCPsession: Session) {
     self.nonTCPsession = nonTCPsession
   }
 }
@@ -100,10 +100,10 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
    - returns:
      An initialized `BrowserVirtualSocketBuilder` object.
    */
-  init(with nonTCPsession: Session, streamName: String, streamReceivedBackTimeout: TimeInterval) {
+  init(nonTCPsession: Session, streamName: String, streamReceivedBackTimeout: TimeInterval) {
     self.streamName = streamName
     self.streamReceivedBackTimeout = .seconds(Int(streamReceivedBackTimeout))
-    super.init(with: nonTCPsession)
+    super.init(nonTCPsession: nonTCPsession)
   }
 
   // MARK: - Internal methods
@@ -148,7 +148,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
      - inputStream:
        *inputStream* object.
    */
-  func completeVirtualSocket(with inputStream: InputStream) {
+  func completeVirtualSocket(inputStream: InputStream) {
     streamReceivedBack.modify { $0 = true }
 
     guard let outputStream = outputStream else {
@@ -157,7 +157,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
       return
     }
 
-    let vs = VirtualSocket(with: inputStream, outputStream: outputStream)
+    let vs = VirtualSocket(inputStream: inputStream, outputStream: outputStream)
     completion?(vs, nil)
     completion = nil
   }
@@ -195,10 +195,10 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
    - returns:
      An initialized `AdvertiserVirtualSocketBuilder` object.
    */
-  required init(with nonTCPsession: Session,
+  required init(nonTCPsession: Session,
                 completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     self.completion = completion
-    super.init(with: nonTCPsession)
+    super.init(nonTCPsession: nonTCPsession)
   }
 
   // MARK: - Internal methods
@@ -217,10 +217,10 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
      - inputStreamName:
        Name of *inputStream*. It will be used to start new *outputStream*.
    */
-  func createVirtualSocket(with inputStream: InputStream, inputStreamName: String) {
+  func createVirtualSocket(inputStream: InputStream, inputStreamName: String) {
     do {
       let outputStream = try nonTCPsession.startOutputStream(with: inputStreamName)
-      let virtualNonTCPSocket = VirtualSocket(with: inputStream, outputStream: outputStream)
+      let virtualNonTCPSocket = VirtualSocket(inputStream: inputStream, outputStream: outputStream)
       completion(virtualNonTCPSocket, nil)
     } catch let error {
       completion(nil, error)

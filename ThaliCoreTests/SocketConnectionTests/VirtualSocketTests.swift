@@ -50,7 +50,7 @@ class VirtualSocketTests: XCTestCase {
       let inputStream = InputStream(data: emptyData)
 
       // When
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
+      let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream)
 
       // Then
       XCTAssertFalse(virtualSocket.streamsOpened)
@@ -67,7 +67,7 @@ class VirtualSocketTests: XCTestCase {
       let emptyData = Data(bytes: [], count: 0)
       let inputStream = InputStream(data: emptyData)
 
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
+      let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream)
       XCTAssertFalse(virtualSocket.streamsOpened)
 
       // When
@@ -86,7 +86,7 @@ class VirtualSocketTests: XCTestCase {
       let emptyData = Data(bytes: [], count: 0)
       let inputStream = InputStream(data: emptyData)
 
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
+      let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream)
       XCTAssertFalse(virtualSocket.streamsOpened)
       virtualSocket.openStreams()
       XCTAssertTrue(virtualSocket.streamsOpened)
@@ -109,7 +109,7 @@ class VirtualSocketTests: XCTestCase {
       let emptyData = Data(bytes: [], count: 0)
       let inputStream = InputStream(data: emptyData)
 
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
+      let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream)
       XCTAssertFalse(virtualSocket.streamsOpened)
 
       // When
@@ -132,7 +132,7 @@ class VirtualSocketTests: XCTestCase {
       let emptyData = Data(bytes: [], count: 0)
       let inputStream = InputStream(data: emptyData)
 
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
+      let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream)
       XCTAssertFalse(virtualSocket.streamsOpened)
       virtualSocket.openStreams()
 

@@ -37,7 +37,7 @@ final class BrowserRelay {
     nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
     tcpListener = TCPListener(with: didReadDataFromSocketHandler,
                               socketDisconnected: didSocketDisconnectHandler,
-                              stoppedListening: didStopListeningForConnections)
+                              stoppedListening: didStopListeningHandler)
   }
 
   // MARK: - Internal methods
@@ -85,7 +85,7 @@ final class BrowserRelay {
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
                                                        inputStreamName: String) {
     if let builder = virtualSocketBuilders.value[inputStreamName] {
-      builder.completeVirtualSocket(with: inputStream)
+      builder.completeVirtualSocket(inputStream: inputStream)
     } else {
       inputStream.close()
     }
@@ -117,7 +117,8 @@ final class BrowserRelay {
 
       virtualSocket.didOpenVirtualSocketHandler = strongSelf.didInputStreamOpenedHandler
       virtualSocket.didReadDataFromStreamHandler = strongSelf.didReadDataFromStreamHandler
-      virtualSocket.didCloseVirtualSocketHandler = strongSelf.didCloseVirtualSocketHandler
+      virtualSocket.didCloseVirtualSocketStreamsHandler =
+                                            strongSelf.didCloseVirtualSocketStreamsHandler
 
       strongSelf.virtualSockets.modify {
         $0[socket] = virtualSocket
@@ -137,11 +138,11 @@ final class BrowserRelay {
   }
 
   // Called by VirtualSocket.closeStreams()
-  fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
+  fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
     // This is a temporarily fix to avoid a deadlock when closeRelay() is called,
-    // but it doesn't prevent a deadlock if didCloseVirtualSocketHandler() or
-    // didDisconnectHandler() are called when an error occurs.
+    // but it doesn't prevent a deadlock if didCloseVirtualSocketStreamsHandler() or
+    // didSocketDisconnectHandler() are called when an error occurs.
 
     guard self.disconnecting.value == false else {
       return
@@ -165,7 +166,8 @@ final class BrowserRelay {
     }
   }
 
-  fileprivate func didStopListeningForConnections() {
+  // Called by TCPListener (BUG: currently it's not called)
+  fileprivate func didStopListeningHandler() {
 
     guard self.disconnecting.value == false else {
       return
@@ -193,7 +195,7 @@ final class BrowserRelay {
 
     let newStreamName = UUID().uuidString
     let virtualSocketBuilder = BrowserVirtualSocketBuilder(
-      with: nonTCPsession,
+      nonTCPsession: nonTCPsession,
       streamName: newStreamName,
       streamReceivedBackTimeout: createVirtualSocketTimeout)
 

@@ -18,7 +18,7 @@ class VirtualSocket: NSObject {
   internal fileprivate(set) var streamsOpened: Bool
   internal var didOpenVirtualSocketHandler: ((VirtualSocket) -> Void)?
   internal var didReadDataFromStreamHandler: ((VirtualSocket, Data) -> Void)?
-  internal var didCloseVirtualSocketHandler: ((VirtualSocket) -> Void)?
+  internal var didCloseVirtualSocketStreamsHandler: ((VirtualSocket) -> Void)?
 
   // MARK: - Private state
   fileprivate var inputStream: InputStream?
@@ -34,7 +34,7 @@ class VirtualSocket: NSObject {
   fileprivate let lock: PosixThreadMutex
 
   // MARK: - Initialize
-  init(with inputStream: InputStream, outputStream: OutputStream) {
+  init(inputStream: InputStream, outputStream: OutputStream) {
     self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
@@ -79,7 +79,10 @@ class VirtualSocket: NSObject {
   func closeStreams() {
     print("[ThaliCore] VirtualSocket.\(#function)")
     lock.lock()
-    defer { lock.unlock() }
+    defer {
+      lock.unlock()
+      didCloseVirtualSocketStreamsHandler?(self)
+    }
 
     guard self.streamsOpened == true else {
       return
@@ -106,8 +109,6 @@ class VirtualSocket: NSObject {
     }
 
     CFRunLoopStop(self.runLoop!.getCFRunLoop())
-
-    didCloseVirtualSocketHandler?(self)
   }
 
   func writeDataToOutputStream(_ data: Data) {

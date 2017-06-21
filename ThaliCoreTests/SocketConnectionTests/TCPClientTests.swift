@@ -44,7 +44,7 @@ class TCPClientTests: XCTestCase {
 
     // When
     // TCP Client is trying to connect to TCP mock server
-    let tcpClient = TCPClient(with: unexpectedReadDataHandler,
+    let tcpClient = TCPClient(didReadData: unexpectedReadDataHandler,
                               didDisconnect: { _ in })
     tcpClient.connectToLocalhost(onPort: listenerPort) { _, port, error in
       XCTAssertNil(error)
@@ -81,7 +81,7 @@ class TCPClientTests: XCTestCase {
     mockServerAcceptedConnection = expectation(description: "Mock server accepted connection")
 
     // TCP Client is trying to connect to TCP mock server
-    let tcpClient = TCPClient(with: { _ in
+    let tcpClient = TCPClient(didReadData: { _ in
                                 dataReadHandler?.fulfill()
                               },
                               didDisconnect: { _ in })
@@ -128,7 +128,7 @@ class TCPClientTests: XCTestCase {
     // TCP Client is trying to connect to TCP mock server
     mockServerAcceptedConnection = expectation(description: "Mock server accepted connection")
 
-    let tcpClient = TCPClient(with: unexpectedReadDataHandler,
+    let tcpClient = TCPClient(didReadData: unexpectedReadDataHandler,
                               didDisconnect: { _ in
                                 didDisconnectHandler?.fulfill()
                               })

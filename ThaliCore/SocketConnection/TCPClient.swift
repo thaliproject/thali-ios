@@ -15,13 +15,13 @@ class TCPClient: NSObject {
                                             attributes: DispatchQueue.Attributes.concurrent)
   fileprivate var activeConnections: Atomic<[GCDAsyncSocket]> = Atomic([])
   fileprivate var didReadDataHandler: ((GCDAsyncSocket, Data) -> Void)
-  fileprivate var didDisconnectHandler: ((GCDAsyncSocket) -> Void)
+  fileprivate var didSocketDisconnectHandler: ((GCDAsyncSocket) -> Void)
 
   // MARK: - Public methods
-  required init(with didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
+  required init(didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
                 didDisconnect: @escaping (GCDAsyncSocket) -> Void) {
     didReadDataHandler = didReadData
-    didDisconnectHandler = didDisconnect
+    didSocketDisconnectHandler = didDisconnect
     super.init()
   }
 
@@ -64,8 +64,7 @@ extension TCPClient: GCDAsyncSocketDelegate {
         print("[ThaliCore] TCPClient.\(#function) client disconnected")
       }
     }
-
-    didDisconnectHandler(sock)
+    didSocketDisconnectHandler(sock)
   }
 
   func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {

@@ -14,11 +14,11 @@ class TCPListener: NSObject {
 
   // MARK: - Internal state
   internal var listenerPort: UInt16 {
-    return socket.localPort
+    return self.listeningSocket.localPort
   }
 
   // MARK: - Private state
-  fileprivate let socket: GCDAsyncSocket
+  fileprivate let listeningSocket: GCDAsyncSocket
   fileprivate var listening = false
 
   fileprivate let socketQueue = DispatchQueue(
@@ -29,20 +29,20 @@ class TCPListener: NSObject {
   fileprivate var didAcceptConnectionHandler: ((GCDAsyncSocket) -> Void)?
   fileprivate let didReadDataFromSocketHandler: ((GCDAsyncSocket, Data) -> Void)
   fileprivate let didSocketDisconnectHandler: ((GCDAsyncSocket) -> Void)
-  fileprivate let didStoppedListeningHandler: () -> Void
+  fileprivate let didStopListeningHandler: () -> Void
 
   // MARK: - Initialization
   required init(with didReadDataFromSocket: @escaping (GCDAsyncSocket, Data) -> Void,
                 socketDisconnected: @escaping (GCDAsyncSocket) -> Void,
                 stoppedListening: @escaping () -> Void) {
-    socket = GCDAsyncSocket()
+    listeningSocket = GCDAsyncSocket()
     didReadDataFromSocketHandler = didReadDataFromSocket
     didSocketDisconnectHandler = socketDisconnected
-    didStoppedListeningHandler = stoppedListening
+    didStopListeningHandler = stoppedListening
     super.init()
-    socket.autoDisconnectOnClosedReadStream = false
-    socket.delegate = self
-    socket.delegateQueue = socketQueue
+    listeningSocket.autoDisconnectOnClosedReadStream = false
+    listeningSocket.delegate = self
+    listeningSocket.delegateQueue = socketQueue
   }
 
   // MARK: - Internal methods
@@ -51,11 +51,12 @@ class TCPListener: NSObject {
                                     completion: (_ port: UInt16?, _ error: Error?) -> Void) {
     if !listening {
       do {
-        try socket.accept(onPort: port)
-        print("[ThaliCore] TCPListener.\(#function) port:\(port) localport:\(socket.localPort)")
+        try listeningSocket.accept(onPort: port)
+        print("[ThaliCore] TCPListener.\(#function) port:\(port) " +
+              "localport:\(listeningSocket.localPort)")
         listening = true
         didAcceptConnectionHandler = connectionAccepted
-        completion(socket.localPort, nil)
+        completion(listeningSocket.localPort, nil)
       } catch _ {
         listening = false
         completion(0, ThaliCoreError.connectionFailed)
@@ -65,9 +66,9 @@ class TCPListener: NSObject {
 
   func stopListeningForConnectionsAndDisconnectClients() {
     if listening {
-      print("[ThaliCore] TCPListener.\(#function) port:\(socket.localPort)")
+      print("[ThaliCore] TCPListener.\(#function) port:\(listeningSocket.localPort)")
       listening = false
-      socket.disconnect()
+      listeningSocket.disconnect()
     }
   }
 }
@@ -75,15 +76,17 @@ class TCPListener: NSObject {
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPListener: GCDAsyncSocketDelegate {
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-    print("[ThaliCore] TCPListener.\(#function) error:\(err)")
-    if sock != socket {
+  func socketDidDisconnect(_ socket: GCDAsyncSocket, withError err: Error?) {
+    if socket == listeningSocket {
+      print("[ThaliCore] TCPListener.\(#function) listening socket error:\(err)")
+    } else {
+      print("[ThaliCore] TCPListener.\(#function) accepted socket error:\(err)")
       activeConnections.modify {
-        if let indexOfDisconnectedSocket = $0.index(of: sock) {
+        if let indexOfDisconnectedSocket = $0.index(of: socket) {
           $0.remove(at: indexOfDisconnectedSocket)
         }
       }
-      didSocketDisconnectHandler(sock)
+      didSocketDisconnectHandler(socket)
     }
   }
 

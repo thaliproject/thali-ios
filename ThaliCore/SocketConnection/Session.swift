@@ -92,6 +92,10 @@ class Session: NSObject {
     self.session.delegate = self
   }
 
+  deinit {
+    print("[ThaliCore] Session.\(#function) \(self.identifier)")
+  }
+
   /**
    Starts new `NSOutputStream` which represents a byte stream to a nearby peer.
 
@@ -126,6 +130,19 @@ class Session: NSObject {
 // MARK: - MCSessionDelegate - Handling events for MCSession
 extension Session: MCSessionDelegate {
 
+  func getStateValue(_ state: MCSessionState) -> String {
+    var value = "undefined"
+    switch state {
+      case .connected:
+        value = "connected"
+      case .connecting:
+        value = "connecting"
+      case .notConnected:
+        value = "notConnected"
+    }
+    return value
+  }
+
   func session(_ session: MCSession,
                didReceiveCertificate certificate: [Any]?,
                fromPeer peerID: MCPeerID,
@@ -135,12 +152,13 @@ extension Session: MCSessionDelegate {
   }
 
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
 
     let currentState = self.sessionState.value
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName) state:" +
+          "\(getStateValue(currentState)) -> \(getStateValue(state))")
 
-    sessionState.modify {
+    self.sessionState.modify {
       $0 = state
       self.didChangeStateHandler?(state)
 

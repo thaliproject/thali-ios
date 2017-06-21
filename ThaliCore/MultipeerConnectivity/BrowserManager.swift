@@ -172,7 +172,7 @@ public final class BrowserManager {
                                         guard let strongSelf = self else { return }
 
                                         print("[ThaliCore] Session.sessionConnected " +
-                                                "connected to peer:\(peerIdentifier)")
+                                              "connected to peer:\(peerIdentifier)")
 
                                         let relay = strongSelf.activeRelays.value[peerIdentifier]
                                         relay?.openRelay { port, error in
@@ -189,13 +189,13 @@ public final class BrowserManager {
                                         // error handler.
                                         if previousState != MCSessionState.connected {
                                           print("[ThaliCore] Session.sessionNotConnected " +
-                                                  "failed to connect to peer:\(peerIdentifier)")
+                                                "failed to connect to peer:\(peerIdentifier)")
                                           completion(syncValue,
-                                                           ThaliCoreError.connectionFailed,
-                                                           nil)
+                                                     ThaliCoreError.connectionFailed,
+                                                     nil)
                                         } else {
                                           print("[ThaliCore] Session.sessionNotConnected " +
-                                                  "peer:\(peerIdentifier)")
+                                                "peer:\(peerIdentifier)")
                                         }
 
                                         strongSelf.activeRelays.modify {
@@ -204,7 +204,7 @@ public final class BrowserManager {
                                           }
                                           $0.removeValue(forKey: peerIdentifier)
                                           print("[ThaliCore] Session.sessionNotConnected " +
-                                                  "removed peer:\(peerIdentifier)")
+                                                "removed peer:\(peerIdentifier)")
                                         }
                                       })
 

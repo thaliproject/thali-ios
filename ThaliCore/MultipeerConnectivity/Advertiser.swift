@@ -42,7 +42,7 @@ final class Advertiser: NSObject {
   /**
    Handle disconnecting session.
    */
-  fileprivate let didDisconnectHandler: (_ previousState: MCSessionState?) -> Void
+  fileprivate let didSessionDisconnectHandler: (_ previousState: MCSessionState?) -> Void
 
   /**
    Handle failing advertisement.
@@ -93,7 +93,7 @@ final class Advertiser: NSObject {
     self.advertiser = advertiser
     self.peer = peer
     self.didReceiveInvitationHandler = receivedInvitation
-    self.didDisconnectHandler = sessionNotConnected
+    self.didSessionDisconnectHandler = sessionNotConnected
     super.init()
   }
 
@@ -149,11 +149,11 @@ extension Advertiser: MCNearbyServiceAdvertiserDelegate {
     let session = Session(session: mcSession,
                           identifier: peerID,
                           connected: {},
-                          notConnected: didDisconnectHandler)
+                          notConnected: didSessionDisconnectHandler)
 
     invitationHandler(true, mcSession)
     didReceiveInvitationHandler(session)
-    // TODO: https://github.com/thaliproject/Thali_CordovaPlugin/issues/1040
+    // https://github.com/thaliproject/Thali_CordovaPlugin/issues/1040 (todo)
   }
 
   func advertiser(_ advertiser: MCNearbyServiceAdvertiser,

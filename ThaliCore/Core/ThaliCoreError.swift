@@ -7,7 +7,7 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-public enum  ThaliCoreError: String, CustomNSError, LocalizedError {
+public enum ThaliCoreError: String, CustomNSError, LocalizedError {
 
   case startListeningNotActive = "startListeningForAdvertisements is not active"
   case connectionFailed = "Connection could not be established"
