@@ -79,6 +79,7 @@ extension TCPListener: GCDAsyncSocketDelegate {
   func socketDidDisconnect(_ socket: GCDAsyncSocket, withError err: Error?) {
     if socket == listeningSocket {
       print("[ThaliCore] TCPListener.\(#function) listening socket error:\(err)")
+      didStopListeningHandler()
     } else {
       print("[ThaliCore] TCPListener.\(#function) accepted socket error:\(err)")
       activeConnections.modify {

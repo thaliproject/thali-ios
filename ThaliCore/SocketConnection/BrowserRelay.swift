@@ -78,6 +78,10 @@ final class BrowserRelay {
       $0.removeAll()
     }
 
+    disconnectNonTCPSession()
+  }
+
+  func disconnectNonTCPSession() {
     nonTCPsession.disconnect()
   }
 
@@ -159,21 +163,21 @@ final class BrowserRelay {
   // Called by TCPListener
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
-    self.virtualSockets.modify {
-      let virtualSocket = $0[socket]
-      virtualSocket?.closeStreams()
-      $0.removeValue(forKey: socket)
+    var virtualSocket: VirtualSocket?
+    self.virtualSockets.withValue {
+      virtualSocket = $0[socket]
     }
+    virtualSocket?.closeStreams()
   }
 
-  // Called by TCPListener (BUG: currently it's not called)
+  // Called by TCPListener
   fileprivate func didStopListeningHandler() {
 
     guard self.disconnecting.value == false else {
       return
     }
 
-    closeRelay()
+    self.nonTCPsession.disconnect()
   }
 
   fileprivate func didInputStreamOpenedHandler(_ virtualSocket: VirtualSocket) {

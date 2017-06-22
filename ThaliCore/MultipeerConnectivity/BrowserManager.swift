@@ -294,6 +294,10 @@ public final class BrowserManager {
       }
     }
 
+    // This will trigger the sessionNotConnected handler that will
+    // remove the relay from the activeRelays list.
+    self.activeRelays.value[peer.uuid]?.disconnectNonTCPSession()
+
     if peer == lastGenerationPeer {
       let updatedPeerAvailability = PeerAvailability(peer: peer, available: false)
       peerAvailabilityChangedHandler([updatedPeerAvailability])
