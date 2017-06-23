@@ -16,7 +16,7 @@ class VirtualSocket: NSObject {
 
   // MARK: - Internal state
   internal fileprivate(set) var streamsOpened: Bool
-  internal var didOpenVirtualSocketHandler: ((VirtualSocket) -> Void)?
+  internal var didOpenVirtualSocketStreamsHandler: ((VirtualSocket) -> Void)?
   internal var didReadDataFromStreamHandler: ((VirtualSocket, Data) -> Void)?
   internal var didCloseVirtualSocketStreamsHandler: ((VirtualSocket) -> Void)?
 
@@ -223,7 +223,7 @@ extension VirtualSocket: StreamDelegate {
 
   fileprivate func didOpenStreamHandler() {
     if inputStreamOpened && outputStreamOpened {
-      didOpenVirtualSocketHandler?(self)
+      didOpenVirtualSocketStreamsHandler?(self)
     }
   }
 }

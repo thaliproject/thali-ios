@@ -119,7 +119,8 @@ final class BrowserRelay {
         return
       }
 
-      virtualSocket.didOpenVirtualSocketHandler = strongSelf.didInputStreamOpenedHandler
+      virtualSocket.didOpenVirtualSocketStreamsHandler =
+                                            strongSelf.didOpenVirtualSocketStreamsHandler
       virtualSocket.didReadDataFromStreamHandler = strongSelf.didReadDataFromStreamHandler
       virtualSocket.didCloseVirtualSocketStreamsHandler =
                                             strongSelf.didCloseVirtualSocketStreamsHandler
@@ -180,7 +181,9 @@ final class BrowserRelay {
     self.nonTCPsession.disconnect()
   }
 
-  fileprivate func didInputStreamOpenedHandler(_ virtualSocket: VirtualSocket) {
+  // This is called after both the input and output have been opened
+  fileprivate func didOpenVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     guard let socket = virtualSockets.value.key(for: virtualSocket) else {
       virtualSocket.closeStreams()
       return

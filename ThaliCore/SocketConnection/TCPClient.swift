@@ -25,7 +25,8 @@ class TCPClient: NSObject {
     super.init()
   }
 
-  func connectToLocalhost(onPort port: UInt16) -> (socket: GCDAsyncSocket?, error: ThaliCoreError?) {
+  func connectToLocalhost(onPort port: UInt16) ->
+                         (socket: GCDAsyncSocket?, error: ThaliCoreError?) {
     print("[ThaliCore] TCPClient.\(#function)")
     do {
       let socket = GCDAsyncSocket()
@@ -50,28 +51,28 @@ class TCPClient: NSObject {
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPClient: GCDAsyncSocketDelegate {
 
-  func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-    activeConnections.modify { $0.append(sock) }
-    sock.readData(withTimeout: -1, tag: 0)
+  func socket(_ socket: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+    activeConnections.modify { $0.append(socket) }
+    socket.readData(withTimeout: -1, tag: 0)
   }
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+  func socketDidDisconnect(_ socket: GCDAsyncSocket, withError err: Error?) {
     print("[ThaliCore] TCPClient.\(#function) error:\(err)")
     activeConnections.modify {
-      if let indexOfDisconnectedSocket = $0.index(of: sock) {
+      if let indexOfDisconnectedSocket = $0.index(of: socket) {
         $0.remove(at: indexOfDisconnectedSocket)
         print("[ThaliCore] TCPClient.\(#function) client disconnected")
       }
     }
-    didSocketDisconnectHandler(sock)
+      didSocketDisconnectHandler(socket)
   }
 
-  func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-    sock.readData(withTimeout: -1, tag: 0)
+  func socket(_ socket: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+    socket.readData(withTimeout: -1, tag: 0)
   }
 
-  func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
-    sock.readData(withTimeout: -1, tag: 0)
-    didReadDataHandler(sock, data)
+  func socket(_ socket: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+    socket.readData(withTimeout: -1, tag: 0)
+    didReadDataHandler(socket, data)
   }
 }

@@ -33,6 +33,10 @@ final class AdvertiserRelay {
                                didDisconnect: didSocketDisconnectHandler)
   }
 
+  deinit {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
+  }
+
   // MARK: - Internal methods
   func closeRelay() {
     print("[ThaliCore] AdvertiserRelay.\(#function)")
@@ -109,7 +113,7 @@ final class AdvertiserRelay {
     }
 
     virtualSocket.didReadDataFromStreamHandler = self.didReadDataFromStreamHandler
-    virtualSocket.didOpenVirtualSocketHandler = self.didOpenVirtualSocketHandler
+    virtualSocket.didOpenVirtualSocketStreamsHandler = self.didOpenVirtualSocketStreamsHandler
     virtualSocket.didCloseVirtualSocketStreamsHandler = self.didCloseVirtualSocketStreamsHandler
 
     self.virtualSockets.modify {
@@ -118,7 +122,7 @@ final class AdvertiserRelay {
     virtualSocket.openStreams()
   }
 
-  fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
+  fileprivate func didOpenVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) { }
 
   // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {

@@ -91,19 +91,19 @@ extension TCPListener: GCDAsyncSocketDelegate {
     }
   }
 
-  func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+  func socket(_ socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
     print("[ThaliCore] TCPListener.\(#function)")
     newSocket.autoDisconnectOnClosedReadStream = false
     activeConnections.modify { $0.append(newSocket) }
     didAcceptConnectionHandler?(newSocket)
   }
 
-  func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-    sock.readData(withTimeout: -1, tag: 0)
+  func socket(_ socket: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+    socket.readData(withTimeout: -1, tag: 0)
   }
 
-  func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
-    didReadDataFromSocketHandler(sock, data)
-    sock.readData(withTimeout: -1, tag: 0)
+  func socket(_ socket: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+    didReadDataFromSocketHandler(socket, data)
+    socket.readData(withTimeout: -1, tag: 0)
   }
 }
