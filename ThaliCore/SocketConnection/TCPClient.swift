@@ -16,6 +16,7 @@ class TCPClient: NSObject {
   fileprivate var activeConnections: Atomic<[GCDAsyncSocket]> = Atomic([])
   fileprivate var didReadDataHandler: ((GCDAsyncSocket, Data) -> Void)
   fileprivate var didSocketDisconnectHandler: ((GCDAsyncSocket) -> Void)
+  fileprivate var disconnecting = false
 
   // MARK: - Public methods
   required init(didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
@@ -23,6 +24,10 @@ class TCPClient: NSObject {
     didReadDataHandler = didReadData
     didSocketDisconnectHandler = didDisconnect
     super.init()
+  }
+
+  deinit {
+    print("[ThaliCore] TCPClient.\(#function)")
   }
 
   func connectToLocalhost(onPort port: UInt16) ->
@@ -41,8 +46,12 @@ class TCPClient: NSObject {
   }
 
   func disconnectClientsFromLocalhost() {
+    print("[ThaliCore] TCPClient.\(#function)")
+    self.disconnecting = true
     activeConnections.modify {
-      $0.forEach { $0.disconnect() }
+      $0.forEach {
+        $0.disconnect()
+      }
       $0.removeAll()
     }
   }
@@ -57,14 +66,18 @@ extension TCPClient: GCDAsyncSocketDelegate {
   }
 
   func socketDidDisconnect(_ socket: GCDAsyncSocket, withError err: Error?) {
-    print("[ThaliCore] TCPClient.\(#function) error:\(err)")
-    activeConnections.modify {
-      if let indexOfDisconnectedSocket = $0.index(of: socket) {
-        $0.remove(at: indexOfDisconnectedSocket)
-        print("[ThaliCore] TCPClient.\(#function) client disconnected")
+    print("[ThaliCore] TCPClient.\(#function) disconnecting:\(self.disconnecting) " +
+          "socket error:\(err)")
+    if self.disconnecting == false {
+      activeConnections.modify {
+        if let indexOfDisconnectedSocket = $0.index(of: socket) {
+          $0.remove(at: indexOfDisconnectedSocket)
+          print("[ThaliCore] TCPClient.\(#function) client disconnected")
+        }
       }
-    }
+
       didSocketDisconnectHandler(socket)
+    }
   }
 
   func socket(_ socket: GCDAsyncSocket, didWriteDataWithTag tag: Int) {

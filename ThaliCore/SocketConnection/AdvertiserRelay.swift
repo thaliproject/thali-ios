@@ -18,7 +18,7 @@ final class AdvertiserRelay {
 
   // MARK: - Private state
   fileprivate var tcpClient: TCPClient!
-  fileprivate var nonTCPsession: Session
+  fileprivate var nonTCPsession: Session!
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
   fileprivate var disconnecting: Atomic<Bool>
 
@@ -53,6 +53,7 @@ final class AdvertiserRelay {
     }
 
     self.tcpClient.disconnectClientsFromLocalhost()
+    self.tcpClient = nil
 
     for (_, virtualSocket) in self.virtualSockets.value.enumerated() {
       virtualSocket.value.closeStreams()
@@ -63,6 +64,9 @@ final class AdvertiserRelay {
     }
 
     self.nonTCPsession.disconnect()
+    self.nonTCPsession.didChangeStateHandler = nil
+    self.nonTCPsession.didReceiveInputStreamHandler = nil
+    self.nonTCPsession = nil
   }
 
   // MARK: - Private handlers
