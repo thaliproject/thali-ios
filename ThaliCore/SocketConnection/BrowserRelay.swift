@@ -10,6 +10,9 @@
 // MARK: - Methods that available for Relay<BrowserVirtualSocketBuilder>
 final class BrowserRelay {
 
+  // MARK: - Public state
+  public fileprivate(set) var generation: Int
+
   // MARK: - Internal state
   internal var virtualSocketsAmount: Int {
     return virtualSockets.value.count
@@ -28,8 +31,9 @@ final class BrowserRelay {
   fileprivate var disconnecting: Atomic<Bool>
 
   // MARK: - Initialization
-  init(with session: Session, createVirtualSocketTimeout: TimeInterval) {
+  init(session: Session, generation: Int, createVirtualSocketTimeout: TimeInterval) {
     self.nonTCPsession = session
+    self.generation = generation
     self.createVirtualSocketTimeout = createVirtualSocketTimeout
     self.virtualSockets = Atomic([:])
     self.virtualSocketBuilders = Atomic([:])

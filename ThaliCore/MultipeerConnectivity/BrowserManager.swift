@@ -209,7 +209,8 @@ public final class BrowserManager {
                                       })
 
       activeRelays.modify {
-        let relay = BrowserRelay(with: nonTCPsession,
+        let relay = BrowserRelay(session: nonTCPsession,
+                                 generation: lastGenerationPeer.generation,
                                  createVirtualSocketTimeout: self.inputStreamReceiveTimeout)
         $0[peerIdentifier] = relay
       }
@@ -294,9 +295,16 @@ public final class BrowserManager {
       }
     }
 
-    // This will trigger the sessionNotConnected handler that will
-    // remove the relay from the activeRelays list.
-    self.activeRelays.value[peer.uuid]?.disconnectNonTCPSession()
+    // If the activeRelay.generation matches the lostPeer.generation
+    // it's safe to disconnect the relay, if not it means the caller
+    // has already opened a new relay to a most recent generation or
+    // it may still be using a previous established connection to an
+    // older generation
+    if self.activeRelays.value[peer.uuid]?.generation == peer.generation {
+      // This will trigger the sessionNotConnected handler that will
+      // remove the relay from the activeRelays list.
+      self.activeRelays.value[peer.uuid]?.disconnectNonTCPSession()
+    }
 
     if peer == lastGenerationPeer {
       let updatedPeerAvailability = PeerAvailability(peer: peer, available: false)
