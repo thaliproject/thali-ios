@@ -168,47 +168,12 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
  */
 final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
 
-  // MARK: - Private state
-
   /**
-   Called when creation of VirtualSocket is completed.
-
-   It has 2 arguments: `VirtualSocket?` and `ErrorType?`.
-
-   If we're passing `ErrorType` then something went wrong and `VirtualSocket` should be nil.
-   Otherwise `ErrorType` should be nil.
-   */
-  fileprivate var completion: (VirtualSocket?, Error?) -> Void
-
-  // MARK: - Initialization
-
-  /**
-   Returns new `AdvertiserVirtualSocketBuilder` object.
-
-   - parameters:
-     - nonTCPsession:
-       non-TCP/IP session that will be used for communication among peers via `VirtualSocket`.
-
-     - completion:
-       Called when creation of VirtualSocket is completed.
-
-   - returns:
-     An initialized `AdvertiserVirtualSocketBuilder` object.
-   */
-  required init(nonTCPsession: Session,
-                completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-    self.completion = completion
-    super.init(nonTCPsession: nonTCPsession)
-  }
-
-  // MARK: - Internal methods
-
-  /**
-   Creates new `VirtualSocket` object asynchronously.
+   Creates new `VirtualSocket` object synchronously.
 
    Method is trying to start new *outputStream* using the exact same name as the *inputStream*.
-   If succeeded then *completion* is called and `VirtualSocket` passed as a parameter,
-   otherwise *completion* is called with nil argument and error passed.
+   If succeeded returns a `VirtualSocket` and a nil error, otherwise returns a nil `VirtualSocket`
+   and an error.
 
    - parameters:
      - inputStream:
@@ -216,14 +181,19 @@ final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
 
      - inputStreamName:
        Name of *inputStream*. It will be used to start new *outputStream*.
+
+   - returns:
+     A `VirtualSocket` object and an error object.
    */
-  func createVirtualSocket(inputStream: InputStream, inputStreamName: String) {
+  func createVirtualSocket(inputStream: InputStream, inputStreamName: String) ->
+                                  (virtualSocket: VirtualSocket?, error: Error?) {
     do {
       let outputStream = try nonTCPsession.startOutputStream(with: inputStreamName)
       let virtualNonTCPSocket = VirtualSocket(inputStream: inputStream, outputStream: outputStream)
-      completion(virtualNonTCPSocket, nil)
+
+      return(virtualNonTCPSocket, nil)
     } catch let error {
-      completion(nil, error)
+      return(nil, error)
     }
   }
 }

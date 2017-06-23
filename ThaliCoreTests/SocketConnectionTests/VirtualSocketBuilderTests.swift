@@ -45,10 +45,8 @@ class VirtualSocketBuilderTests: XCTestCase {
     let virtualSocketCreated = expectation(description: "Virtual socket is created")
 
     // Given
-    let socketBuilder = AdvertiserVirtualSocketBuilder(nonTCPsession: nonTCPSession) { _, error in
-      XCTAssertNil(error, "Virtual Socket is not created")
-      virtualSocketCreated.fulfill()
-    }
+    let socketBuilder = AdvertiserVirtualSocketBuilder(nonTCPsession: nonTCPSession)
+    virtualSocketCreated.fulfill()
 
     let emptyData = Data(bytes: [], count: 0)
     let emptyInputStream = InputStream(data: emptyData)
@@ -60,7 +58,7 @@ class VirtualSocketBuilderTests: XCTestCase {
                                     fromPeer: mcPeerID)
 
     // When
-    socketBuilder.createVirtualSocket(inputStream: emptyInputStream,
+    _ = socketBuilder.createVirtualSocket(inputStream: emptyInputStream,
                                       inputStreamName: randomlyGeneratedStreamName)
 
     // Then

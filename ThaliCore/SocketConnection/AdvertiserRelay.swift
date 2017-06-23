@@ -30,7 +30,7 @@ final class AdvertiserRelay {
     self.disconnecting = Atomic(false)
     self.nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
     self.tcpClient = TCPClient(didReadData: didReadDataHandler,
-                          didDisconnect: didSocketDisconnectHandler)
+                               didDisconnect: didSocketDisconnectHandler)
   }
 
   // MARK: - Internal methods
@@ -77,52 +77,45 @@ final class AdvertiserRelay {
 
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
                                                        inputStreamName: String) {
-    createVirtualSocket(with: inputStream,
-                        inputStreamName: inputStreamName) { [weak self] virtualSocket, error in
 
-      guard let strongSelf = self else {
-        return
-      }
+    let virtualSocketBuilder = AdvertiserVirtualSocketBuilder(nonTCPsession: nonTCPsession)
+    let createVSResult = virtualSocketBuilder.createVirtualSocket(inputStream: inputStream,
+                                                                  inputStreamName: inputStreamName)
 
-      guard error == nil else {
-        return
-      }
-
-      guard let virtualSocket = virtualSocket else {
-        return
-      }
-
-      strongSelf.tcpClient.connectToLocalhost(onPort: strongSelf.clientPort,
-                                              completion: { socket, _, _ in
-        guard let socket = socket else {
-          return
-        }
-
-        virtualSocket.didOpenVirtualSocketHandler = strongSelf.didOpenVirtualSocketHandler
-        virtualSocket.didReadDataFromStreamHandler = strongSelf.didReadDataFromStreamHandler
-        virtualSocket.didCloseVirtualSocketStreamsHandler =
-                                              strongSelf.didCloseVirtualSocketStreamsHandler
-
-        strongSelf.virtualSockets.modify {
-          $0[socket] = virtualSocket
-        }
-
-        virtualSocket.openStreams()
-      })
-    }
-  }
-
-  fileprivate func createVirtualSocket(with inputStream: InputStream,
-                                       inputStreamName: String,
-                                       completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-    print("[ThaliCore] AdvertiserRelay.\(#function)")
-    let virtualSockBuilder = AdvertiserVirtualSocketBuilder(nonTCPsession: nonTCPsession) {
-      virtualSocket, error in
-      completion(virtualSocket, error)
+    guard createVSResult.error == nil else {
+      // proper error handling (todo)
+      print("[ThaliCore] createVirtualSocket failed: \(String(describing: createVSResult.error))")
+      return
     }
 
-    virtualSockBuilder.createVirtualSocket(inputStream: inputStream,
-                                           inputStreamName: inputStreamName)
+    guard let virtualSocket = createVSResult.virtualSocket else {
+      // proper error handling (todo)
+      print("[ThaliCore] createVirtualSocket failed: returned VirtualSocket is nil)")
+      return
+    }
+
+    let connectResult = self.tcpClient.connectToLocalhost(onPort: self.clientPort)
+
+    guard connectResult.error == nil else {
+      // proper error handling (todo)
+      print("[ThaliCore] connectToLocalhost failed: \(String(describing: connectResult.error))")
+      return
+    }
+
+    guard let socket = connectResult.socket else {
+      // proper error handling (todo)
+      print("[ThaliCore] connectToLocalhost failed: returned socket is nil)")
+      return
+    }
+
+    virtualSocket.didReadDataFromStreamHandler = self.didReadDataFromStreamHandler
+    virtualSocket.didOpenVirtualSocketHandler = self.didOpenVirtualSocketHandler
+    virtualSocket.didCloseVirtualSocketStreamsHandler = self.didCloseVirtualSocketStreamsHandler
+
+    self.virtualSockets.modify {
+      $0[socket] = virtualSocket
+    }
+    virtualSocket.openStreams()
   }
 
   fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
