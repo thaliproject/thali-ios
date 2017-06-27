@@ -102,6 +102,10 @@ final class AdvertiserRelay {
       return
     }
 
+    guard tcpClient != nil else {
+      return
+    }
+    
     let connectResult = self.tcpClient.connectToLocalhost(onPort: self.clientPort)
 
     guard connectResult.error == nil else {
