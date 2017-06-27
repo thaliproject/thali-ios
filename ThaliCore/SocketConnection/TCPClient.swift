@@ -21,6 +21,7 @@ class TCPClient: NSObject {
   // MARK: - Public methods
   required init(didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
                 didDisconnect: @escaping (GCDAsyncSocket) -> Void) {
+    print("[ThaliCore] TCPClient.\(#function)")
     didReadDataHandler = didReadData
     didSocketDisconnectHandler = didDisconnect
     super.init()

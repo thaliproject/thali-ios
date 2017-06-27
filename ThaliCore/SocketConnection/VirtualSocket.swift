@@ -35,6 +35,7 @@ class VirtualSocket: NSObject {
 
   // MARK: - Initialize
   init(inputStream: InputStream, outputStream: OutputStream) {
+    print("[ThaliCore] VirtualSocket.\(#function)")
     self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream

@@ -35,6 +35,7 @@ class TCPListener: NSObject {
   required init(with didReadDataFromSocket: @escaping (GCDAsyncSocket, Data) -> Void,
                 socketDisconnected: @escaping (GCDAsyncSocket) -> Void,
                 stoppedListening: @escaping () -> Void) {
+    print("[ThaliCore] TCPListener.\(#function)")
     listeningSocket = GCDAsyncSocket()
     didReadDataFromSocketHandler = didReadDataFromSocket
     didSocketDisconnectHandler = socketDisconnected
@@ -43,6 +44,10 @@ class TCPListener: NSObject {
     listeningSocket.autoDisconnectOnClosedReadStream = false
     listeningSocket.delegate = self
     listeningSocket.delegateQueue = socketQueue
+  }
+
+  deinit {
+    print("[ThaliCore] TCPListener.\(#function)")
   }
 
   // MARK: - Internal methods

@@ -101,12 +101,15 @@ public final class AdvertiserManager {
     }
 
     let newPeer = currentAdvertiser?.peer.nextGenerationPeer() ?? Peer()
+    print("[ThaliCore] AdvertiserManager.\(#function) \(newPeer)")
 
     let advertiser = Advertiser(peer: newPeer,
                                 serviceType: serviceType,
                                 receivedInvitation: { [weak self] session in
                                   guard let strongSelf = self else { return }
 
+                                  print("[ThaliCore] Advertiser: session connected " +
+                                        "\(newPeer)")
                                   strongSelf.activeRelays.modify {
                                     let relay = AdvertiserRelay(with: session, on: port)
                                     $0[newPeer.uuid] = relay
@@ -116,8 +119,8 @@ public final class AdvertiserManager {
                                   [weak self] (previousState: MCSessionState?) in
                                   guard let strongSelf = self else { return }
 
-                                  print("[ThaliCore] Advertiser: session NOT connected " +
-                                        "peer:\(newPeer.uuid)")
+                                  print("[ThaliCore] Advertiser: session notConnected " +
+                                        "\(newPeer)")
                                   strongSelf.activeRelays.modify {
                                     if let relay = $0[newPeer.uuid] {
                                       relay.closeRelay()

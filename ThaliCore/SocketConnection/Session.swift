@@ -93,7 +93,7 @@ class Session: NSObject {
   }
 
   deinit {
-    print("[ThaliCore] Session.\(#function) \(self.identifier)")
+    print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
   }
 
   /**
@@ -110,10 +110,11 @@ class Session: NSObject {
      `NSOutputStream` object upon success.
    */
   func startOutputStream(with name: String) throws -> OutputStream {
-    print("[ThaliCore] Session.\(#function) peer:\(self.identifier.displayName)")
+    print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
     do {
       return try session.startStream(withName: name, toPeer: identifier)
     } catch {
+      print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName) FAILED")
       throw ThaliCoreError.connectionFailed
     }
   }
@@ -122,7 +123,7 @@ class Session: NSObject {
    Disconnects the local peer from the session.
    */
   func disconnect() {
-    print("[ThaliCore] Session.\(#function) peer:\(self.identifier.displayName)")
+    print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
     session.disconnect()
   }
 }
@@ -155,8 +156,8 @@ extension Session: MCSessionDelegate {
     assert(identifier.displayName == peerID.displayName)
 
     let currentState = self.sessionState.value
-    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName) state:" +
-          "\(getStateValue(currentState)) -> \(getStateValue(state))")
+    print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName) " +
+          "state: \(getStateValue(currentState)) -> \(getStateValue(state))")
 
     self.sessionState.modify {
       $0 = state

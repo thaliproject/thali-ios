@@ -89,6 +89,8 @@ final class Browser: NSObject {
     }
 
     let mcPeerID = MCPeerID(displayName: UUID().uuidString)
+    print("[ThaliCore] Browser.\(#function) peer:\(mcPeerID.displayName)")
+
     browser = MCNearbyServiceBrowser(peer: mcPeerID, serviceType: serviceType)
     didFindPeerHandler = foundPeer
     didLosePeerHandler = lostPeer

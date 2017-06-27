@@ -46,6 +46,7 @@ final class BrowserRelay {
 
   // MARK: - Internal methods
   func openRelay(with completion: @escaping (_ port: UInt16?, _ error: Error?) -> Void) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     let anyAvailablePort: UInt16 = 0
     tcpListener.startListeningForConnections(
                                    on: anyAvailablePort,
@@ -111,7 +112,9 @@ final class BrowserRelay {
 
   fileprivate func didAcceptConnectionHandler(_ socket: GCDAsyncSocket) {
     createVirtualSocket { [weak self] virtualSocket, error in
-      guard let strongSelf = self else { return }
+      guard let strongSelf = self else {
+        return
+      }
 
       guard error == nil else {
         socket.disconnect()
@@ -199,8 +202,9 @@ final class BrowserRelay {
   fileprivate func createVirtualSocket(
                       with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     print("[ThaliCore] BrowserRelay.\(#function)")
-    guard virtualSockets.value.count <= maxVirtualSocketsCount else {
-      completion(nil, ThaliCoreError.connectionFailed)
+    guard virtualSockets.value.count < maxVirtualSocketsCount else {
+      print("[ThaliCore] BrowserRelay.\(#function) MAX connections reached")
+      completion(nil, ThaliCoreError.maxConnectionsReached)
       return
     }
 
