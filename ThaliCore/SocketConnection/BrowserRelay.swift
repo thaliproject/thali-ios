@@ -153,10 +153,6 @@ final class BrowserRelay {
   // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
-    // This is a temporarily fix to avoid a deadlock when closeRelay() is called,
-    // but it doesn't prevent a deadlock if didCloseVirtualSocketStreamsHandler() or
-    // didSocketDisconnectHandler() are called when an error occurs.
-
     guard self.disconnecting.value == false else {
       return
     }
@@ -172,11 +168,25 @@ final class BrowserRelay {
   // Called by TCPListener
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
-    var virtualSocket: VirtualSocket?
+    var virtualSocket: VirtualSocket!
     self.virtualSockets.withValue {
       virtualSocket = $0[socket]
     }
-    virtualSocket?.closeStreams()
+
+    guard virtualSocket != nil else {
+      return
+    }
+    
+    // We remove the virtual socket here because if the streams are not opened yet
+    // calling closeStreams will not trigger didCloseVirtualSocketStreamsHandler
+    // causing a virtual socket leak
+    virtualSockets.modify {
+      if let socket = $0.key(for: virtualSocket) {
+        $0.removeValue(forKey: socket)
+      }
+    }
+
+    virtualSocket.closeStreams()
   }
 
   // Called by TCPListener
