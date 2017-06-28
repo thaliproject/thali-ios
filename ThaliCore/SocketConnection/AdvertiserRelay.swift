@@ -69,9 +69,9 @@ final class AdvertiserRelay {
 
   func disconnectNonTCPSession() {
     print("[ThaliCore] AdvertiserRelay.\(#function)")
-    self.nonTCPsession.disconnect()
-    self.nonTCPsession.didChangeStateHandler = nil
-    self.nonTCPsession.didReceiveInputStreamHandler = nil
+    self.nonTCPsession?.disconnect()
+    self.nonTCPsession?.didChangeStateHandler = nil
+    self.nonTCPsession?.didReceiveInputStreamHandler = nil
     self.nonTCPsession = nil
   }
 
