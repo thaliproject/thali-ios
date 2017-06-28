@@ -146,6 +146,7 @@ public final class AdvertiserManager {
    Dispose of all advertisers.
    */
   public func stopAdvertising() {
+    print("[ThaliCore] AdvertiserManager.\(#function)")
     advertisers.modify {
       $0.forEach { $0.stopAdvertising() }
       $0.removeAll()

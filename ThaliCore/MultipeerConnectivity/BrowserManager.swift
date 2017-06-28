@@ -141,8 +141,10 @@ public final class BrowserManager {
   public func connectToPeer(_ peerIdentifier: String,
                             syncValue: String,
                             completion: @escaping ConnectToPeerCompletionHandler) {
-    print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier)")
+
     guard let currentBrowser = self.currentBrowser else {
+      print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier) " +
+            "error: startListeningNotActive")
       completion(syncValue,
                  ThaliCoreError.startListeningNotActive,
                  nil)
@@ -156,14 +158,14 @@ public final class BrowserManager {
       return
     }
 
-    print("[ThaliCore] BrowserManager.\(#function) last generation \(lastGenerationPeer)")
-
     if let activeRelay = activeRelays.value[lastGenerationPeer] {
-      print("[ThaliCore] BrowserManager.\(#function) found active relay")
+      print("[ThaliCore] BrowserManager.\(#function) \(lastGenerationPeer) found active relay")
       completion(syncValue,
                 nil,
                 activeRelay.listenerPort)
       return
+    } else {
+      print("[ThaliCore] BrowserManager.\(#function) \(lastGenerationPeer) new relay")
     }
 
     do {
@@ -173,8 +175,8 @@ public final class BrowserManager {
                                         [weak self] in
                                         guard let strongSelf = self else { return }
 
-                                        print("[ThaliCore] Browser: session connected " +
-                                              "connected to \(lastGenerationPeer)")
+                                        print("[ThaliCore] Browser: session connected to " +
+                                              "\(lastGenerationPeer)")
 
                                         let relay = strongSelf.activeRelays.value[lastGenerationPeer]
                                         relay?.openRelay { port, error in

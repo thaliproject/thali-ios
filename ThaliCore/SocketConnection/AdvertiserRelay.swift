@@ -24,6 +24,7 @@ final class AdvertiserRelay {
 
   // MARK: - Initialization
   init(with session: Session, on port: UInt16) {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     self.nonTCPsession = session
     self.clientPort = port
     self.virtualSockets = Atomic([:])
@@ -134,7 +135,7 @@ final class AdvertiserRelay {
 
   // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
-    print("[ThaliCore] AdvertiserRelay.\(#function)")
+    print("[ThaliCore] AdvertiserRelay.\(#function) disconnecting:\(disconnecting.value)")
 
     guard self.disconnecting.value == false else {
       return
@@ -158,7 +159,7 @@ final class AdvertiserRelay {
 
   // Called by TCPClient.socketDidDisconnect()
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
-    print("[ThaliCore] AdvertiserRelay.\(#function)")
+    print("[ThaliCore] AdvertiserRelay.\(#function) disconnecting:\(disconnecting.value)")
 
     guard self.disconnecting.value == false else {
       return

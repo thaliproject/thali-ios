@@ -33,9 +33,14 @@ class VirtualSocket: NSObject {
   fileprivate var pendingDataToWrite: NSMutableData?
   fileprivate let lock: PosixThreadMutex
 
+  static var counter = 0
+  let myID: Int
+
   // MARK: - Initialize
   init(inputStream: InputStream, outputStream: OutputStream) {
-    print("[ThaliCore] VirtualSocket.\(#function)")
+    VirtualSocket.counter += 1
+    self.myID = VirtualSocket.counter
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID)")
     self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
@@ -44,7 +49,7 @@ class VirtualSocket: NSObject {
   }
 
   deinit {
-    print("[ThaliCore] VirtualSocket.\(#function)")
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID)")
   }
 
   // MARK: - Internal methods
@@ -73,12 +78,12 @@ class VirtualSocket: NSObject {
       self.outputStream?.open()
 
       RunLoop.current.run(until: Date.distantFuture)
-      print("[ThaliCore] VirtualSocket exited RunLoop")
+      print("[ThaliCore] VirtualSocket exited RunLoop  vsID:\(self.myID)")
     })
   }
 
   func closeStreams() {
-    print("[ThaliCore] VirtualSocket.\(#function)")
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID)")
     lock.lock()
     defer {
       lock.unlock()
@@ -201,7 +206,7 @@ extension VirtualSocket: StreamDelegate {
   fileprivate func handleEventOnOutputStream(_ eventCode: Stream.Event) {
 
     guard self.streamsOpened == true else {
-      print("[ThaliCore] VirtualSocket.\(#function) streams are closed")
+      print("[ThaliCore] VirtualSocket.\(#function) streams are closed vsID:\(myID)")
       return
     }
 

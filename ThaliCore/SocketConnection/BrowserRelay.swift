@@ -32,6 +32,7 @@ final class BrowserRelay {
 
   // MARK: - Initialization
   init(session: Session, generation: Int, createVirtualSocketTimeout: TimeInterval) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     self.nonTCPsession = session
     self.generation = generation
     self.createVirtualSocketTimeout = createVirtualSocketTimeout
