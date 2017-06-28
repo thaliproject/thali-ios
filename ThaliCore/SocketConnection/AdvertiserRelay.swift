@@ -56,11 +56,11 @@ final class AdvertiserRelay {
     self.tcpClient.disconnectClientsFromLocalhost()
     self.tcpClient = nil
 
-    for (_, virtualSocket) in self.virtualSockets.value.enumerated() {
-      virtualSocket.value.closeStreams()
-    }
-
-    self.virtualSockets.modify {
+    virtualSockets.modify {
+      $0.forEach {
+        $0.key.disconnect()
+        $0.value.closeStreams()
+      }
       $0.removeAll()
     }
 
