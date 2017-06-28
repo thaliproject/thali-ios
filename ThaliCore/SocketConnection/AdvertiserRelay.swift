@@ -74,14 +74,15 @@ final class AdvertiserRelay {
 
   // Called by VirtualSocket.readDataFromInputStream()
   fileprivate func didReadDataFromStreamHandler(_ virtualSocket: VirtualSocket, data: Data) {
-    guard let socket = virtualSockets.value.key(for: virtualSocket) else {
+    let socket = virtualSockets.value.key(for: virtualSocket)
+    guard socket != nil else {
       virtualSocket.closeStreams()
       return
     }
 
     let noTimeout: TimeInterval = -1
     let defaultDataTag = 0
-    socket.write(data, withTimeout: noTimeout, tag: defaultDataTag)
+    socket?.write(data, withTimeout: noTimeout, tag: defaultDataTag)
   }
 
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
@@ -151,10 +152,11 @@ final class AdvertiserRelay {
 
   // Called by TCPClient
   fileprivate func didReadDataHandler(_ socket: GCDAsyncSocket, data: Data) {
+    var virtualSocket: VirtualSocket?
     self.virtualSockets.withValue {
-      let virtualSocket = $0[socket]
-      virtualSocket?.writeDataToOutputStream(data)
+      virtualSocket = $0[socket]
     }
+    virtualSocket?.writeDataToOutputStream(data)
   }
 
   // Called by TCPClient.socketDidDisconnect()
