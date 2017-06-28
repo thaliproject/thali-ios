@@ -64,6 +64,11 @@ final class AdvertiserRelay {
       $0.removeAll()
     }
 
+    self.disconnectNonTCPSession()
+  }
+
+  func disconnectNonTCPSession() {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
     self.nonTCPsession.disconnect()
     self.nonTCPsession.didChangeStateHandler = nil
     self.nonTCPsession.didReceiveInputStreamHandler = nil
@@ -138,6 +143,8 @@ final class AdvertiserRelay {
   fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
     print("[ThaliCore] AdvertiserRelay.\(#function) disconnecting:\(disconnecting.value)")
 
+    virtualSocket.didCloseVirtualSocketStreamsHandler = nil
+
     guard self.disconnecting.value == false else {
       return
     }
@@ -167,10 +174,23 @@ final class AdvertiserRelay {
       return
     }
 
-    var virtualSocket: VirtualSocket?
+    self.disconnectNonTCPSession()
+
+    var virtualSocket: VirtualSocket!
     self.virtualSockets.withValue {
       virtualSocket = $0[socket]
     }
-    virtualSocket?.closeStreams()
+
+    guard virtualSocket != nil else {
+      return
+    }
+
+    self.virtualSockets.modify {
+      if let socket = $0.key(for: virtualSocket) {
+        $0.removeValue(forKey: socket)
+      }
+    }
+
+    virtualSocket.closeStreams()
   }
 }

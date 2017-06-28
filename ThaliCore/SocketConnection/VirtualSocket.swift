@@ -78,7 +78,7 @@ class VirtualSocket: NSObject {
       self.outputStream?.open()
 
       RunLoop.current.run(until: Date.distantFuture)
-      print("[ThaliCore] VirtualSocket exited RunLoop  vsID:\(self.myID)")
+      print("[ThaliCore] VirtualSocket exited RunLoop vsID:\(self.myID)")
     })
   }
 
@@ -115,6 +115,9 @@ class VirtualSocket: NSObject {
     }
 
     CFRunLoopStop(self.runLoop!.getCFRunLoop())
+
+    self.didOpenVirtualSocketStreamsHandler = nil
+    self.didReadDataFromStreamHandler = nil
   }
 
   func writeDataToOutputStream(_ data: Data) {
