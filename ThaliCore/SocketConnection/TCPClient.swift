@@ -71,7 +71,7 @@ extension TCPClient: GCDAsyncSocketDelegate {
   func socketDidDisconnect(_ socket: GCDAsyncSocket, withError err: Error?) {
     print("[ThaliCore] TCPClient.\(#function) disconnecting:\(self.disconnecting) " +
           "socket error:\(err)")
-    
+
     guard self.disconnecting == false else {
       return
     }

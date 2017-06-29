@@ -176,7 +176,7 @@ final class BrowserRelay {
     guard virtualSocket != nil else {
       return
     }
-    
+
     // We remove the virtual socket here because if the streams are not opened yet
     // calling closeStreams will not trigger didCloseVirtualSocketStreamsHandler
     // causing a virtual socket leak
