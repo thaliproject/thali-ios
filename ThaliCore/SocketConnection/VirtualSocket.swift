@@ -33,14 +33,17 @@ class VirtualSocket: NSObject {
   fileprivate var pendingDataToWrite: NSMutableData?
   fileprivate let lock: PosixThreadMutex
 
-  static var counter = 0
+  static var idCounter = 0
+  static var openedSocketsCount = 0
   let myID: Int
 
   // MARK: - Initialize
   init(inputStream: InputStream, outputStream: OutputStream) {
-    VirtualSocket.counter += 1
-    self.myID = VirtualSocket.counter
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID)")
+    VirtualSocket.openedSocketsCount += 1
+    VirtualSocket.idCounter += 1
+    self.myID = VirtualSocket.idCounter
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID), " +
+          "VS count:\(VirtualSocket.openedSocketsCount)")
     self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
@@ -49,7 +52,9 @@ class VirtualSocket: NSObject {
   }
 
   deinit {
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID)")
+    VirtualSocket.openedSocketsCount -= 1
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID), " +
+          "VS count:\(VirtualSocket.openedSocketsCount)")
   }
 
   // MARK: - Internal methods
