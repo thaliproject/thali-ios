@@ -86,7 +86,8 @@ class BrowserRelayTests: XCTestCase {
     // Open
     TCPPortIsReturned = expectation(description: "TCP port is returned")
     var listenerPort: UInt16 = 0
-    let relay = BrowserRelay(session: nonTCPSession, generation: 0, createVirtualSocketTimeout: streamReceivedTimeout)
+    let relay = BrowserRelay(session: nonTCPSession, generation: 0,
+                             createVirtualSocketTimeout: streamReceivedTimeout)
 
     relay.openRelay { port, error in
       XCTAssertNil(error)
