@@ -34,16 +34,21 @@ class VirtualSocket: NSObject {
   fileprivate let lock: PosixThreadMutex
 
   static var idCounter = 0
-  static var openedSocketsCount = 0
+  static var openSockets: [Int] = []
+  static let initLock = PosixThreadMutex()
+
   let myID: Int
 
   // MARK: - Initialize
   init(inputStream: InputStream, outputStream: OutputStream) {
-    VirtualSocket.openedSocketsCount += 1
+    // For debugging purpose only
+    VirtualSocket.initLock.lock()
     VirtualSocket.idCounter += 1
+    VirtualSocket.openSockets.append(VirtualSocket.idCounter)
     self.myID = VirtualSocket.idCounter
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID), " +
-          "VS count:\(VirtualSocket.openedSocketsCount)")
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID) \(VirtualSocket.openSockets)")
+    VirtualSocket.initLock.unlock()
+
     self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
@@ -52,9 +57,13 @@ class VirtualSocket: NSObject {
   }
 
   deinit {
-    VirtualSocket.openedSocketsCount -= 1
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID), " +
-          "VS count:\(VirtualSocket.openedSocketsCount)")
+    // For debugging purpose only
+    VirtualSocket.initLock.lock()
+    if let index = VirtualSocket.openSockets.index(of: self.myID) {
+      VirtualSocket.openSockets.remove(at: index)
+    }
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID) \(VirtualSocket.openSockets)")
+    VirtualSocket.initLock.unlock()
   }
 
   // MARK: - Internal methods
