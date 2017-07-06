@@ -174,8 +174,6 @@ final class AdvertiserRelay {
       return
     }
 
-    self.disconnectNonTCPSession()
-
     var virtualSocket: VirtualSocket!
     self.virtualSockets.withValue {
       virtualSocket = $0[socket]
