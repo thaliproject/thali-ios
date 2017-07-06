@@ -212,10 +212,14 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasSpaceAvailable:
       break
     case Stream.Event.errorOccurred:
+      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(myID)")
       closeStreams()
     case Stream.Event.endEncountered:
+      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(myID)")
+      closeStreams()
       break
     default:
+      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(myID)")
       break
     }
   }
@@ -236,10 +240,14 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasSpaceAvailable:
       writePendingData()
     case Stream.Event.errorOccurred:
+      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(myID)")
       closeStreams()
     case Stream.Event.endEncountered:
+      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(myID)")
+      closeStreams()
       break
     default:
+      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(myID)")
       break
     }
   }
