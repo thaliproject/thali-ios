@@ -132,6 +132,9 @@ class VirtualSocket: NSObject {
 
     self.didOpenVirtualSocketStreamsHandler = nil
     self.didReadDataFromStreamHandler = nil
+
+    inputStream = nil
+    outputStream = nil
   }
 
   func writeDataToOutputStream(_ data: Data) {
@@ -191,8 +194,6 @@ extension VirtualSocket: StreamDelegate {
       handleEventOnInputStream(eventCode)
     } else if aStream == self.outputStream {
       handleEventOnOutputStream(eventCode)
-    } else {
-      assertionFailure()
     }
   }
 
