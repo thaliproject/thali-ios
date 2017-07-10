@@ -219,7 +219,7 @@ public final class BrowserManager {
         $0[lastGenerationPeer] = relay
       }
     } catch let error {
-      print("[ThaliCore] BrowserManager.\(#function) error: \(error)")
+      print("[ThaliCore] BrowserManager.\(#function) error:\(error)")
       completion(syncValue, error, nil)
     }
   }

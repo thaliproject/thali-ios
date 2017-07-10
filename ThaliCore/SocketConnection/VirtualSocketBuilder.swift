@@ -8,7 +8,7 @@
 //
 
 /**
- Base class for `BrowserVirtualSocketBuilder` and `AdvertiserVirtualSocketBuilder`
+ Base class for `BrowserVirtualSocketBuilder`
  */
 class VirtualSocketBuilder {
 
@@ -119,23 +119,25 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
   func startBuilding(with completion: @escaping (VirtualSocket?, Error?) -> Void) {
     self.completion = completion
 
-    do {
-      let outputStream = try nonTCPsession.startOutputStream(with: streamName)
-      self.outputStream = outputStream
-
-      let streamReceivedBackTimeout: DispatchTime = .now() + self.streamReceivedBackTimeout
-
-      DispatchQueue.main.asyncAfter(deadline: streamReceivedBackTimeout) {
-        [weak self] in
-        guard let strongSelf = self else { return }
-
-        if strongSelf.streamReceivedBack.value == false {
-          strongSelf.completion?(nil, ThaliCoreError.connectionTimedOut)
-          strongSelf.completion = nil
-        }
-      }
-    } catch _ {
+    let outputStream = nonTCPsession.startOutputStream(with: streamName)
+    guard outputStream != nil else {
+      print("[ThaliCore] VirtualSocketBuilder: startOutputStream() failed)")
       self.completion?(nil, ThaliCoreError.connectionFailed)
+      self.completion = nil
+      return
+    }
+
+    self.outputStream = outputStream
+    let streamReceivedBackTimeout: DispatchTime = .now() + self.streamReceivedBackTimeout
+
+    DispatchQueue.main.asyncAfter(deadline: streamReceivedBackTimeout) {
+      [weak self] in
+      guard let strongSelf = self else { return }
+
+      if strongSelf.streamReceivedBack.value == false {
+        strongSelf.completion?(nil, ThaliCoreError.connectionTimedOut)
+        strongSelf.completion = nil
+      }
     }
   }
 
@@ -160,40 +162,5 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
     let vs = VirtualSocket(inputStream: inputStream, outputStream: outputStream)
     completion?(vs, nil)
     completion = nil
-  }
-}
-
-/**
- Creates `VirtualSocket` on `AdvertiserRelay` if possible.
- */
-final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
-
-  /**
-   Creates new `VirtualSocket` object synchronously.
-
-   Method is trying to start new *outputStream* using the exact same name as the *inputStream*.
-   If succeeded returns a `VirtualSocket` and a nil error, otherwise returns a nil `VirtualSocket`
-   and an error.
-
-   - parameters:
-     - inputStream:
-       inputStream object that will be used in new `VirtualSocket`.
-
-     - inputStreamName:
-       Name of *inputStream*. It will be used to start new *outputStream*.
-
-   - returns:
-     A `VirtualSocket` object and an error object.
-   */
-  func createVirtualSocket(inputStream: InputStream, inputStreamName: String) ->
-                                  (virtualSocket: VirtualSocket?, error: Error?) {
-    do {
-      let outputStream = try nonTCPsession.startOutputStream(with: inputStreamName)
-      let virtualNonTCPSocket = VirtualSocket(inputStream: inputStream, outputStream: outputStream)
-
-      return(virtualNonTCPSocket, nil)
-    } catch let error {
-      return(nil, error)
-    }
   }
 }

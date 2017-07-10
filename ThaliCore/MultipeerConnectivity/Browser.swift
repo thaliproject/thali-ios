@@ -188,7 +188,7 @@ extension Browser: MCNearbyServiceBrowserDelegate {
       availablePeers.modify { $0[peer] = peerID }
       didFindPeerHandler(peer)
     } catch let error {
-      print("[ThaliCore] failed to parse \(peerID) error: \(error)")
+      print("[ThaliCore] failed to parse \(peerID) error:\(error)")
     }
   }
 
@@ -199,12 +199,12 @@ extension Browser: MCNearbyServiceBrowserDelegate {
       _ = availablePeers.modify { $0.removeValue(forKey: peer) }
       didLosePeerHandler(peer)
     } catch let error {
-      print("[ThaliCore] failed to parse \(peerID) error: \(error)")
+      print("[ThaliCore] failed to parse \(peerID) error:\(error)")
     }
   }
 
   func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
-    print("[ThaliCore] Browser.\(#function) error: \(error)")
+    print("[ThaliCore] Browser.\(#function) error:\(error)")
     stopListening()
     startBrowsingErrorHandler?(error)
   }

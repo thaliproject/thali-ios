@@ -7,7 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-// MARK: - Methods that available for Relay<BrowserVirtualSocketBuilder>
 final class BrowserRelay {
 
   // MARK: - Public state
@@ -43,6 +42,10 @@ final class BrowserRelay {
     tcpListener = TCPListener(with: didReadDataFromSocketHandler,
                               socketDisconnected: didSocketDisconnectHandler,
                               stoppedListening: didStopListeningHandler)
+  }
+
+  deinit {
+    print("[ThaliCore] BrowserRelay.\(#function)")
   }
 
   // MARK: - Internal methods
@@ -152,7 +155,7 @@ final class BrowserRelay {
 
   // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
-    print("[ThaliCore] BrowserRelay.\(#function)")
+    print("[ThaliCore] BrowserRelay.\(#function) disconnecting:\(self.disconnecting.value)")
     guard self.disconnecting.value == false else {
       return
     }
@@ -183,6 +186,7 @@ final class BrowserRelay {
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         $0.removeValue(forKey: socket)
+        print("[ThaliCore] BrowserRelay.\(#function) socket removed, count:\($0.count)")
       }
     }
 

@@ -109,13 +109,13 @@ class Session: NSObject {
    - returns:
      `NSOutputStream` object upon success.
    */
-  func startOutputStream(with name: String) throws -> OutputStream {
+  func startOutputStream(with name: String) -> OutputStream? {
     print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
     do {
       return try session.startStream(withName: name, toPeer: identifier)
     } catch {
-      print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName) FAILED")
-      throw ThaliCoreError.connectionFailed
+      print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName) failed")
+      return nil
     }
   }
 

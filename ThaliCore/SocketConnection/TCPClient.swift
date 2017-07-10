@@ -31,8 +31,7 @@ class TCPClient: NSObject {
     print("[ThaliCore] TCPClient.\(#function)")
   }
 
-  func connectToLocalhost(onPort port: UInt16) ->
-                         (socket: GCDAsyncSocket?, error: ThaliCoreError?) {
+  func connectToLocalhost(onPort port: UInt16) -> GCDAsyncSocket? {
     print("[ThaliCore] TCPClient.\(#function)")
     do {
       let socket = GCDAsyncSocket()
@@ -40,9 +39,10 @@ class TCPClient: NSObject {
       socket.delegate = self
       socket.delegateQueue = socketQueue
       try socket.connect(toHost: "127.0.0.1", onPort: port)
-      return(socket, nil)
-    } catch _ {
-      return(nil, ThaliCoreError.connectionFailed)
+      return socket
+    } catch let error {
+      print("[ThaliCore] TCPClient.\(#function) failed, error:\(error)")
+      return nil
     }
   }
 
@@ -64,6 +64,8 @@ class TCPClient: NSObject {
 extension TCPClient: GCDAsyncSocketDelegate {
 
   func socket(_ socket: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+    print("[ThaliCore] TCPClient: didConnectToHost, active connections count: " +
+          "\(activeConnections.value.count)")
     activeConnections.modify { $0.append(socket) }
     socket.readData(withTimeout: -1, tag: 0)
   }

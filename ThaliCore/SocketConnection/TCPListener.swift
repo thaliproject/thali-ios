@@ -62,7 +62,8 @@ class TCPListener: NSObject {
         listening = true
         didAcceptConnectionHandler = connectionAccepted
         completion(listeningSocket.localPort, nil)
-      } catch _ {
+      } catch let error {
+        print("[ThaliCore] TCPListener.\(#function) failed, error:\(error)")
         listening = false
         completion(0, ThaliCoreError.connectionFailed)
       }
@@ -90,6 +91,7 @@ extension TCPListener: GCDAsyncSocketDelegate {
       activeConnections.modify {
         if let indexOfDisconnectedSocket = $0.index(of: socket) {
           $0.remove(at: indexOfDisconnectedSocket)
+          print("[ThaliCore] TCPListener.\(#function) socket removed, count:\($0.count)")
         }
       }
       didSocketDisconnectHandler(socket)

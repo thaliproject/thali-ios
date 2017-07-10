@@ -7,7 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-// MARK: - Methods that available for Relay<AdvertiserVirtualSocketBuilder>
 final class AdvertiserRelay {
 
   // MARK: - Internal state
@@ -93,37 +92,25 @@ final class AdvertiserRelay {
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
                                                        inputStreamName: String) {
 
-    let virtualSocketBuilder = AdvertiserVirtualSocketBuilder(nonTCPsession: nonTCPsession)
-    let createVSResult = virtualSocketBuilder.createVirtualSocket(inputStream: inputStream,
-                                                                  inputStreamName: inputStreamName)
-
-    guard createVSResult.error == nil else {
+    let outputStream = self.nonTCPsession.startOutputStream(with: inputStreamName)
+    guard outputStream != nil else {
       // proper error handling (todo)
-      print("[ThaliCore] createVirtualSocket failed: \(String(describing: createVSResult.error))")
+      print("[ThaliCore] AdvertiserRelay: startOutputStream() failed)")
       return
     }
 
-    guard let virtualSocket = createVSResult.virtualSocket else {
-      // proper error handling (todo)
-      print("[ThaliCore] createVirtualSocket failed: returned VirtualSocket is nil)")
-      return
-    }
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: outputStream!)
 
     guard tcpClient != nil else {
+      // proper error handling (todo)
+      print("[ThaliCore] AdvertiserRelay: tcpClient is nil)")
       return
     }
 
-    let connectResult = self.tcpClient.connectToLocalhost(onPort: self.clientPort)
-
-    guard connectResult.error == nil else {
+    let socket = self.tcpClient.connectToLocalhost(onPort: self.clientPort)
+    guard socket != nil else {
       // proper error handling (todo)
-      print("[ThaliCore] connectToLocalhost failed: \(String(describing: connectResult.error))")
-      return
-    }
-
-    guard let socket = connectResult.socket else {
-      // proper error handling (todo)
-      print("[ThaliCore] connectToLocalhost failed: returned socket is nil)")
+      print("[ThaliCore] AdvertiserRelay: connectToLocalhost() failed)")
       return
     }
 
@@ -132,7 +119,7 @@ final class AdvertiserRelay {
     virtualSocket.didCloseVirtualSocketStreamsHandler = self.didCloseVirtualSocketStreamsHandler
 
     self.virtualSockets.modify {
-      $0[socket] = virtualSocket
+      $0[socket!] = virtualSocket
     }
     virtualSocket.openStreams()
   }
@@ -186,6 +173,8 @@ final class AdvertiserRelay {
     self.virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         $0.removeValue(forKey: socket)
+        print("[ThaliCore] AdvertiserRelay.\(#function) removed virtual socket " +
+              "vsID:\(virtualSocket.myID)")
       }
     }
 
