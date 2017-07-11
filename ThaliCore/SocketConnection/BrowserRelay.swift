@@ -26,7 +26,6 @@ final class BrowserRelay {
   fileprivate var virtualSocketBuilders: Atomic<[String: BrowserVirtualSocketBuilder]>
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
   fileprivate let createVirtualSocketTimeout: TimeInterval
-  fileprivate let maxVirtualSocketsCount = 16
   fileprivate var disconnecting: Atomic<Bool>
 
   // MARK: - Initialization
@@ -217,11 +216,6 @@ final class BrowserRelay {
   fileprivate func createVirtualSocket(
                       with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     print("[ThaliCore] BrowserRelay.\(#function)")
-    guard virtualSockets.value.count < maxVirtualSocketsCount else {
-      print("[ThaliCore] BrowserRelay.\(#function) MAX connections reached")
-      completion(nil, ThaliCoreError.maxConnectionsReached)
-      return
-    }
 
     let newStreamName = UUID().uuidString
     let virtualSocketBuilder = BrowserVirtualSocketBuilder(
