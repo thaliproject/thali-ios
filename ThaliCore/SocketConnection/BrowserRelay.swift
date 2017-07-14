@@ -10,6 +10,12 @@
 final class BrowserRelay {
 
   // MARK: - Public state
+  public enum RelayState {
+
+    case connecting, connected, disconnecting
+
+  }
+  public var state: RelayState
   public fileprivate(set) var generation: Int
 
   // MARK: - Internal state
@@ -19,24 +25,25 @@ final class BrowserRelay {
   internal var listenerPort: UInt16 {
     return tcpListener.listenerPort
   }
-  internal var nonTCPsession: Session
+  internal var nonTCPsession: Session!
 
   // MARK: - Private state
   fileprivate var tcpListener: TCPListener!
   fileprivate var virtualSocketBuilders: Atomic<[String: BrowserVirtualSocketBuilder]>
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
   fileprivate let createVirtualSocketTimeout: TimeInterval
-  fileprivate var disconnecting: Atomic<Bool>
+
+  static let mutex = PosixThreadMutex()
 
   // MARK: - Initialization
   init(session: Session, generation: Int, createVirtualSocketTimeout: TimeInterval) {
     print("[ThaliCore] BrowserRelay.\(#function)")
+    self.state = RelayState.connecting
     self.nonTCPsession = session
     self.generation = generation
     self.createVirtualSocketTimeout = createVirtualSocketTimeout
     self.virtualSockets = Atomic([:])
     self.virtualSocketBuilders = Atomic([:])
-    self.disconnecting = Atomic(false)
     nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
     tcpListener = TCPListener(with: didReadDataFromSocketHandler,
                               socketDisconnected: didSocketDisconnectHandler,
@@ -56,26 +63,31 @@ final class BrowserRelay {
                                    connectionAccepted: didAcceptConnectionHandler) { port, error in
       completion(port, error)
     }
+    self.state = RelayState.connected
   }
 
   func closeRelay() {
-    print("[ThaliCore] BrowserRelay.\(#function) disconnecting:\(self.disconnecting.value)")
+    print("[ThaliCore] BrowserRelay.\(#function) state:\(self.state)")
     var proceed = false
-    self.disconnecting.modify {
-      if $0 == false {
-        $0 = true
-        proceed = true
-      }
+    BrowserRelay.mutex.lock()
+    if self.state != RelayState.disconnecting {
+      self.state = RelayState.disconnecting
+      proceed = true
     }
+    BrowserRelay.mutex.unlock()
 
     guard proceed else {
       return
     }
 
     tcpListener.stopListeningForConnectionsAndDisconnectClients()
+    tcpListener = nil
 
-    for (_, virtualSocket) in self.virtualSockets.value.enumerated() {
-      virtualSocket.value.closeStreams()
+    virtualSockets.modify {
+      $0.forEach {
+        $0.key.disconnect()
+        $0.value.closeStreams()
+      }
     }
 
     self.virtualSockets.modify {
@@ -86,11 +98,12 @@ final class BrowserRelay {
       $0.removeAll()
     }
 
-    disconnectNonTCPSession()
+    self.disconnectNonTCPSession()
   }
 
   func disconnectNonTCPSession() {
-    nonTCPsession.disconnect()
+    self.nonTCPsession?.disconnect()
+    self.nonTCPsession = nil
   }
 
   // MARK: - Private handlers
@@ -154,8 +167,8 @@ final class BrowserRelay {
 
   // Called by VirtualSocket.closeStreams()
   fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
-    print("[ThaliCore] BrowserRelay.\(#function) disconnecting:\(self.disconnecting.value)")
-    guard self.disconnecting.value == false else {
+    print("[ThaliCore] BrowserRelay.\(#function) state:\(String(describing: self.state))")
+    guard self.state != RelayState.disconnecting else {
       return
     }
 
@@ -195,7 +208,7 @@ final class BrowserRelay {
   // Called by TCPListener
   fileprivate func didStopListeningHandler() {
 
-    guard self.disconnecting.value == false else {
+    guard self.state != RelayState.disconnecting else {
       return
     }
 

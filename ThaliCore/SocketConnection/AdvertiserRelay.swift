@@ -174,7 +174,7 @@ final class AdvertiserRelay {
       if let socket = $0.key(for: virtualSocket) {
         $0.removeValue(forKey: socket)
         print("[ThaliCore] AdvertiserRelay.\(#function) removed virtual socket " +
-              "vsID:\(virtualSocket.myID)")
+              "vsID:\(virtualSocket.vsID)")
       }
     }
 

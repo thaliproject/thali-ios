@@ -36,7 +36,7 @@ class Session: NSObject {
   /**
    Represents `MCSession` object which enables and manages communication among all peers.
    */
-  fileprivate let session: MCSession
+  fileprivate var mcSession: MCSession!
 
   /**
    Represents a peer in a session.
@@ -84,12 +84,12 @@ class Session: NSObject {
        connected: @escaping () -> Void,
        notConnected: @escaping (_ previousState: MCSessionState?) -> Void) {
     print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
-    self.session = session
+    self.mcSession = session
     self.identifier = identifier
     self.didConnectHandler = connected
     self.didNotConnectHandler = notConnected
     super.init()
-    self.session.delegate = self
+    self.mcSession.delegate = self
   }
 
   deinit {
@@ -112,7 +112,7 @@ class Session: NSObject {
   func startOutputStream(with name: String) -> OutputStream? {
     print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
     do {
-      return try session.startStream(withName: name, toPeer: identifier)
+      return try mcSession.startStream(withName: name, toPeer: identifier)
     } catch {
       print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName) failed")
       return nil
@@ -120,11 +120,13 @@ class Session: NSObject {
   }
 
   /**
-   Disconnects the local peer from the session.
+   Disconnects the local peer from the MC Session.
    */
   func disconnect() {
     print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
-    session.disconnect()
+    mcSession?.disconnect()
+    mcSession?.delegate = nil
+    mcSession = nil
   }
 }
 

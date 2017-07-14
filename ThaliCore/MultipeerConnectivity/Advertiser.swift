@@ -127,7 +127,7 @@ final class Advertiser: NSObject {
    */
   func stopAdvertising() {
     if advertising {
-      print("[ThaliCore] Advertiser.\(#function)")
+      print("[ThaliCore] Advertiser.\(#function) peerID:\(self.peer.uuid)")
       advertiser.delegate = nil
       advertiser.stopAdvertisingPeer()
       advertising = false

@@ -31,45 +31,46 @@ class VirtualSocket: NSObject {
 
   let maxReadBufferLength = 1024
   fileprivate var pendingDataToWrite: NSMutableData?
-  fileprivate let lock: PosixThreadMutex
+  fileprivate let mutex: PosixThreadMutex
 
+  // --- For debugging purpose only ---
   static var idCounter = 0
   static var openSockets: [Int] = []
-  static let initLock = PosixThreadMutex()
-
-  let myID: Int
+  static let mutexForID = PosixThreadMutex()
+  let vsID: Int
+  // ----------------------------------
 
   // MARK: - Initialize
   init(inputStream: InputStream, outputStream: OutputStream) {
     // For debugging purpose only
-    VirtualSocket.initLock.lock()
+    VirtualSocket.mutexForID.lock()
     VirtualSocket.idCounter += 1
     VirtualSocket.openSockets.append(VirtualSocket.idCounter)
-    self.myID = VirtualSocket.idCounter
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID) \(VirtualSocket.openSockets)")
-    VirtualSocket.initLock.unlock()
+    self.vsID = VirtualSocket.idCounter
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(vsID) \(VirtualSocket.openSockets)")
+    VirtualSocket.mutexForID.unlock()
 
     self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
-    self.lock = PosixThreadMutex()
+    self.mutex = PosixThreadMutex()
     super.init()
   }
 
   deinit {
     // For debugging purpose only
-    VirtualSocket.initLock.lock()
-    if let index = VirtualSocket.openSockets.index(of: self.myID) {
+    VirtualSocket.mutexForID.lock()
+    if let index = VirtualSocket.openSockets.index(of: self.vsID) {
       VirtualSocket.openSockets.remove(at: index)
     }
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID) \(VirtualSocket.openSockets)")
-    VirtualSocket.initLock.unlock()
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(vsID) \(VirtualSocket.openSockets)")
+    VirtualSocket.mutexForID.unlock()
   }
 
   // MARK: - Internal methods
   func openStreams() {
-    lock.lock()
-    defer { lock.unlock() }
+    mutex.lock()
+    defer { mutex.unlock() }
 
     guard self.streamsOpened == false else {
       return
@@ -92,15 +93,15 @@ class VirtualSocket: NSObject {
       self.outputStream?.open()
 
       RunLoop.current.run(until: Date.distantFuture)
-      print("[ThaliCore] VirtualSocket exited RunLoop vsID:\(self.myID)")
+      print("[ThaliCore] VirtualSocket exited RunLoop vsID:\(self.vsID)")
     })
   }
 
   func closeStreams() {
-    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(myID)")
-    lock.lock()
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(vsID)")
+    mutex.lock()
     defer {
-      lock.unlock()
+      mutex.unlock()
       didCloseVirtualSocketStreamsHandler?(self)
     }
 
@@ -213,14 +214,14 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasSpaceAvailable:
       break
     case Stream.Event.errorOccurred:
-      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(vsID)")
       closeStreams()
     case Stream.Event.endEncountered:
-      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(vsID)")
       closeStreams()
       break
     default:
-      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(vsID)")
       break
     }
   }
@@ -228,7 +229,7 @@ extension VirtualSocket: StreamDelegate {
   fileprivate func handleEventOnOutputStream(_ eventCode: Stream.Event) {
 
     guard self.streamsOpened == true else {
-      print("[ThaliCore] VirtualSocket.\(#function) streams are closed vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) streams are closed vsID:\(vsID)")
       return
     }
 
@@ -241,14 +242,14 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasSpaceAvailable:
       writePendingData()
     case Stream.Event.errorOccurred:
-      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(vsID)")
       closeStreams()
     case Stream.Event.endEncountered:
-      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(vsID)")
       closeStreams()
       break
     default:
-      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(myID)")
+      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(vsID)")
       break
     }
   }

@@ -25,7 +25,7 @@ final class Browser: NSObject {
   /**
    Timeout for inviting a remote peer to a MCSession.
    */
-  internal let invitePeerTimeout: TimeInterval = 5.0
+  internal let invitePeerTimeout: TimeInterval = 1
 
   // MARK: - Private state
 
@@ -160,7 +160,7 @@ final class Browser: NSObject {
                               encryptionPreference: .optional)
 
     guard let mcPeerID = availablePeers.value[peer] else {
-      throw ThaliCoreError.unavailablePeer
+      throw ThaliCoreError.peerIsUnavailable
     }
 
     let session = Session(session: mcSession,

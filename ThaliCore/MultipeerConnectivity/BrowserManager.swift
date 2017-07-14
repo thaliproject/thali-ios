@@ -57,6 +57,11 @@ public final class BrowserManager {
    */
   fileprivate let peerAvailabilityChangedHandler: ([PeerAvailability]) -> Void
 
+  /**
+   Max retries if an error occurs while trying to connect to the remote peer.
+   */
+  static let maxConnectionRetries = 3
+
   // MARK: - Public state
 
   /**
@@ -140,7 +145,17 @@ public final class BrowserManager {
    */
   public func connectToPeer(_ peerIdentifier: String,
                             syncValue: String,
+                            retryCount: Int = 0,
                             completion: @escaping ConnectToPeerCompletionHandler) {
+
+    guard retryCount <= BrowserManager.maxConnectionRetries else {
+      print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier) " +
+            "error: max retries exceeded")
+      completion(syncValue,
+                 ThaliCoreError.connectionFailed,
+                 nil)
+      return
+    }
 
     guard let currentBrowser = self.currentBrowser else {
       print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier) " +
@@ -152,8 +167,10 @@ public final class BrowserManager {
     }
 
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peerIdentifier) else {
+      print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier) " +
+            "error: peer is unavailable")
       completion(syncValue,
-                 ThaliCoreError.unavailablePeer,
+                 ThaliCoreError.peerIsUnavailable,
                  nil)
       return
     }
@@ -165,55 +182,64 @@ public final class BrowserManager {
                 activeRelay.listenerPort)
       return
     } else {
-      print("[ThaliCore] BrowserManager.\(#function) \(lastGenerationPeer) new relay")
+      print("[ThaliCore] BrowserManager.\(#function) \(lastGenerationPeer) creating a new relay")
     }
 
     do {
-      let nonTCPsession = try currentBrowser.inviteToConnect(
-                                lastGenerationPeer,
-                                sessionConnected: {
-                                  [weak self] in
-                                  guard let strongSelf = self else { return }
+      let session = try currentBrowser.inviteToConnect(
+                          lastGenerationPeer,
+                          sessionConnected: {
+                            [weak self] in
+                            guard let strongSelf = self else { return }
 
-                                  print("[ThaliCore] Browser: session connected to " +
-                                        "\(lastGenerationPeer)")
+                            print("[ThaliCore] Browser: session connected to " +
+                                  "\(lastGenerationPeer)")
 
-                                  let relay = strongSelf.activeRelays.value[lastGenerationPeer]
-                                  relay?.openRelay { port, error in
-                                    completion(syncValue, error, port)
-                                  }
-                                },
-                                sessionNotConnected: {
-                                  [weak self] (previousState: MCSessionState?) in
-                                  guard let strongSelf = self else { return }
+                            let relay = strongSelf.activeRelays.value[lastGenerationPeer]
+                            relay?.openRelay { port, error in
+                              completion(syncValue, error, port)
+                            }
+                          },
+                          sessionNotConnected: {
+                            [weak self] (previousState: MCSessionState?) in
+                            guard let strongSelf = self else { return }
 
-                                  // An error may occur right away when the session is still
-                                  // in the .notConnected state, or after it has reached the
-                                  // .connecting state, in those two cases let's call the
-                                  // error handler.
-                                  if previousState != MCSessionState.connected {
-                                    print("[ThaliCore] Browser: session notConnected " +
-                                          "failed to connect to \(lastGenerationPeer)")
-                                    completion(syncValue,
-                                                ThaliCoreError.connectionFailed,
-                                                nil)
-                                  } else {
-                                    print("[ThaliCore] Browser: session notConnected " +
-                                          "\(lastGenerationPeer)")
-                                  }
+                            strongSelf.activeRelays.modify {
+                              if let relay = $0[lastGenerationPeer] {
+                                relay.closeRelay()
+                              }
+                              $0.removeValue(forKey: lastGenerationPeer)
+                            }
 
-                                  strongSelf.activeRelays.modify {
-                                    if let relay = $0[lastGenerationPeer] {
-                                      relay.closeRelay()
-                                    }
-                                    $0.removeValue(forKey: lastGenerationPeer)
-                                    print("[ThaliCore] Browser: session notConnected " +
-                                          "removed relay for \(lastGenerationPeer)")
-                                  }
-                                })
+                            if previousState == MCSessionState.connected {
+                              // The session may have disconnected because the application
+                              // has explicitly closed the connection to the remote peer
+                              // or because an error occurred.
+                              // If an error occurred, the application should have already
+                              // been notified by the error handler of the tcp connection,
+                              // here we simply notify the event and let the application
+                              // deal with it if it registered for this event.
+                              print("[ThaliCore] Browser: session notConnected " +
+                                    "fire notification for \(lastGenerationPeer)")
+                              completion(syncValue,
+                                         ThaliCoreError.sessionDisconnected,
+                                         nil)
+                            } else {
+                              // An error may occur when the session is still in the
+                              // 'notConnected' state or after it has reached the
+                              // 'connecting' state but it's not yet 'connected', in those
+                              // two cases let's retry to connect to the remote peer.
+                              print("[ThaliCore] Browser: session notConnected retry " +
+                                    "count #\(retryCount) for \(lastGenerationPeer)")
+                              strongSelf.connectToPeer(peerIdentifier,
+                                                        syncValue: syncValue,
+                                                        retryCount: retryCount + 1,
+                                                        completion: completion)
+                            }
+                          })
 
       activeRelays.modify {
-        let relay = BrowserRelay(session: nonTCPsession,
+        let relay = BrowserRelay(session: session,
                                  generation: lastGenerationPeer.generation,
                                  createVirtualSocketTimeout: self.inputStreamReceiveTimeout)
         $0[lastGenerationPeer] = relay
@@ -301,9 +327,16 @@ public final class BrowserManager {
       }
     }
 
-    // This will trigger the sessionNotConnected handler that will
-    // remove the relay from the activeRelays list.
-    self.activeRelays.value[peer]?.disconnectNonTCPSession()
+    let relay = self.activeRelays.value[peer]
+    if relay?.state == BrowserRelay.RelayState.connected {
+      // If the relay is stil connecting or if it's already disconnecting let
+      // the connection/disconnection logic take care of dealing with the
+      // 'session' and with the 'relay'.
+      // If the relay is connected, call disconnectNonTCPSession() that will
+      // trigger the 'sessionNotConnected' handler that in turn will remove the
+      // relay from the activeRelays list.
+      relay?.disconnectNonTCPSession()
+    }
 
     if peer == lastGenerationPeer {
       let updatedPeerAvailability = PeerAvailability(peer: peer, available: false)

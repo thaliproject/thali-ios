@@ -18,7 +18,8 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
   case radioTurnedOff = "Radio Turned Off"
   case unspecifiedRadioError = "Unspecified Error with Radio infrastructure"
   case illegalPeerID = "Illegal peerID"
-  case unavailablePeer = "Peer is unavailable"
+  case peerIsUnavailable = "Peer is unavailable"
+  case sessionDisconnected = "Session disconnected"
 
   public static var errorDomain: String {
     return "org.thaliproject.ThaliCoreError"
@@ -44,8 +45,10 @@ public enum ThaliCoreError: String, CustomNSError, LocalizedError {
       return 7
     case .illegalPeerID:
       return 8
-    case .unavailablePeer:
+    case .peerIsUnavailable:
       return 9
+    case .sessionDisconnected:
+      return 10
     }
   }
 
