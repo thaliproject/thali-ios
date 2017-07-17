@@ -111,6 +111,10 @@ class Session: NSObject {
    */
   func startOutputStream(with name: String) -> OutputStream? {
     print("[ThaliCore] Session.\(#function) peer:\(identifier.displayName)")
+    guard mcSession != nil else {
+      return nil
+    }
+
     do {
       return try mcSession.startStream(withName: name, toPeer: identifier)
     } catch {
