@@ -62,6 +62,11 @@ public final class BrowserManager {
    */
   static let maxConnectionRetries = 3
 
+  /**
+   Mutex used to synchronize connectToPeer() and lostPeerHandler().
+  */
+  let mutex: PosixThreadMutex
+
   // MARK: - Public state
 
   /**
@@ -86,6 +91,7 @@ public final class BrowserManager {
     self.serviceType = serviceType
     self.peerAvailabilityChangedHandler = peerAvailabilityChanged
     self.inputStreamReceiveTimeout = inputStreamReceiveTimeout
+    self.mutex = PosixThreadMutex()
   }
 
   // MARK: - Public methods
@@ -165,6 +171,10 @@ public final class BrowserManager {
                  nil)
       return
     }
+
+    // connectToPeer() and lostPeerHandler() may run into race conditions if not synchronized.
+    mutex.lock()
+    defer { mutex.unlock() }
 
     guard let lastGenerationPeer = self.lastGenerationPeer(for: peerIdentifier) else {
       print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier) " +
@@ -321,6 +331,12 @@ public final class BrowserManager {
       return
     }
 
+    // While processing a lost peer and removing its activeRelay, we need to make
+    // sure that connectToPeer() doesn't process incoming requests since it could
+    // run into race conditions.
+    mutex.lock()
+    defer { mutex.unlock() }
+
     availablePeers.modify {
       if let indexOfLostPeer = $0.index(of: peer) {
         $0.remove(at: indexOfLostPeer)
@@ -334,9 +350,10 @@ public final class BrowserManager {
           // let the connection/disconnection logic take care of dealing with
           // the 'relay' instance.
           relay.closeRelay()
+          $0.removeValue(forKey: peer)
+          print("[ThaliCore] BrowserManager.\(#function) peer:\(peer) relay removed")
         }
       }
-      $0.removeValue(forKey: peer)
     }
 
     if peer == lastGenerationPeer {
