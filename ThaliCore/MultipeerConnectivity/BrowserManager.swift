@@ -189,7 +189,7 @@ public final class BrowserManager {
       let session = try currentBrowser.inviteToConnect(
                           lastGenerationPeer,
                           sessionConnected: {
-                            [weak self] in
+                            [weak self, lastGenerationPeer] in
                             guard let strongSelf = self else { return }
 
                             print("[ThaliCore] Browser: session connected to " +
@@ -201,7 +201,7 @@ public final class BrowserManager {
                             }
                           },
                           sessionNotConnected: {
-                            [weak self] (previousState: MCSessionState?) in
+                            [weak self, lastGenerationPeer] (previousState: MCSessionState?) in
                             guard let strongSelf = self else { return }
 
                             strongSelf.activeRelays.modify {
@@ -232,9 +232,9 @@ public final class BrowserManager {
                               print("[ThaliCore] Browser: session notConnected retry " +
                                     "count #\(retryCount) for \(lastGenerationPeer)")
                               strongSelf.connectToPeer(peerIdentifier,
-                                                        syncValue: syncValue,
-                                                        retryCount: retryCount + 1,
-                                                        completion: completion)
+                                                       syncValue: syncValue,
+                                                       retryCount: retryCount + 1,
+                                                       completion: completion)
                             }
                           })
 
@@ -327,15 +327,16 @@ public final class BrowserManager {
       }
     }
 
-    let relay = self.activeRelays.value[peer]
-    if relay?.state == BrowserRelay.RelayState.connected {
-      // If the relay is stil connecting or if it's already disconnecting let
-      // the connection/disconnection logic take care of dealing with the
-      // 'session' and with the 'relay'.
-      // If the relay is connected, call disconnectNonTCPSession() that will
-      // trigger the 'sessionNotConnected' handler that in turn will remove the
-      // relay from the activeRelays list.
-      relay?.disconnectNonTCPSession()
+    self.activeRelays.modify {
+      if let relay = $0[peer] {
+        if relay.state == BrowserRelay.RelayState.connected {
+          // If the relay is stil connecting or if it's already disconnecting
+          // let the connection/disconnection logic take care of dealing with
+          // the 'relay' instance.
+          relay.closeRelay()
+        }
+      }
+      $0.removeValue(forKey: peer)
     }
 
     if peer == lastGenerationPeer {
