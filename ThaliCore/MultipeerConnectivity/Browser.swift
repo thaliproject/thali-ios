@@ -25,7 +25,7 @@ final class Browser: NSObject {
   /**
    Timeout for inviting a remote peer to a MCSession.
    */
-  internal let invitePeerTimeout: TimeInterval = 1
+  internal let invitePeerTimeout: TimeInterval = 2.5
 
   // MARK: - Private state
 
