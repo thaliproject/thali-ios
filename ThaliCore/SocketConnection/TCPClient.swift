@@ -14,64 +14,91 @@ class TCPClient: NSObject {
                                             label: "org.thaliproject.GCDAsyncSocket.delegateQueue",
                                             attributes: DispatchQueue.Attributes.concurrent)
   fileprivate var activeConnections: Atomic<[GCDAsyncSocket]> = Atomic([])
-  fileprivate var didReadDataHandler: ((GCDAsyncSocket, Data) -> Void)
-  fileprivate var didDisconnectHandler: ((GCDAsyncSocket) -> Void)
+  fileprivate var didReadDataHandler: ((GCDAsyncSocket, Data) -> Void)!
+  fileprivate var didSocketDisconnectHandler: ((GCDAsyncSocket) -> Void)!
+  fileprivate var disconnecting = false
 
   // MARK: - Public methods
-  required init(with didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
+  required init(didReadData: @escaping (GCDAsyncSocket, Data) -> Void,
                 didDisconnect: @escaping (GCDAsyncSocket) -> Void) {
+    print("[ThaliCore] TCPClient.\(#function)")
     didReadDataHandler = didReadData
-    didDisconnectHandler = didDisconnect
+    didSocketDisconnectHandler = didDisconnect
     super.init()
   }
 
-  func connectToLocalhost(onPort port: UInt16,
-                          completion: (_ socket: GCDAsyncSocket?, _ port: UInt16?, _ error: Error?)
-                          -> Void) {
+  deinit {
+    print("[ThaliCore] TCPClient.\(#function)")
+  }
+
+  func connectToLocalhost(onPort port: UInt16) -> GCDAsyncSocket? {
+    print("[ThaliCore] TCPClient.\(#function)")
     do {
       let socket = GCDAsyncSocket()
-      socket.autoDisconnectOnClosedReadStream = false
+      socket.autoDisconnectOnClosedReadStream = true
       socket.delegate = self
       socket.delegateQueue = socketQueue
       try socket.connect(toHost: "127.0.0.1", onPort: port)
-      completion(socket, port, nil)
-    } catch _ {
-      completion(nil, port, ThaliCoreError.connectionFailed)
+      return socket
+    } catch let error {
+      print("[ThaliCore] TCPClient.\(#function) failed, error:\(error)")
+      return nil
     }
   }
 
   func disconnectClientsFromLocalhost() {
+    print("[ThaliCore] TCPClient.\(#function)")
+    self.disconnecting = true
     activeConnections.modify {
-      $0.forEach { $0.disconnect() }
+      $0.forEach {
+        $0.disconnect()
+      }
       $0.removeAll()
     }
+    didReadDataHandler = nil
+    didSocketDisconnectHandler = nil
   }
 }
 
 // MARK: - GCDAsyncSocketDelegate - Handling socket events
 extension TCPClient: GCDAsyncSocketDelegate {
 
-  func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-    activeConnections.modify { $0.append(sock) }
-    sock.readData(withTimeout: -1, tag: 0)
+  func socket(_ socket: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+    print("[ThaliCore] TCPClient: didConnectToHost, active connections count: " +
+          "\(activeConnections.value.count)")
+    activeConnections.modify { $0.append(socket) }
+    socket.readData(withTimeout: -1, tag: 0)
   }
 
-  func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: NSError?) {
+  func socketDidDisconnect(_ socket: GCDAsyncSocket, withError err: Error?) {
+    print("[ThaliCore] TCPClient.\(#function) disconnecting:\(self.disconnecting) " +
+          "socket error:\(err)")
+
+    guard self.disconnecting == false else {
+      return
+    }
+
     activeConnections.modify {
-      if let indexOfDisconnectedSocket = $0.index(of: sock) {
+      if let indexOfDisconnectedSocket = $0.index(of: socket) {
         $0.remove(at: indexOfDisconnectedSocket)
+        print("[ThaliCore] TCPClient.\(#function) client disconnected")
       }
     }
 
-    didDisconnectHandler(sock)
+    didSocketDisconnectHandler(socket)
   }
 
-  func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-    sock.readData(withTimeout: -1, tag: 0)
+  func socket(_ socket: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+    socket.readData(withTimeout: -1, tag: 0)
   }
 
-  func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
-    sock.readData(withTimeout: -1, tag: 0)
-    didReadDataHandler(sock, data)
+  func socket(_ socket: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+
+    guard self.disconnecting == false else {
+      return
+    }
+
+    socket.readData(withTimeout: -1, tag: 0)
+    didReadDataHandler(socket, data)
   }
 }

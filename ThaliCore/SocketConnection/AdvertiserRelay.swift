@@ -7,7 +7,6 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-// MARK: - Methods that available for Relay<AdvertiserVirtualSocketBuilder>
 final class AdvertiserRelay {
 
   // MARK: - Internal state
@@ -18,89 +17,126 @@ final class AdvertiserRelay {
 
   // MARK: - Private state
   fileprivate var tcpClient: TCPClient!
-  fileprivate var nonTCPsession: Session
-  fileprivate var virtualSocketsBuilders: Atomic<[String: AdvertiserVirtualSocketBuilder]>
+  fileprivate var nonTCPsession: Session!
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
+  fileprivate var disconnecting: Atomic<Bool>
 
   // MARK: - Initialization
   init(with session: Session, on port: UInt16) {
-    nonTCPsession = session
-    clientPort = port
-    virtualSocketsBuilders = Atomic([:])
-    virtualSockets = Atomic([:])
-    nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
-    tcpClient = TCPClient(with: didReadDataHandler, didDisconnect: didDisconnectHandler)
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
+    self.nonTCPsession = session
+    self.clientPort = port
+    self.virtualSockets = Atomic([:])
+    self.disconnecting = Atomic(false)
+    self.nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
+    self.tcpClient = TCPClient(didReadData: didReadDataHandler,
+                               didDisconnect: didSocketDisconnectHandler)
+  }
+
+  deinit {
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
   }
 
   // MARK: - Internal methods
   func closeRelay() {
-    tcpClient.disconnectClientsFromLocalhost()
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
+    var proceed = false
+    self.disconnecting.modify {
+      if $0 == false {
+        $0 = true
+        proceed = true
+      }
+    }
+
+    guard proceed else {
+      return
+    }
+
+    self.tcpClient.disconnectClientsFromLocalhost()
+    self.tcpClient = nil
+
+    virtualSockets.modify {
+      $0.forEach {
+        $0.key.disconnect()
+        $0.value.closeStreams()
+      }
+      $0.removeAll()
+    }
+
+    self.disconnectNonTCPSession()
   }
 
   func disconnectNonTCPSession() {
-    nonTCPsession.disconnect()
+    print("[ThaliCore] AdvertiserRelay.\(#function)")
+    self.nonTCPsession?.disconnect()
+    self.nonTCPsession?.didChangeStateHandler = nil
+    self.nonTCPsession?.didReceiveInputStreamHandler = nil
+    self.nonTCPsession = nil
   }
 
   // MARK: - Private handlers
+
+  // Called by VirtualSocket.readDataFromInputStream()
   fileprivate func didReadDataFromStreamHandler(_ virtualSocket: VirtualSocket, data: Data) {
-    guard let socket = virtualSockets.value.key(for: virtualSocket) else {
+    let socket = virtualSockets.value.key(for: virtualSocket)
+    guard socket != nil else {
       virtualSocket.closeStreams()
       return
     }
 
     let noTimeout: TimeInterval = -1
     let defaultDataTag = 0
-    socket.write(data, withTimeout: noTimeout, tag: defaultDataTag)
+    socket?.write(data, withTimeout: noTimeout, tag: defaultDataTag)
   }
 
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
                                                        inputStreamName: String) {
-    createVirtualSocket(with: inputStream,
-                        inputStreamName: inputStreamName) { [weak self] virtualSocket, error in
-      guard let strongSelf = self else { return }
 
-      guard error == nil else {
-        return
-      }
-
-      guard let virtualSocket = virtualSocket else {
-        return
-      }
-
-      strongSelf.tcpClient.connectToLocalhost(onPort: strongSelf.clientPort,
-                                              completion: { socket, _, _ in
-        guard let socket = socket else {
-          return
-        }
-
-        virtualSocket.didOpenVirtualSocketHandler = strongSelf.didOpenVirtualSocketHandler
-        virtualSocket.didReadDataFromStreamHandler = strongSelf.didReadDataFromStreamHandler
-        virtualSocket.didCloseVirtualSocketHandler = strongSelf.didCloseVirtualSocketHandler
-
-        strongSelf.virtualSockets.modify {
-          $0[socket] = virtualSocket
-        }
-
-        virtualSocket.openStreams()
-      })
-    }
-  }
-
-  fileprivate func createVirtualSocket(with inputStream: InputStream,
-                                       inputStreamName: String,
-                                       completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-    let virtualSockBuilder = AdvertiserVirtualSocketBuilder(
-                                                    with: nonTCPsession) { virtualSocket, error in
-      completion(virtualSocket, error)
+    let outputStream = self.nonTCPsession.startOutputStream(with: inputStreamName)
+    guard outputStream != nil else {
+      // proper error handling (todo)
+      print("[ThaliCore] AdvertiserRelay: startOutputStream() failed)")
+      return
     }
 
-    virtualSockBuilder.createVirtualSocket(with: inputStream, inputStreamName: inputStreamName)
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: outputStream!)
+
+    guard tcpClient != nil else {
+      // proper error handling (todo)
+      print("[ThaliCore] AdvertiserRelay: tcpClient is nil)")
+      return
+    }
+
+    let socket = self.tcpClient.connectToLocalhost(onPort: self.clientPort)
+    guard socket != nil else {
+      // proper error handling (todo)
+      print("[ThaliCore] AdvertiserRelay: connectToLocalhost() failed)")
+      return
+    }
+
+    virtualSocket.didReadDataFromStreamHandler = self.didReadDataFromStreamHandler
+    virtualSocket.didOpenVirtualSocketStreamsHandler = self.didOpenVirtualSocketStreamsHandler
+    virtualSocket.didCloseVirtualSocketStreamsHandler = self.didCloseVirtualSocketStreamsHandler
+
+    self.virtualSockets.modify {
+      $0[socket!] = virtualSocket
+    }
+    virtualSocket.openStreams()
   }
 
-  fileprivate func didOpenVirtualSocketHandler(_ virtualSocket: VirtualSocket) { }
+  fileprivate func didOpenVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) { }
 
-  fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
-    virtualSockets.modify {
+  // Called by VirtualSocket.closeStreams()
+  fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
+    print("[ThaliCore] AdvertiserRelay.\(#function) disconnecting:\(disconnecting.value)")
+
+    virtualSocket.didCloseVirtualSocketStreamsHandler = nil
+
+    guard self.disconnecting.value == false else {
+      return
+    }
+
+    self.virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         socket.disconnect()
         $0.removeValue(forKey: socket)
@@ -108,19 +144,40 @@ final class AdvertiserRelay {
     }
   }
 
+  // Called by TCPClient
   fileprivate func didReadDataHandler(_ socket: GCDAsyncSocket, data: Data) {
-    virtualSockets.withValue {
-      let virtualSocket = $0[socket]
-      virtualSocket?.writeDataToOutputStream(data)
+    var virtualSocket: VirtualSocket?
+    self.virtualSockets.withValue {
+      virtualSocket = $0[socket]
     }
+    virtualSocket?.writeDataToOutputStream(data)
   }
 
-  // TODO: add unit test (issue #1358)
-  fileprivate func didDisconnectHandler(_ socket: GCDAsyncSocket) {
-    virtualSockets.modify {
-      let virtualSocket = $0[socket]
-      virtualSocket?.closeStreams()
-      $0.removeValue(forKey: socket)
+  // Called by TCPClient.socketDidDisconnect()
+  fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
+    print("[ThaliCore] AdvertiserRelay.\(#function) disconnecting:\(disconnecting.value)")
+
+    guard self.disconnecting.value == false else {
+      return
     }
+
+    var virtualSocket: VirtualSocket!
+    self.virtualSockets.withValue {
+      virtualSocket = $0[socket]
+    }
+
+    guard virtualSocket != nil else {
+      return
+    }
+
+    self.virtualSockets.modify {
+      if let socket = $0.key(for: virtualSocket) {
+        $0.removeValue(forKey: socket)
+        print("[ThaliCore] AdvertiserRelay.\(#function) removed virtual socket " +
+              "vsID:\(virtualSocket.vsID)")
+      }
+    }
+
+    virtualSocket.closeStreams()
   }
 }

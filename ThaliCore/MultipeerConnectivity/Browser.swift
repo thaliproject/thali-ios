@@ -25,7 +25,7 @@ final class Browser: NSObject {
   /**
    Timeout for inviting a remote peer to a MCSession.
    */
-  internal let invitePeerTimeout: TimeInterval = 30.0
+  internal let invitePeerTimeout: TimeInterval = 2.5
 
   // MARK: - Private state
 
@@ -89,6 +89,8 @@ final class Browser: NSObject {
     }
 
     let mcPeerID = MCPeerID(displayName: UUID().uuidString)
+    print("[ThaliCore] Browser.\(#function) peer:\(mcPeerID.displayName)")
+
     browser = MCNearbyServiceBrowser(peer: mcPeerID, serviceType: serviceType)
     didFindPeerHandler = foundPeer
     didLosePeerHandler = lostPeer
@@ -107,6 +109,7 @@ final class Browser: NSObject {
    */
   func startListening(_ startListeningErrorHandler: @escaping (Error) -> Void) {
     if !listening {
+      print("[ThaliCore] Browser.\(#function)")
       startBrowsingErrorHandler = startListeningErrorHandler
       browser.delegate = self
       browser.startBrowsingForPeers()
@@ -121,9 +124,12 @@ final class Browser: NSObject {
    It does not change state if `Browser` is already not listening.
    */
   func stopListening() {
-    browser.delegate = nil
-    browser.stopBrowsingForPeers()
-    listening = false
+    if listening {
+      print("[ThaliCore] Browser.\(#function)")
+      browser.delegate = nil
+      browser.stopBrowsingForPeers()
+      listening = false
+    }
   }
 
   /**
@@ -139,19 +145,22 @@ final class Browser: NSObject {
      - sessionNotConnected:
        Called when the nearby peer is not (or is no longer) in this session.
 
-   - throws: illegalPeerID
+   - throws: unavailablePeer
 
    - returns: Session object that manages MCSession between peers
    */
   func inviteToConnect(_ peer: Peer,
                        sessionConnected: @escaping () -> Void,
-                       sessionNotConnected: @escaping () -> Void) throws -> Session {
+                       sessionNotConnected: @escaping (_ previousState: MCSessionState?) ->
+                                                                    Void) throws -> Session {
+    print("[ThaliCore] Browser.\(#function) \(peer)")
+
     let mcSession = MCSession(peer: browser.myPeerID,
                               securityIdentity: nil,
                               encryptionPreference: .optional)
 
     guard let mcPeerID = availablePeers.value[peer] else {
-      throw ThaliCoreError.illegalPeerID
+      throw ThaliCoreError.peerIsUnavailable
     }
 
     let session = Session(session: mcSession,
@@ -174,25 +183,28 @@ extension Browser: MCNearbyServiceBrowserDelegate {
                foundPeer peerID: MCPeerID,
                withDiscoveryInfo info: [String: String]?) {
     do {
+      print("[ThaliCore] Browser.\(#function) found peer:\(peerID.displayName)")
       let peer = try Peer(mcPeerID: peerID)
       availablePeers.modify { $0[peer] = peerID }
       didFindPeerHandler(peer)
     } catch let error {
-      print("cannot parse identifier \"\(peerID.displayName)\" because of error: \(error)")
+      print("[ThaliCore] failed to parse \(peerID) error:\(error)")
     }
   }
 
   func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
     do {
+      print("[ThaliCore] Browser.\(#function) lost peer:\(peerID.displayName)")
       let peer = try Peer(mcPeerID: peerID)
       _ = availablePeers.modify { $0.removeValue(forKey: peer) }
       didLosePeerHandler(peer)
     } catch let error {
-      print("cannot parse identifier \"\(peerID.displayName)\" because of error: \(error)")
+      print("[ThaliCore] failed to parse \(peerID) error:\(error)")
     }
   }
 
   func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
+    print("[ThaliCore] Browser.\(#function) error:\(error)")
     stopListening()
     startBrowsingErrorHandler?(error)
   }

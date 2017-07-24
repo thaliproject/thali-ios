@@ -41,7 +41,7 @@ class RelayTests: XCTestCase {
     nonTCPSession = Session(session: mcSessionMock,
                             identifier: mcPeerID,
                             connected: {},
-                            notConnected: {})
+                            notConnected: {_ in })
 
     let crlf = "\r\n"
     let fullMessageLength = 1 * 1024
@@ -169,7 +169,7 @@ class RelayTests: XCTestCase {
     for _ in 0..<totalMessagesNumber {
       let browserNodeClientMock = TCPClientMock(didReadData: unexpectedReadDataHandler,
                                                 didConnect: {},
-                                                didDisconnect: {})
+                                                didDisconnect: {_ in })
 
       browserClients.append(browserNodeClientMock)
     }

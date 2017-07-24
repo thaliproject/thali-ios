@@ -402,12 +402,12 @@
 		CCA571DC1D47883C00FBEC41 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				1CEBB4061D9BF68D00B229C9 /* ThaliCoreError.swift */,
 				FAADDF9BC6783F19BBA3A918 /* ApplicationStateNotificationsManager.swift */,
-				FAADD7A741ABA2A94876C58F /* Peer.swift */,
-				1CEBB3FF1D997CF500B229C9 /* PeerAvailability.swift */,
 				FAADD84F3454375EE4974B67 /* Atomic.swift */,
 				1C148DD91DA55D4900E0E1AC /* Dictionary+KeyForValue.swift */,
+				FAADD7A741ABA2A94876C58F /* Peer.swift */,
+				1CEBB3FF1D997CF500B229C9 /* PeerAvailability.swift */,
+				1CEBB4061D9BF68D00B229C9 /* ThaliCoreError.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -464,13 +464,13 @@
 		FAADD1C6BE43B5292357C72D /* SocketConnection */ = {
 			isa = PBXGroup;
 			children = (
-				FAADD342AF116FCE3B46A03D /* Session.swift */,
-				FAADD76EB1071AB28B6EB247 /* VirtualSocketBuilder.swift */,
 				1CD4C0AE1DA68E7B005FFC3B /* AdvertiserRelay.swift */,
 				1CD4C0B11DA68E86005FFC3B /* BrowserRelay.swift */,
+				FAADD342AF116FCE3B46A03D /* Session.swift */,
 				3AD347511D9FB556006F1126 /* TCPClient.swift */,
 				1CEBB3F91D997BF700B229C9 /* TCPListener.swift */,
 				1CEBB3FC1D997CB200B229C9 /* VirtualSocket.swift */,
+				FAADD76EB1071AB28B6EB247 /* VirtualSocketBuilder.swift */,
 			);
 			path = SocketConnection;
 			sourceTree = "<group>";
@@ -543,6 +543,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA571D01D4787A900FBEC41 /* Build configuration list for PBXNativeTarget "ThaliCore" */;
 			buildPhases = (
+				D96454421F0A465C00EC8116 /* SwiftLint */,
 				1C4459921E82887100369A25 /* Carthage checkout and build dependencies */,
 				CCA571B71D4787A900FBEC41 /* Sources */,
 				CCA571B81D4787A900FBEC41 /* Frameworks */,
@@ -767,6 +768,20 @@
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 		D3D308141D52128500943EED /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+		D96454421F0A465C00EC8116 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

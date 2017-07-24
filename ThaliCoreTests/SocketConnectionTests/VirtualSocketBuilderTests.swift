@@ -29,7 +29,7 @@ class VirtualSocketBuilderTests: XCTestCase {
     nonTCPSession = Session(session: mcSessionMock,
                             identifier: mcPeerID,
                             connected: {},
-                            notConnected: {})
+                            notConnected: {_ in })
   }
 
   override func tearDown() {
@@ -45,10 +45,7 @@ class VirtualSocketBuilderTests: XCTestCase {
     let virtualSocketCreated = expectation(description: "Virtual socket is created")
 
     // Given
-    let socketBuilder = AdvertiserVirtualSocketBuilder(with: nonTCPSession) { _, error in
-      XCTAssertNil(error, "Virtual Socket is not created")
-      virtualSocketCreated.fulfill()
-    }
+    virtualSocketCreated.fulfill()
 
     let emptyData = Data(bytes: [], count: 0)
     let emptyInputStream = InputStream(data: emptyData)
@@ -60,8 +57,8 @@ class VirtualSocketBuilderTests: XCTestCase {
                                     fromPeer: mcPeerID)
 
     // When
-    socketBuilder.createVirtualSocket(with: emptyInputStream,
-                                      inputStreamName: randomlyGeneratedStreamName)
+    let outputStream = nonTCPSession.startOutputStream(with: randomlyGeneratedStreamName)
+    let virtualSocket = VirtualSocket(inputStream: emptyInputStream, outputStream: outputStream!)
 
     // Then
     waitForExpectations(timeout: streamReceivedTimeout, handler: nil)
@@ -73,7 +70,7 @@ class VirtualSocketBuilderTests: XCTestCase {
 
     // Given
     let socketBuilder =
-      BrowserVirtualSocketBuilder(with: nonTCPSession,
+      BrowserVirtualSocketBuilder(nonTCPsession: nonTCPSession,
                                   streamName: UUID().uuidString,
                                   streamReceivedBackTimeout: streamReceivedTimeout)
     // When
@@ -102,7 +99,7 @@ class VirtualSocketBuilderTests: XCTestCase {
     // Given
     mcSessionMock.errorOnStartStream = true
     let socketBuilder =
-      BrowserVirtualSocketBuilder(with: nonTCPSession,
+      BrowserVirtualSocketBuilder(nonTCPsession: nonTCPSession,
                                   streamName: UUID().uuidString,
                                   streamReceivedBackTimeout: streamReceivedTimeout)
 

@@ -15,14 +15,14 @@
 class VirtualSocket: NSObject {
 
   // MARK: - Internal state
-  internal fileprivate(set) var opened = false
-  internal var didOpenVirtualSocketHandler: ((VirtualSocket) -> Void)?
+  internal fileprivate(set) var streamsOpened: Bool
+  internal var didOpenVirtualSocketStreamsHandler: ((VirtualSocket) -> Void)?
   internal var didReadDataFromStreamHandler: ((VirtualSocket, Data) -> Void)?
-  internal var didCloseVirtualSocketHandler: ((VirtualSocket) -> Void)?
+  internal var didCloseVirtualSocketStreamsHandler: ((VirtualSocket) -> Void)?
 
   // MARK: - Private state
-  fileprivate var inputStream: InputStream
-  fileprivate var outputStream: OutputStream
+  fileprivate var inputStream: InputStream?
+  fileprivate var outputStream: OutputStream?
 
   fileprivate var runLoop: RunLoop?
 
@@ -31,56 +31,120 @@ class VirtualSocket: NSObject {
 
   let maxReadBufferLength = 1024
   fileprivate var pendingDataToWrite: NSMutableData?
+  fileprivate let mutex: PosixThreadMutex
+
+  // --- For debugging purpose only ---
+  static var idCounter = 0
+  static var openSockets: [Int] = []
+  static let mutexForID = PosixThreadMutex()
+  let vsID: Int
+  // ----------------------------------
 
   // MARK: - Initialize
-  init(with inputStream: InputStream, outputStream: OutputStream) {
+  init(inputStream: InputStream, outputStream: OutputStream) {
+    // For debugging purpose only
+    VirtualSocket.mutexForID.lock()
+    VirtualSocket.idCounter += 1
+    VirtualSocket.openSockets.append(VirtualSocket.idCounter)
+    self.vsID = VirtualSocket.idCounter
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(vsID) \(VirtualSocket.openSockets)")
+    VirtualSocket.mutexForID.unlock()
+
+    self.streamsOpened = false
     self.inputStream = inputStream
     self.outputStream = outputStream
+    self.mutex = PosixThreadMutex()
     super.init()
+  }
+
+  deinit {
+    // For debugging purpose only
+    VirtualSocket.mutexForID.lock()
+    if let index = VirtualSocket.openSockets.index(of: self.vsID) {
+      VirtualSocket.openSockets.remove(at: index)
+    }
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(vsID) \(VirtualSocket.openSockets)")
+    VirtualSocket.mutexForID.unlock()
   }
 
   // MARK: - Internal methods
   func openStreams() {
-    if !opened {
-      opened = true
-      let queue = DispatchQueue.global(qos: .default)
-      queue.async(execute: {
+    mutex.lock()
+    defer { mutex.unlock() }
 
-        self.runLoop = RunLoop.current
-
-        self.inputStream.delegate = self
-        self.inputStream.schedule(in: self.runLoop!,
-          forMode: RunLoopMode.defaultRunLoopMode)
-        self.inputStream.open()
-
-        self.outputStream.delegate = self
-        self.outputStream.schedule(in: self.runLoop!,
-          forMode: RunLoopMode.defaultRunLoopMode)
-        self.outputStream.open()
-
-        RunLoop.current.run(until: Date.distantFuture)
-      })
+    guard self.streamsOpened == false else {
+      return
     }
+
+    self.streamsOpened = true
+
+    let queue = DispatchQueue.global(qos: .default)
+    queue.async(execute: {
+      self.runLoop = RunLoop.current
+
+      self.inputStream?.delegate = self
+      self.inputStream?.schedule(in: self.runLoop!,
+        forMode: RunLoopMode.defaultRunLoopMode)
+      self.inputStream?.open()
+
+      self.outputStream?.delegate = self
+      self.outputStream?.schedule(in: self.runLoop!,
+        forMode: RunLoopMode.defaultRunLoopMode)
+      self.outputStream?.open()
+
+      RunLoop.current.run(until: Date.distantFuture)
+      print("[ThaliCore] VirtualSocket exited RunLoop vsID:\(self.vsID)")
+    })
   }
 
   func closeStreams() {
-    if opened {
-      opened = false
-
-      inputStream.close()
-      inputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
-      inputStreamOpened = false
-
-      outputStream.close()
-      outputStream.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
-      outputStreamOpened = false
-
-      didCloseVirtualSocketHandler?(self)
+    print("[ThaliCore] VirtualSocket.\(#function) vsID:\(vsID)")
+    mutex.lock()
+    defer {
+      mutex.unlock()
+      didCloseVirtualSocketStreamsHandler?(self)
     }
+
+    guard self.streamsOpened == true else {
+      return
+    }
+
+    self.streamsOpened = false
+
+    guard self.runLoop != nil else {
+      return
+    }
+
+    if inputStreamOpened == true {
+      inputStream?.close()
+      inputStream?.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+      inputStream?.delegate = nil
+      inputStreamOpened = false
+    }
+
+    if outputStreamOpened == true {
+      outputStream?.close()
+      outputStream?.remove(from: self.runLoop!, forMode: RunLoopMode.defaultRunLoopMode)
+      outputStream?.delegate = nil
+      outputStreamOpened = false
+    }
+
+    CFRunLoopStop(self.runLoop!.getCFRunLoop())
+
+    self.didOpenVirtualSocketStreamsHandler = nil
+    self.didReadDataFromStreamHandler = nil
+
+    inputStream = nil
+    outputStream = nil
   }
 
   func writeDataToOutputStream(_ data: Data) {
-    if !outputStream.hasSpaceAvailable {
+
+    guard let strongOuputStream = self.outputStream else {
+      return
+    }
+
+    if !strongOuputStream.hasSpaceAvailable {
       pendingDataToWrite?.append(data)
       return
     }
@@ -91,7 +155,7 @@ class VirtualSocket: NSObject {
       UnsafeBufferPointer(start: startDataPointer, count: dataLength)
     )
 
-    let bytesWritten = outputStream.write(buffer, maxLength: dataLength)
+    let bytesWritten = strongOuputStream.write(buffer, maxLength: dataLength)
     if bytesWritten < 0 {
       closeStreams()
     }
@@ -107,9 +171,14 @@ class VirtualSocket: NSObject {
   }
 
   fileprivate func readDataFromInputStream() {
+
+    guard let strongInputStream = self.inputStream else {
+      return
+    }
+
     var buffer = [UInt8](repeating: 0, count: maxReadBufferLength)
 
-    let bytesReaded = self.inputStream.read(&buffer, maxLength: maxReadBufferLength)
+    let bytesReaded = strongInputStream.read(&buffer, maxLength: maxReadBufferLength)
     if bytesReaded > 0 {
       let data = Data(bytes: buffer, count: bytesReaded)
       didReadDataFromStreamHandler?(self, data)
@@ -126,12 +195,16 @@ extension VirtualSocket: StreamDelegate {
       handleEventOnInputStream(eventCode)
     } else if aStream == self.outputStream {
       handleEventOnOutputStream(eventCode)
-    } else {
-      assertionFailure()
     }
   }
 
   fileprivate func handleEventOnInputStream(_ eventCode: Stream.Event) {
+
+    guard self.streamsOpened == true else {
+      print("[ThaliCore] VirtualSocket.\(#function) streams are closed")
+      return
+    }
+
     switch eventCode {
     case Stream.Event.openCompleted:
       inputStreamOpened = true
@@ -141,15 +214,25 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasSpaceAvailable:
       break
     case Stream.Event.errorOccurred:
+      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(vsID)")
       closeStreams()
     case Stream.Event.endEncountered:
+      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(vsID)")
+      closeStreams()
       break
     default:
+      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(vsID)")
       break
     }
   }
 
   fileprivate func handleEventOnOutputStream(_ eventCode: Stream.Event) {
+
+    guard self.streamsOpened == true else {
+      print("[ThaliCore] VirtualSocket.\(#function) streams are closed vsID:\(vsID)")
+      return
+    }
+
     switch eventCode {
     case Stream.Event.openCompleted:
       outputStreamOpened = true
@@ -159,17 +242,21 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasSpaceAvailable:
       writePendingData()
     case Stream.Event.errorOccurred:
+      print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(vsID)")
       closeStreams()
     case Stream.Event.endEncountered:
+      print("[ThaliCore] VirtualSocket.\(#function) endEncountered vsID:\(vsID)")
+      closeStreams()
       break
     default:
+      print("[ThaliCore] VirtualSocket.\(#function) default vsID:\(vsID)")
       break
     }
   }
 
   fileprivate func didOpenStreamHandler() {
     if inputStreamOpened && outputStreamOpened {
-      didOpenVirtualSocketHandler?(self)
+      didOpenVirtualSocketStreamsHandler?(self)
     }
   }
 }

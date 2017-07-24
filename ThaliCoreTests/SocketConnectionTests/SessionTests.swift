@@ -82,7 +82,7 @@ class SessionTests: XCTestCase {
     let session = Session(session: mcSession,
                           identifier: peerID,
                           connected: unexpectedConnectHandler,
-                          notConnected: {})
+                          notConnected: {_ in })
     // When
     // Fake invocation of delegate method
     mcSession.delegate?.session(mcSession, peer: peerID, didChange: .notConnected)
@@ -126,7 +126,7 @@ class SessionTests: XCTestCase {
                           identifier: peerID,
                           connected: unexpectedConnectHandler,
                           notConnected: {
-                            [weak disconnectHandlerInvoked] in
+                            [weak disconnectHandlerInvoked] _ in
                             disconnectHandlerInvoked?.fulfill()
       })
 

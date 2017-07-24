@@ -7,6 +7,7 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
+import MultipeerConnectivity
 import CocoaAsyncSocket
 import SwiftXCTest
 @testable import ThaliCore
@@ -38,7 +39,7 @@ func unexpectedConnectHandler() {
   XCTFail("Unexpected connect received")
 }
 
-func unexpectedDisconnectHandler() {
+func unexpectedDisconnectHandler(_ previousState: MCSessionState?) {
   XCTFail("Unexpected disconnect received")
 }
 

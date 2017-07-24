@@ -30,7 +30,7 @@ class VirtualSocketTests: XCTestCase {
     nonTCPSession = Session(session: mcSessionMock,
                             identifier: mcPeerID,
                             connected: {},
-                            notConnected: {})
+                            notConnected: {_ in })
   }
 
   override func tearDown() {
@@ -43,109 +43,107 @@ class VirtualSocketTests: XCTestCase {
   // MARK: - Tests
   func testVirtualSocketCreatedWithClosedState() {
     // Given
-    do {
-      let ouputStream = try nonTCPSession.startOutputStream(with: "test")
-
-      let emptyData = Data(bytes: [], count: 0)
-      let inputStream = InputStream(data: emptyData)
-
-      // When
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-
-      // Then
-      XCTAssertFalse(virtualSocket.opened)
-    } catch {
+    let ouputStream = nonTCPSession.startOutputStream(with: "test")
+    guard ouputStream != nil else {
       XCTFail("Can't create output stream on mock Session")
+      return
     }
+
+    let emptyData = Data(bytes: [], count: 0)
+    let inputStream = InputStream(data: emptyData)
+
+    // When
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream!)
+
+    // Then
+    XCTAssertFalse(virtualSocket.streamsOpened)
   }
 
   func testVirtualSocketOpenStreamsChangesState() {
     // Given
-    do {
-      let ouputStream = try nonTCPSession.startOutputStream(with: "test")
-
-      let emptyData = Data(bytes: [], count: 0)
-      let inputStream = InputStream(data: emptyData)
-
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened)
-
-      // When
-      virtualSocket.openStreams()
-      XCTAssertTrue(virtualSocket.opened)
-    } catch {
+    let ouputStream = nonTCPSession.startOutputStream(with: "test")
+    guard ouputStream != nil else {
       XCTFail("Can't create output stream on mock Session")
+      return
     }
+
+    let emptyData = Data(bytes: [], count: 0)
+    let inputStream = InputStream(data: emptyData)
+
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream!)
+    XCTAssertFalse(virtualSocket.streamsOpened)
+
+    // When
+    virtualSocket.openStreams()
+    XCTAssertTrue(virtualSocket.streamsOpened)
   }
 
   func testVirtualSocketCloseStreams() {
     // Given
-    do {
-      let ouputStream = try nonTCPSession.startOutputStream(with: "test")
-
-      let emptyData = Data(bytes: [], count: 0)
-      let inputStream = InputStream(data: emptyData)
-
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened)
-      virtualSocket.openStreams()
-      XCTAssertTrue(virtualSocket.opened)
-
-      // When
-      virtualSocket.closeStreams()
-
-      // Then
-      XCTAssertFalse(virtualSocket.opened)
-    } catch {
+    let ouputStream = nonTCPSession.startOutputStream(with: "test")
+    guard ouputStream != nil else {
       XCTFail("Can't create output stream on mock Session")
+      return
     }
+
+    let emptyData = Data(bytes: [], count: 0)
+    let inputStream = InputStream(data: emptyData)
+
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream!)
+    XCTAssertFalse(virtualSocket.streamsOpened)
+    virtualSocket.openStreams()
+    XCTAssertTrue(virtualSocket.streamsOpened)
+
+    // When
+    virtualSocket.closeStreams()
+
+    // Then
+    XCTAssertFalse(virtualSocket.streamsOpened)
+
   }
 
   func testOpenStreamsCalledTwiceChangesStateProperly() {
     // Given
-    do {
-      let ouputStream = try nonTCPSession.startOutputStream(with: "test")
-
-      let emptyData = Data(bytes: [], count: 0)
-      let inputStream = InputStream(data: emptyData)
-
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened)
-
-      // When
-      virtualSocket.openStreams()
-      virtualSocket.openStreams()
-
-      // Then
-      XCTAssertTrue(virtualSocket.opened)
-
-    } catch {
+    let ouputStream = nonTCPSession.startOutputStream(with: "test")
+    guard ouputStream != nil else {
       XCTFail("Can't create output stream on mock Session")
+      return
     }
+
+    let emptyData = Data(bytes: [], count: 0)
+    let inputStream = InputStream(data: emptyData)
+
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream!)
+    XCTAssertFalse(virtualSocket.streamsOpened)
+
+    // When
+    virtualSocket.openStreams()
+    virtualSocket.openStreams()
+
+    // Then
+    XCTAssertTrue(virtualSocket.streamsOpened)
   }
 
   func testCloseStreamsCalledTwiceChangesStateProperly() {
     // Given
-    do {
-      let ouputStream = try nonTCPSession.startOutputStream(with: "test")
-
-      let emptyData = Data(bytes: [], count: 0)
-      let inputStream = InputStream(data: emptyData)
-
-      let virtualSocket = VirtualSocket(with: inputStream, outputStream: ouputStream)
-      XCTAssertFalse(virtualSocket.opened)
-      virtualSocket.openStreams()
-      XCTAssertTrue(virtualSocket.opened)
-
-      // When
-      virtualSocket.closeStreams()
-      virtualSocket.closeStreams()
-
-      // Then
-      XCTAssertFalse(virtualSocket.opened)
-
-    } catch {
+    let ouputStream = nonTCPSession.startOutputStream(with: "test")
+    guard ouputStream != nil else {
       XCTFail("Can't create output stream on mock Session")
+      return
     }
+
+    let emptyData = Data(bytes: [], count: 0)
+    let inputStream = InputStream(data: emptyData)
+
+    let virtualSocket = VirtualSocket(inputStream: inputStream, outputStream: ouputStream!)
+    XCTAssertFalse(virtualSocket.streamsOpened)
+    virtualSocket.openStreams()
+
+    // When
+    virtualSocket.closeStreams()
+    virtualSocket.closeStreams()
+
+    // Then
+    XCTAssertFalse(virtualSocket.streamsOpened)
   }
 }

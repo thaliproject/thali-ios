@@ -7,8 +7,16 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-// MARK: - Methods that available for Relay<BrowserVirtualSocketBuilder>
 final class BrowserRelay {
+
+  // MARK: - Public state
+  public enum RelayState {
+
+    case connecting, connected, disconnecting
+
+  }
+  public var state: RelayState
+  public fileprivate(set) var generation: Int
 
   // MARK: - Internal state
   internal var virtualSocketsAmount: Int {
@@ -17,50 +25,92 @@ final class BrowserRelay {
   internal var listenerPort: UInt16 {
     return tcpListener.listenerPort
   }
+  internal var nonTCPsession: Session!
 
   // MARK: - Private state
   fileprivate var tcpListener: TCPListener!
-  fileprivate var nonTCPsession: Session
   fileprivate var virtualSocketBuilders: Atomic<[String: BrowserVirtualSocketBuilder]>
   fileprivate var virtualSockets: Atomic<[GCDAsyncSocket: VirtualSocket]>
   fileprivate let createVirtualSocketTimeout: TimeInterval
-  fileprivate let maxVirtualSocketsCount = 16
+
+  static let mutex = PosixThreadMutex()
 
   // MARK: - Initialization
-  init(with session: Session, createVirtualSocketTimeout: TimeInterval) {
+  init(session: Session, generation: Int, createVirtualSocketTimeout: TimeInterval) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
+    self.state = RelayState.connecting
     self.nonTCPsession = session
+    self.generation = generation
     self.createVirtualSocketTimeout = createVirtualSocketTimeout
     self.virtualSockets = Atomic([:])
     self.virtualSocketBuilders = Atomic([:])
     nonTCPsession.didReceiveInputStreamHandler = sessionDidReceiveInputStreamHandler
     tcpListener = TCPListener(with: didReadDataFromSocketHandler,
                               socketDisconnected: didSocketDisconnectHandler,
-                              stoppedListening: didStopListeningForConnections)
+                              stoppedListening: didStopListeningHandler)
+  }
+
+  deinit {
+    print("[ThaliCore] BrowserRelay.\(#function)")
   }
 
   // MARK: - Internal methods
   func openRelay(with completion: @escaping (_ port: UInt16?, _ error: Error?) -> Void) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     let anyAvailablePort: UInt16 = 0
     tcpListener.startListeningForConnections(
                                    on: anyAvailablePort,
                                    connectionAccepted: didAcceptConnectionHandler) { port, error in
       completion(port, error)
     }
+    self.state = RelayState.connected
   }
 
   func closeRelay() {
+    print("[ThaliCore] BrowserRelay.\(#function) state:\(self.state)")
+    var proceed = false
+    BrowserRelay.mutex.lock()
+    if self.state != RelayState.disconnecting {
+      self.state = RelayState.disconnecting
+      proceed = true
+    }
+    BrowserRelay.mutex.unlock()
+
+    guard proceed else {
+      return
+    }
+
     tcpListener.stopListeningForConnectionsAndDisconnectClients()
+    tcpListener = nil
+
+    virtualSockets.modify {
+      $0.forEach {
+        $0.key.disconnect()
+        $0.value.closeStreams()
+      }
+    }
+
+    self.virtualSockets.modify {
+      $0.removeAll()
+    }
+
+    self.virtualSocketBuilders.modify {
+      $0.removeAll()
+    }
+
+    self.disconnectNonTCPSession()
   }
 
   func disconnectNonTCPSession() {
-    nonTCPsession.disconnect()
+    self.nonTCPsession?.disconnect()
+    self.nonTCPsession = nil
   }
 
   // MARK: - Private handlers
   fileprivate func sessionDidReceiveInputStreamHandler(_ inputStream: InputStream,
                                                        inputStreamName: String) {
     if let builder = virtualSocketBuilders.value[inputStreamName] {
-      builder.completeVirtualSocket(with: inputStream)
+      builder.completeVirtualSocket(inputStream: inputStream)
     } else {
       inputStream.close()
     }
@@ -78,7 +128,9 @@ final class BrowserRelay {
 
   fileprivate func didAcceptConnectionHandler(_ socket: GCDAsyncSocket) {
     createVirtualSocket { [weak self] virtualSocket, error in
-      guard let strongSelf = self else { return }
+      guard let strongSelf = self else {
+        return
+      }
 
       guard error == nil else {
         socket.disconnect()
@@ -90,9 +142,11 @@ final class BrowserRelay {
         return
       }
 
-      virtualSocket.didOpenVirtualSocketHandler = strongSelf.didInputStreamOpenedHandler
+      virtualSocket.didOpenVirtualSocketStreamsHandler =
+                                            strongSelf.didOpenVirtualSocketStreamsHandler
       virtualSocket.didReadDataFromStreamHandler = strongSelf.didReadDataFromStreamHandler
-      virtualSocket.didCloseVirtualSocketHandler = strongSelf.didCloseVirtualSocketHandler
+      virtualSocket.didCloseVirtualSocketStreamsHandler =
+                                            strongSelf.didCloseVirtualSocketStreamsHandler
 
       strongSelf.virtualSockets.modify {
         $0[socket] = virtualSocket
@@ -111,7 +165,13 @@ final class BrowserRelay {
     virtualSocket.writeDataToOutputStream(data)
   }
 
-  fileprivate func didCloseVirtualSocketHandler(_ virtualSocket: VirtualSocket) {
+  // Called by VirtualSocket.closeStreams()
+  fileprivate func didCloseVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
+    print("[ThaliCore] BrowserRelay.\(#function) state:\(String(describing: self.state))")
+    guard self.state != RelayState.disconnecting else {
+      return
+    }
+
     virtualSockets.modify {
       if let socket = $0.key(for: virtualSocket) {
         socket.disconnect()
@@ -120,19 +180,44 @@ final class BrowserRelay {
     }
   }
 
+  // Called by TCPListener
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
-    self.virtualSockets.modify {
-      let virtualSocket = $0[socket]
-      virtualSocket?.closeStreams()
-      $0.removeValue(forKey: socket)
+    print("[ThaliCore] BrowserRelay.\(#function)")
+    var virtualSocket: VirtualSocket!
+    self.virtualSockets.withValue {
+      virtualSocket = $0[socket]
     }
+
+    guard virtualSocket != nil else {
+      return
+    }
+
+    // We remove the virtual socket here because if the streams are not opened yet
+    // calling closeStreams will not trigger didCloseVirtualSocketStreamsHandler
+    // causing a virtual socket leak
+    virtualSockets.modify {
+      if let socket = $0.key(for: virtualSocket) {
+        $0.removeValue(forKey: socket)
+        print("[ThaliCore] BrowserRelay.\(#function) socket removed, count:\($0.count)")
+      }
+    }
+
+    virtualSocket.closeStreams()
   }
 
-  fileprivate func didStopListeningForConnections() {
-    disconnectNonTCPSession()
+  // Called by TCPListener
+  fileprivate func didStopListeningHandler() {
+
+    guard self.state != RelayState.disconnecting else {
+      return
+    }
+
+    self.nonTCPsession.disconnect()
   }
 
-  fileprivate func didInputStreamOpenedHandler(_ virtualSocket: VirtualSocket) {
+  // This is called after both the input and output have been opened
+  fileprivate func didOpenVirtualSocketStreamsHandler(_ virtualSocket: VirtualSocket) {
+    print("[ThaliCore] BrowserRelay.\(#function)")
     guard let socket = virtualSockets.value.key(for: virtualSocket) else {
       virtualSocket.closeStreams()
       return
@@ -143,14 +228,11 @@ final class BrowserRelay {
   // MARK: - Private methods
   fileprivate func createVirtualSocket(
                       with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-    guard virtualSockets.value.count <= maxVirtualSocketsCount else {
-      completion(nil, ThaliCoreError.connectionFailed)
-      return
-    }
+    print("[ThaliCore] BrowserRelay.\(#function)")
 
     let newStreamName = UUID().uuidString
     let virtualSocketBuilder = BrowserVirtualSocketBuilder(
-      with: nonTCPsession,
+      nonTCPsession: nonTCPsession,
       streamName: newStreamName,
       streamReceivedBackTimeout: createVirtualSocketTimeout)
 

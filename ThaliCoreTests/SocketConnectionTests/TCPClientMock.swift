@@ -7,6 +7,7 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
+import MultipeerConnectivity
 import CocoaAsyncSocket
 import ThaliCore
 
@@ -20,12 +21,12 @@ class TCPClientMock: NSObject {
   )
   fileprivate var didReadDataHandler: (Data) -> Void
   fileprivate var didConnectHandler: () -> Void
-  fileprivate var didDisconnectHandler: () -> Void
+  fileprivate var didDisconnectHandler: (_ previousState: MCSessionState?) -> Void
 
   // MARK: - Initialization
   init(didReadData: @escaping (Data) -> Void,
        didConnect: @escaping () -> Void,
-       didDisconnect: @escaping () -> Void) {
+       didDisconnect: @escaping (_ previousState: MCSessionState?) -> Void) {
     tcpClient = GCDAsyncSocket()
     didReadDataHandler = didReadData
     didConnectHandler = didConnect
@@ -64,7 +65,7 @@ class TCPClientMock: NSObject {
 extension TCPClientMock: GCDAsyncSocketDelegate {
 
   func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-    didDisconnectHandler()
+    didDisconnectHandler(nil)
   }
 
   func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {

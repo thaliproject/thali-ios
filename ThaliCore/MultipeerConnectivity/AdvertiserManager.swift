@@ -7,6 +7,8 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
+import MultipeerConnectivity
+
 /**
  Manages Thali advertiser's logic
  */
@@ -99,21 +101,26 @@ public final class AdvertiserManager {
     }
 
     let newPeer = currentAdvertiser?.peer.nextGenerationPeer() ?? Peer()
+    print("[ThaliCore] AdvertiserManager.\(#function) \(newPeer)")
 
     let advertiser = Advertiser(peer: newPeer,
                                 serviceType: serviceType,
                                 receivedInvitation: { [weak self] session in
                                   guard let strongSelf = self else { return }
 
+                                  print("[ThaliCore] Advertiser: session connected " +
+                                        "\(newPeer)")
                                   strongSelf.activeRelays.modify {
                                     let relay = AdvertiserRelay(with: session, on: port)
                                     $0[newPeer.uuid] = relay
                                   }
                                 },
                                 sessionNotConnected: {
-                                  [weak self] in
+                                  [weak self] (previousState: MCSessionState?) in
                                   guard let strongSelf = self else { return }
 
+                                  print("[ThaliCore] Advertiser: session notConnected " +
+                                        "\(newPeer)")
                                   strongSelf.activeRelays.modify {
                                     if let relay = $0[newPeer.uuid] {
                                       relay.closeRelay()
@@ -139,6 +146,7 @@ public final class AdvertiserManager {
    Dispose of all advertisers.
    */
   public func stopAdvertising() {
+    print("[ThaliCore] AdvertiserManager.\(#function)")
     advertisers.modify {
       $0.forEach { $0.stopAdvertising() }
       $0.removeAll()

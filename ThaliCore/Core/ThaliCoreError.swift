@@ -7,7 +7,7 @@
 //  See LICENSE.txt file in the project root for full license information.
 //
 
-public enum  ThaliCoreError: String, CustomNSError, LocalizedError {
+public enum ThaliCoreError: String, CustomNSError, LocalizedError {
 
   case startListeningNotActive = "startListeningForAdvertisements is not active"
   case connectionFailed = "Connection could not be established"
@@ -18,6 +18,8 @@ public enum  ThaliCoreError: String, CustomNSError, LocalizedError {
   case radioTurnedOff = "Radio Turned Off"
   case unspecifiedRadioError = "Unspecified Error with Radio infrastructure"
   case illegalPeerID = "Illegal peerID"
+  case peerIsUnavailable = "Peer is unavailable"
+  case sessionDisconnected = "Session disconnected"
 
   public static var errorDomain: String {
     return "org.thaliproject.ThaliCoreError"
@@ -43,6 +45,10 @@ public enum  ThaliCoreError: String, CustomNSError, LocalizedError {
       return 7
     case .illegalPeerID:
       return 8
+    case .peerIsUnavailable:
+      return 9
+    case .sessionDisconnected:
+      return 10
     }
   }
 

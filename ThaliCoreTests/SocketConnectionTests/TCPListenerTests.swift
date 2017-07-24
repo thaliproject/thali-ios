@@ -192,7 +192,7 @@ class TCPListenerTests: XCTestCase {
 
     let clientMock = TCPClientMock(didReadData: unexpectedReadDataHandler,
                                    didConnect: {},
-                                   didDisconnect: {})
+                                   didDisconnect: {_ in })
 
     clientMock.connectToLocalHost(on: portToConnect, errorHandler: unexpectedErrorHandler)
 
@@ -378,7 +378,7 @@ class TCPListenerTests: XCTestCase {
 
     let clientMock = TCPClientMock(didReadData: unexpectedReadDataHandler,
                                    didConnect: {},
-                                   didDisconnect: {
+                                   didDisconnect: {_ in
                                      clientDisconnectHandlerInvoked?.fulfill()
                                    })
 
@@ -437,7 +437,7 @@ class TCPListenerTests: XCTestCase {
 
     let clientMock = TCPClientMock(didReadData: unexpectedReadDataHandler,
                                    didConnect: {},
-                                   didDisconnect: {
+                                   didDisconnect: {_ in
                                      clientDisconnectHandlerInvoked?.fulfill()
                                    })
 

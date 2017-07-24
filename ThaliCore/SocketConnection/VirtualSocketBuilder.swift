@@ -8,7 +8,7 @@
 //
 
 /**
- Base class for `BrowserVirtualSocketBuilder` and `AdvertiserVirtualSocketBuilder`
+ Base class for `BrowserVirtualSocketBuilder`
  */
 class VirtualSocketBuilder {
 
@@ -41,7 +41,7 @@ class VirtualSocketBuilder {
    - returns:
      An initialized `VirtualSocketBuilder` object.
    */
-  init(with nonTCPsession: Session) {
+  init(nonTCPsession: Session) {
     self.nonTCPsession = nonTCPsession
   }
 }
@@ -100,10 +100,10 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
    - returns:
      An initialized `BrowserVirtualSocketBuilder` object.
    */
-  init(with nonTCPsession: Session, streamName: String, streamReceivedBackTimeout: TimeInterval) {
+  init(nonTCPsession: Session, streamName: String, streamReceivedBackTimeout: TimeInterval) {
     self.streamName = streamName
     self.streamReceivedBackTimeout = .seconds(Int(streamReceivedBackTimeout))
-    super.init(with: nonTCPsession)
+    super.init(nonTCPsession: nonTCPsession)
   }
 
   // MARK: - Internal methods
@@ -119,23 +119,25 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
   func startBuilding(with completion: @escaping (VirtualSocket?, Error?) -> Void) {
     self.completion = completion
 
-    do {
-      let outputStream = try nonTCPsession.startOutputStream(with: streamName)
-      self.outputStream = outputStream
-
-      let streamReceivedBackTimeout: DispatchTime = .now() + self.streamReceivedBackTimeout
-
-      DispatchQueue.main.asyncAfter(deadline: streamReceivedBackTimeout) {
-        [weak self] in
-        guard let strongSelf = self else { return }
-
-        if strongSelf.streamReceivedBack.value == false {
-          strongSelf.completion?(nil, ThaliCoreError.connectionTimedOut)
-          strongSelf.completion = nil
-        }
-      }
-    } catch _ {
+    let outputStream = nonTCPsession.startOutputStream(with: streamName)
+    guard outputStream != nil else {
+      print("[ThaliCore] VirtualSocketBuilder: startOutputStream() failed)")
       self.completion?(nil, ThaliCoreError.connectionFailed)
+      self.completion = nil
+      return
+    }
+
+    self.outputStream = outputStream
+    let streamReceivedBackTimeout: DispatchTime = .now() + self.streamReceivedBackTimeout
+
+    DispatchQueue.main.asyncAfter(deadline: streamReceivedBackTimeout) {
+      [weak self] in
+      guard let strongSelf = self else { return }
+
+      if strongSelf.streamReceivedBack.value == false {
+        strongSelf.completion?(nil, ThaliCoreError.connectionTimedOut)
+        strongSelf.completion = nil
+      }
     }
   }
 
@@ -148,7 +150,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
      - inputStream:
        *inputStream* object.
    */
-  func completeVirtualSocket(with inputStream: InputStream) {
+  func completeVirtualSocket(inputStream: InputStream) {
     streamReceivedBack.modify { $0 = true }
 
     guard let outputStream = outputStream else {
@@ -157,73 +159,8 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
       return
     }
 
-    let vs = VirtualSocket(with: inputStream, outputStream: outputStream)
+    let vs = VirtualSocket(inputStream: inputStream, outputStream: outputStream)
     completion?(vs, nil)
     completion = nil
-  }
-}
-
-/**
- Creates `VirtualSocket` on `AdvertiserRelay` if possible.
- */
-final class AdvertiserVirtualSocketBuilder: VirtualSocketBuilder {
-
-  // MARK: - Private state
-
-  /**
-   Called when creation of VirtualSocket is completed.
-
-   It has 2 arguments: `VirtualSocket?` and `ErrorType?`.
-
-   If we're passing `ErrorType` then something went wrong and `VirtualSocket` should be nil.
-   Otherwise `ErrorType` should be nil.
-   */
-  fileprivate var completion: (VirtualSocket?, Error?) -> Void
-
-  // MARK: - Initialization
-
-  /**
-   Returns new `AdvertiserVirtualSocketBuilder` object.
-
-   - parameters:
-     - nonTCPsession:
-       non-TCP/IP session that will be used for communication among peers via `VirtualSocket`.
-
-     - completion:
-       Called when creation of VirtualSocket is completed.
-
-   - returns:
-     An initialized `AdvertiserVirtualSocketBuilder` object.
-   */
-  required init(with nonTCPsession: Session,
-                completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
-    self.completion = completion
-    super.init(with: nonTCPsession)
-  }
-
-  // MARK: - Internal methods
-
-  /**
-   Creates new `VirtualSocket` object asynchronously.
-
-   Method is trying to start new *outputStream* using the exact same name as the *inputStream*.
-   If succeeded then *completion* is called and `VirtualSocket` passed as a parameter,
-   otherwise *completion* is called with nil argument and error passed.
-
-   - parameters:
-     - inputStream:
-       inputStream object that will be used in new `VirtualSocket`.
-
-     - inputStreamName:
-       Name of *inputStream*. It will be used to start new *outputStream*.
-   */
-  func createVirtualSocket(with inputStream: InputStream, inputStreamName: String) {
-    do {
-      let outputStream = try nonTCPsession.startOutputStream(with: inputStreamName)
-      let virtualNonTCPSocket = VirtualSocket(with: inputStream, outputStream: outputStream)
-      completion(virtualNonTCPSocket, nil)
-    } catch let error {
-      completion(nil, error)
-    }
   }
 }
