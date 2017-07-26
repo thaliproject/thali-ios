@@ -108,7 +108,7 @@ internal struct TestCaseParser {
       
       return matches
         .first
-        .flatMap { contents.range(from: $0.rangeAt(1)) }
+        .flatMap { contents.range(from: $0.range(at: 1)) }
         .flatMap { contents.substring(with: $0) }
     } catch let error {
       throw error
@@ -124,7 +124,7 @@ internal struct TestCaseParser {
                                   range: NSRange(location: 0, length: contents.characters.count))
 
       return matches
-        .flatMap { contents.range(from: $0.rangeAt(1)) }
+        .flatMap { contents.range(from: $0.range(at: 1)) }
         .flatMap { contents.substring(with: $0) }
     } catch let error {
       throw error

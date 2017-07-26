@@ -205,7 +205,7 @@ extension Session: MCSessionDelegate {
   func session(_ session: MCSession,
                didFinishReceivingResourceWithName resourceName: String,
                fromPeer peerID: MCPeerID,
-               at localURL: URL,
+               at localURL: URL?,
                withError error: Error?) {
     print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName)")
     assert(identifier.displayName == peerID.displayName)
