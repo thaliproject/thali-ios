@@ -151,7 +151,9 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
        *inputStream* object.
    */
   func completeVirtualSocket(inputStream: InputStream) {
-    streamReceivedBack.modify { $0 = true }
+    streamReceivedBack.modify { streamReceivedBack in
+      streamReceivedBack = true
+    }
 
     guard let outputStream = outputStream else {
       completion?(nil, ThaliCoreError.connectionFailed)

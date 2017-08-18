@@ -49,11 +49,11 @@ class TCPClient: NSObject {
   func disconnectClientsFromLocalhost() {
     print("[ThaliCore] TCPClient.\(#function)")
     self.disconnecting = true
-    activeConnections.modify {
-      $0.forEach {
-        $0.disconnect()
+    activeConnections.modify { activeConnections in
+      activeConnections.forEach { activeConnection in
+        activeConnection.disconnect()
       }
-      $0.removeAll()
+      activeConnections.removeAll()
     }
     didReadDataHandler = nil
     didSocketDisconnectHandler = nil
@@ -66,7 +66,9 @@ extension TCPClient: GCDAsyncSocketDelegate {
   func socket(_ socket: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
     print("[ThaliCore] TCPClient: didConnectToHost, active connections count: " +
           "\(activeConnections.value.count)")
-    activeConnections.modify { $0.append(socket) }
+    activeConnections.modify { activeConnections in
+      activeConnections.append(socket)
+    }
     socket.readData(withTimeout: -1, tag: 0)
   }
 
@@ -78,9 +80,9 @@ extension TCPClient: GCDAsyncSocketDelegate {
       return
     }
 
-    activeConnections.modify {
-      if let indexOfDisconnectedSocket = $0.index(of: socket) {
-        $0.remove(at: indexOfDisconnectedSocket)
+    activeConnections.modify { activeConnections in
+      if let indexOfDisconnectedSocket = activeConnections.index(of: socket) {
+        activeConnections.remove(at: indexOfDisconnectedSocket)
         print("[ThaliCore] TCPClient.\(#function) client disconnected")
       }
     }

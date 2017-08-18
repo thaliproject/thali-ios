@@ -88,10 +88,10 @@ extension TCPListener: GCDAsyncSocketDelegate {
       didStopListeningHandler()
     } else {
       print("[ThaliCore] TCPListener.\(#function) accepted socket error:\(err)")
-      activeConnections.modify {
-        if let indexOfDisconnectedSocket = $0.index(of: socket) {
-          $0.remove(at: indexOfDisconnectedSocket)
-          print("[ThaliCore] TCPListener.\(#function) socket removed, count:\($0.count)")
+      activeConnections.modify { activeConnections in
+        if let indexOfDisconnectedSocket = activeConnections.index(of: socket) {
+          activeConnections.remove(at: indexOfDisconnectedSocket)
+          print("[ThaliCore] TCPListener.\(#function) socket removed, count:\(activeConnections.count)")
         }
       }
       didSocketDisconnectHandler(socket)
@@ -101,7 +101,9 @@ extension TCPListener: GCDAsyncSocketDelegate {
   func socket(_ socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
     print("[ThaliCore] TCPListener.\(#function)")
     newSocket.autoDisconnectOnClosedReadStream = true
-    activeConnections.modify { $0.append(newSocket) }
+    activeConnections.modify { activeConnections in
+      activeConnections.append(newSocket)
+    }
     didAcceptConnectionHandler?(newSocket)
   }
 

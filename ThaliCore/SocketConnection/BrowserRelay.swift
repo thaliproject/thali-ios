@@ -83,19 +83,19 @@ final class BrowserRelay {
     tcpListener.stopListeningForConnectionsAndDisconnectClients()
     tcpListener = nil
 
-    virtualSockets.modify {
-      $0.forEach {
-        $0.key.disconnect()
-        $0.value.closeStreams()
+    virtualSockets.modify { virtualSockets in
+      virtualSockets.forEach { virtualSocket in
+        virtualSocket.key.disconnect()
+        virtualSocket.value.closeStreams()
       }
     }
 
-    self.virtualSockets.modify {
-      $0.removeAll()
+    self.virtualSockets.modify { virtualSockets in
+      virtualSockets.removeAll()
     }
 
-    self.virtualSocketBuilders.modify {
-      $0.removeAll()
+    self.virtualSocketBuilders.modify { virtualSocketBuilders in
+      virtualSocketBuilders.removeAll()
     }
 
     self.disconnectNonTCPSession()
@@ -117,8 +117,8 @@ final class BrowserRelay {
   }
 
   fileprivate func didReadDataFromStreamHandler(on virtualSocket: VirtualSocket, data: Data) {
-    virtualSockets.withValue {
-      if let socket = $0.key(for: virtualSocket) {
+    virtualSockets.withValue { virtualSockets in
+      if let socket = virtualSockets.key(for: virtualSocket) {
         let noTimeout: TimeInterval = -1
         let defaultDataTag = 0
         socket.write(data, withTimeout: noTimeout, tag: defaultDataTag)
@@ -148,8 +148,8 @@ final class BrowserRelay {
       virtualSocket.didCloseVirtualSocketStreamsHandler =
                                             strongSelf.didCloseVirtualSocketStreamsHandler
 
-      strongSelf.virtualSockets.modify {
-        $0[socket] = virtualSocket
+      strongSelf.virtualSockets.modify { virtualSockets in
+        virtualSockets[socket] = virtualSocket
       }
 
       virtualSocket.openStreams()
@@ -172,10 +172,10 @@ final class BrowserRelay {
       return
     }
 
-    virtualSockets.modify {
-      if let socket = $0.key(for: virtualSocket) {
+    virtualSockets.modify { virtualSockets in
+      if let socket = virtualSockets.key(for: virtualSocket) {
         socket.disconnect()
-        $0.removeValue(forKey: socket)
+        virtualSockets.removeValue(forKey: socket)
       }
     }
   }
@@ -184,8 +184,8 @@ final class BrowserRelay {
   fileprivate func didSocketDisconnectHandler(_ socket: GCDAsyncSocket) {
     print("[ThaliCore] BrowserRelay.\(#function)")
     var virtualSocket: VirtualSocket!
-    self.virtualSockets.withValue {
-      virtualSocket = $0[socket]
+    self.virtualSockets.withValue { virtualSockets in
+      virtualSocket = virtualSockets[socket]
     }
 
     guard virtualSocket != nil else {
@@ -195,10 +195,10 @@ final class BrowserRelay {
     // We remove the virtual socket here because if the streams are not opened yet
     // calling closeStreams will not trigger didCloseVirtualSocketStreamsHandler
     // causing a virtual socket leak
-    virtualSockets.modify {
-      if let socket = $0.key(for: virtualSocket) {
-        $0.removeValue(forKey: socket)
-        print("[ThaliCore] BrowserRelay.\(#function) socket removed, count:\($0.count)")
+    virtualSockets.modify { virtualSockets in
+      if let socket = virtualSockets.key(for: virtualSocket) {
+        virtualSockets.removeValue(forKey: socket)
+        print("[ThaliCore] BrowserRelay.\(#function) socket removed, count:\(virtualSockets.count)")
       }
     }
 
@@ -236,13 +236,13 @@ final class BrowserRelay {
       streamName: newStreamName,
       streamReceivedBackTimeout: createVirtualSocketTimeout)
 
-    virtualSocketBuilders.modify {
-      $0[virtualSocketBuilder.streamName] = virtualSocketBuilder
+    virtualSocketBuilders.modify { virtualSocketBuilders in
+      virtualSocketBuilders[virtualSocketBuilder.streamName] = virtualSocketBuilder
     }
 
     virtualSocketBuilder.startBuilding { virtualSocket, error in
-      _ = self.virtualSocketBuilders.modify {
-        $0.removeValue(forKey: newStreamName)
+      _ = self.virtualSocketBuilders.modify { virtualSocketBuilders in
+        virtualSocketBuilders.removeValue(forKey: newStreamName)
       }
 
       completion(virtualSocket, error)

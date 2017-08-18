@@ -214,11 +214,11 @@ public final class BrowserManager {
                             [weak self, lastGenerationPeer] (previousState: MCSessionState?) in
                             guard let strongSelf = self else { return }
 
-                            strongSelf.activeRelays.modify {
-                              if let relay = $0[lastGenerationPeer] {
+                            strongSelf.activeRelays.modify { activeRelay in
+                              if let relay = activeRelay[lastGenerationPeer] {
                                 relay.closeRelay()
                               }
-                              $0.removeValue(forKey: lastGenerationPeer)
+                              activeRelay.removeValue(forKey: lastGenerationPeer)
                             }
 
                             if previousState == MCSessionState.connected {
@@ -248,11 +248,11 @@ public final class BrowserManager {
                             }
                           })
 
-      activeRelays.modify {
+      activeRelays.modify { activeRelays in
         let relay = BrowserRelay(session: session,
                                  generation: lastGenerationPeer.generation,
                                  createVirtualSocketTimeout: self.inputStreamReceiveTimeout)
-        $0[lastGenerationPeer] = relay
+        activeRelays[lastGenerationPeer] = relay
       }
     } catch let error {
       print("[ThaliCore] BrowserManager.\(#function) error:\(error)")
@@ -268,14 +268,16 @@ public final class BrowserManager {
   public func disconnect(_ peerIdentifier: String) {
     print("[ThaliCore] BrowserManager.\(#function) peer:\(peerIdentifier)")
 
-    let itemsToClose = activeRelays.withValue {
-      $0.filter { $0.key.uuid == peerIdentifier }
+    let itemsToClose = activeRelays.withValue { activeRelays in
+      activeRelays.filter { activeRelay in
+        activeRelay.key.uuid == peerIdentifier
+      }
     }
 
     for item in itemsToClose {
       item.value.closeRelay()
-      activeRelays.modify {
-        $0[item.key] = nil
+      activeRelays.modify { activeRelays in
+        activeRelays[item.key] = nil
       }
     }
   }
@@ -294,10 +296,14 @@ public final class BrowserManager {
      If there are no peers with given *peerIdentifier*, return nil.
    */
   func lastGenerationPeer(for peerIdentifier: String) -> Peer? {
-    return availablePeers.withValue {
-      $0
-      .filter { $0.uuid == peerIdentifier }
-      .max { $0.0.generation < $0.1.generation }
+    return availablePeers.withValue { availablePeers in
+      availablePeers
+        .filter { availablePeer in
+          availablePeer.uuid == peerIdentifier
+        }
+        .max { availablePeer in
+          availablePeer.0.generation < availablePeer.1.generation
+      }
     }
   }
 
@@ -312,7 +318,9 @@ public final class BrowserManager {
    */
   fileprivate func foundPeerHandler(_ peer: Peer) {
     print("[ThaliCore] BrowserManager.\(#function) peer:\(peer)")
-    availablePeers.modify { $0.append(peer) }
+    availablePeers.modify { availablePeers in
+      availablePeers.append(peer)
+    }
 
     let updatedPeerAvailability = PeerAvailability(peer: peer, available: true)
     peerAvailabilityChangedHandler([updatedPeerAvailability])
@@ -337,20 +345,20 @@ public final class BrowserManager {
     mutex.lock()
     defer { mutex.unlock() }
 
-    availablePeers.modify {
-      if let indexOfLostPeer = $0.index(of: peer) {
-        $0.remove(at: indexOfLostPeer)
+    availablePeers.modify { availablePeers in
+      if let indexOfLostPeer = availablePeers.index(of: peer) {
+        availablePeers.remove(at: indexOfLostPeer)
       }
     }
 
-    self.activeRelays.modify {
-      if let relay = $0[peer] {
+    self.activeRelays.modify { activeRelays in
+      if let relay = activeRelays[peer] {
         if relay.state == BrowserRelay.RelayState.connected {
           // If the relay is stil connecting or if it's already disconnecting
           // let the connection/disconnection logic take care of dealing with
           // the 'relay' instance.
           relay.closeRelay()
-          $0.removeValue(forKey: peer)
+          activeRelays.removeValue(forKey: peer)
           print("[ThaliCore] BrowserManager.\(#function) peer:\(peer) relay removed")
         }
       }
