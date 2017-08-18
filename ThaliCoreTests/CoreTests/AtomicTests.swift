@@ -34,12 +34,16 @@ class AtomicTests: XCTestCase {
 
   func testGetCorrectValueAfterModify() {
     let valueAfterModifying = initialValue + 1
-    atomic.modify { $0 = valueAfterModifying}
+    atomic.modify { atomic in
+      atomic = valueAfterModifying
+    }
     XCTAssertEqual(atomic.value, valueAfterModifying)
   }
 
   func testGetCorrectValueWithValueFunction() {
-    let result: Bool = atomic.withValue { $0 == self.initialValue }
+    let result: Bool = atomic.withValue { atomic in
+      atomic == self.initialValue
+    }
     XCTAssertTrue(result)
     XCTAssertEqual(atomic.value, initialValue)
   }
@@ -56,22 +60,22 @@ class AtomicTests: XCTestCase {
       // Performing async write on even iterations and read on odd iterations
       queue.async {
         if i % 2 == 0 {
-          atomicArray.modify {
-            let initialValue = $0.count
+          atomicArray.modify { atomicArray in
+            let initialValue = atomicArray.count
             for _ in 0..<loopIterationsCount {
-              $0.append(0)
+              atomicArray.append(0)
             }
-            XCTAssertEqual($0.count - initialValue, loopIterationsCount)
+            XCTAssertEqual(atomicArray.count - initialValue, loopIterationsCount)
           }
         } else {
-          atomicArray.withValue {
-            let initialValue = $0.count
+          atomicArray.withValue { atomicArray in
+            let initialValue = atomicArray.count
             // Doing some time consuming work
             var unusedResult = 0.78
             for _ in 0..<loopIterationsCount {
               unusedResult = 42.0 / unusedResult
             }
-            XCTAssertEqual($0.count, initialValue)
+            XCTAssertEqual(atomicArray.count, initialValue)
           }
         }
         semaphore.signal()
