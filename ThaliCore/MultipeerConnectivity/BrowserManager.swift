@@ -214,11 +214,11 @@ public final class BrowserManager {
                             [weak self, lastGenerationPeer] (previousState: MCSessionState?) in
                             guard let strongSelf = self else { return }
 
-                            strongSelf.activeRelays.modify { activeRelay in
-                              if let relay = activeRelay[lastGenerationPeer] {
+                            strongSelf.activeRelays.modify { activeRelays in
+                              if let relay = activeRelays[lastGenerationPeer] {
                                 relay.closeRelay()
                               }
-                              activeRelay.removeValue(forKey: lastGenerationPeer)
+                              activeRelays.removeValue(forKey: lastGenerationPeer)
                             }
 
                             if previousState == MCSessionState.connected {
