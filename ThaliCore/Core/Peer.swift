@@ -95,7 +95,9 @@ public struct Peer: Hashable {
    */
   public init(stringValue: String) throws {
     let peerParts = stringValue.characters
-                    .split { $0 == Peer.separator }
+                    .split { character in
+                      character == Peer.separator
+                    }
                     .map(String.init)
     guard peerParts.count == 2 else {
       throw ThaliCoreError.illegalPeerID

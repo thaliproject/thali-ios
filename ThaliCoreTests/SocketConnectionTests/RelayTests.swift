@@ -81,9 +81,9 @@ class RelayTests: XCTestCase {
                                      receivedMessage,
                                      "Received message is wrong")
 
-                      receivedMessagesNumber.modify {
-                        $0 += 1
-                        if $0 == totalMessagesNumber {
+                      receivedMessagesNumber.modify { receivedMessagesNumber in
+                        receivedMessagesNumber += 1
+                        if receivedMessagesNumber == totalMessagesNumber {
                           advertisersNodeServerReceivedMessage?.fulfill()
                         }
                       }

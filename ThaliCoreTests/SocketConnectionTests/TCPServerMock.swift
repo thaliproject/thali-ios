@@ -63,9 +63,11 @@ class TCPServerMock: NSObject {
 
   /***/
   func disconnectAllClients() {
-    activeConnections.modify {
-      $0.forEach { $0.disconnect() }
-      $0.removeAll()
+    activeConnections.modify { activeConnections in
+      activeConnections.forEach { activeConnection in
+        activeConnection.disconnect()
+      }
+      activeConnections.removeAll()
     }
   }
 
@@ -76,8 +78,10 @@ class TCPServerMock: NSObject {
     let randomMessage = String.random(length: length)
     let messageData = randomMessage.data(using: String.Encoding.utf8)
 
-    activeConnections.withValue {
-      $0.forEach { $0.write(messageData!, withTimeout: -1, tag: 0) }
+    activeConnections.withValue { activeConnections in
+      activeConnections.forEach { activeConnection in
+        activeConnection.write(messageData!, withTimeout: -1, tag: 0)
+      }
     }
   }
 
@@ -86,8 +90,10 @@ class TCPServerMock: NSObject {
     guard let messageData = message.data(using: String.Encoding.utf8) else { return }
 
     while activeConnections.value.count == 0 {}
-    activeConnections.withValue {
-      $0.forEach { $0.write(messageData, withTimeout: -1, tag: 0) }
+    activeConnections.withValue { activeConnections in
+      activeConnections.forEach { activeConnection in
+        activeConnection.write(messageData, withTimeout: -1, tag: 0)
+      }
     }
   }
 }
@@ -96,8 +102,8 @@ class TCPServerMock: NSObject {
 extension TCPServerMock: GCDAsyncSocketDelegate {
 
   func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
-    activeConnections.modify {
-      $0.append(newSocket)
+    activeConnections.modify { activeConnections in
+      activeConnections.append(newSocket)
       newSocket.readData(to: GCDAsyncSocket.crlfData(), withTimeout: -1, tag: 0)
     }
 
@@ -105,9 +111,9 @@ extension TCPServerMock: GCDAsyncSocketDelegate {
   }
 
   func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-    activeConnections.modify {
-      if let indexOfDisconnectedSocket = $0.index(of: sock) {
-        $0.remove(at: indexOfDisconnectedSocket)
+    activeConnections.modify { activeConnections in
+      if let indexOfDisconnectedSocket = activeConnections.index(of: sock) {
+        activeConnections.remove(at: indexOfDisconnectedSocket)
       }
     }
     didDisconnectHandler(sock)

@@ -110,9 +110,9 @@ public final class AdvertiserManager {
 
                                   print("[ThaliCore] Advertiser: session connected " +
                                         "\(newPeer)")
-                                  strongSelf.activeRelays.modify {
+                                  strongSelf.activeRelays.modify { activeRelays in
                                     let relay = AdvertiserRelay(with: session, on: port)
-                                    $0[newPeer.uuid] = relay
+                                    activeRelays[newPeer.uuid] = relay
                                   }
                                 },
                                 sessionNotConnected: {
@@ -121,11 +121,11 @@ public final class AdvertiserManager {
 
                                   print("[ThaliCore] Advertiser: session notConnected " +
                                         "\(newPeer)")
-                                  strongSelf.activeRelays.modify {
-                                    if let relay = $0[newPeer.uuid] {
+                                  strongSelf.activeRelays.modify { activeRelays in
+                                    if let relay = activeRelays[newPeer.uuid] {
                                       relay.closeRelay()
                                     }
-                                    $0.removeValue(forKey: newPeer.uuid)
+                                    activeRelays.removeValue(forKey: newPeer.uuid)
                                   }
                                 })
 
@@ -134,9 +134,9 @@ public final class AdvertiserManager {
       return
     }
 
-    advertisers.modify {
+    advertisers.modify { advertisers in
       newAdvertiser.startAdvertising(errorHandler)
-      $0.append(newAdvertiser)
+      advertisers.append(newAdvertiser)
     }
 
     self.currentAdvertiser = newAdvertiser
@@ -147,9 +147,11 @@ public final class AdvertiserManager {
    */
   public func stopAdvertising() {
     print("[ThaliCore] AdvertiserManager.\(#function)")
-    advertisers.modify {
-      $0.forEach { $0.stopAdvertising() }
-      $0.removeAll()
+    advertisers.modify { advertisers in
+      advertisers.forEach { advertiser in
+        advertiser.stopAdvertising()
+      }
+      advertisers.removeAll()
     }
     currentAdvertiser = nil
   }
@@ -165,8 +167,10 @@ public final class AdvertiserManager {
      Bool value indicates if `AdvertiserManager` has advertiser with given identifier.
    */
   public func hasAdvertiser(with identifier: String) -> Bool {
-    return advertisers.value.filter { $0.peer.uuid == identifier }
-                            .count > 0
+    return advertisers.value.filter { advertiser in
+      advertiser.peer.uuid == identifier
+      }
+      .count > 0
   }
 
   // MARK: - Private methods
@@ -193,10 +197,10 @@ public final class AdvertiserManager {
       guard let strongSelf = self else { return }
       guard let advertiserShouldBeDisposed = advertiserToBeDisposedOf else { return }
 
-      strongSelf.advertisers.modify {
+      strongSelf.advertisers.modify { advertisers in
         advertiserShouldBeDisposed.stopAdvertising()
-        if let indexOfDisposingAdvertiser = $0.index(of: advertiserShouldBeDisposed) {
-          $0.remove(at: indexOfDisposingAdvertiser)
+        if let indexOfDisposingAdvertiser = advertisers.index(of: advertiserShouldBeDisposed) {
+          advertisers.remove(at: indexOfDisposingAdvertiser)
         }
       }
 

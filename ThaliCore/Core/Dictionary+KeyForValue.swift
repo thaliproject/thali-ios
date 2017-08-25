@@ -11,8 +11,12 @@
 extension Dictionary where Value: Equatable {
 
   func key(for value: Value) -> Key? {
-    return self.filter { $1 == value }
-               .map { $0.0 }
+    return self.filter { _, dictionaryValue in
+                  dictionaryValue == value
+                }
+               .map { element in
+                  element.0
+                }
                .first
            ?? nil
   }

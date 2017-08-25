@@ -41,9 +41,9 @@ final class AdvertiserRelay {
   func closeRelay() {
     print("[ThaliCore] AdvertiserRelay.\(#function)")
     var proceed = false
-    self.disconnecting.modify {
-      if $0 == false {
-        $0 = true
+    self.disconnecting.modify { disconnecting in
+      if disconnecting == false {
+        disconnecting = true
         proceed = true
       }
     }
@@ -55,12 +55,12 @@ final class AdvertiserRelay {
     self.tcpClient.disconnectClientsFromLocalhost()
     self.tcpClient = nil
 
-    virtualSockets.modify {
-      $0.forEach {
-        $0.key.disconnect()
-        $0.value.closeStreams()
+    virtualSockets.modify { virtualSockets in
+      virtualSockets.forEach { virtualSocket in
+        virtualSocket.key.disconnect()
+        virtualSocket.value.closeStreams()
       }
-      $0.removeAll()
+      virtualSockets.removeAll()
     }
 
     self.disconnectNonTCPSession()
@@ -118,8 +118,8 @@ final class AdvertiserRelay {
     virtualSocket.didOpenVirtualSocketStreamsHandler = self.didOpenVirtualSocketStreamsHandler
     virtualSocket.didCloseVirtualSocketStreamsHandler = self.didCloseVirtualSocketStreamsHandler
 
-    self.virtualSockets.modify {
-      $0[socket!] = virtualSocket
+    self.virtualSockets.modify { virtualSockets in
+      virtualSockets[socket!] = virtualSocket
     }
     virtualSocket.openStreams()
   }
@@ -136,10 +136,10 @@ final class AdvertiserRelay {
       return
     }
 
-    self.virtualSockets.modify {
-      if let socket = $0.key(for: virtualSocket) {
+    self.virtualSockets.modify { virtualSockets in
+      if let socket = virtualSockets.key(for: virtualSocket) {
         socket.disconnect()
-        $0.removeValue(forKey: socket)
+        virtualSockets.removeValue(forKey: socket)
       }
     }
   }
@@ -147,8 +147,8 @@ final class AdvertiserRelay {
   // Called by TCPClient
   fileprivate func didReadDataHandler(_ socket: GCDAsyncSocket, data: Data) {
     var virtualSocket: VirtualSocket?
-    self.virtualSockets.withValue {
-      virtualSocket = $0[socket]
+    self.virtualSockets.withValue { virtualSockets in
+      virtualSocket = virtualSockets[socket]
     }
     virtualSocket?.writeDataToOutputStream(data)
   }
@@ -162,17 +162,17 @@ final class AdvertiserRelay {
     }
 
     var virtualSocket: VirtualSocket!
-    self.virtualSockets.withValue {
-      virtualSocket = $0[socket]
+    self.virtualSockets.withValue { virtualSockets in
+      virtualSocket = virtualSockets[socket]
     }
 
     guard virtualSocket != nil else {
       return
     }
 
-    self.virtualSockets.modify {
-      if let socket = $0.key(for: virtualSocket) {
-        $0.removeValue(forKey: socket)
+    self.virtualSockets.modify { virtualSockets in
+      if let socket = virtualSockets.key(for: virtualSocket) {
+        virtualSockets.removeValue(forKey: socket)
         print("[ThaliCore] AdvertiserRelay.\(#function) removed virtual socket " +
               "vsID:\(virtualSocket.vsID)")
       }

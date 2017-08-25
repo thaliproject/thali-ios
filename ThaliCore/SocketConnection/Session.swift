@@ -165,8 +165,8 @@ extension Session: MCSessionDelegate {
     print("[ThaliCore] Session.\(#function) peer:\(peerID.displayName) " +
           "state: \(getStateValue(currentState)) -> \(getStateValue(state))")
 
-    self.sessionState.modify {
-      $0 = state
+    self.sessionState.modify { sessionState in
+      sessionState = state
       self.didChangeStateHandler?(state)
 
       switch state {
