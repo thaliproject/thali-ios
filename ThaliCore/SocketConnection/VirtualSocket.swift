@@ -29,8 +29,9 @@ class VirtualSocket: NSObject {
   fileprivate var inputStreamOpened = false
   fileprivate var outputStreamOpened = false
 
-  let maxReadBufferLength = 1024
-  fileprivate var pendingDataToWrite: NSMutableData?
+  let maxReadBufferLength = 16384
+  fileprivate var pendingDataToWrite = NSMutableData()
+  fileprivate let pendingDataMutex: PosixThreadMutex
   fileprivate let mutex: PosixThreadMutex
 
   // --- For debugging purpose only ---
@@ -54,6 +55,7 @@ class VirtualSocket: NSObject {
     self.inputStream = inputStream
     self.outputStream = outputStream
     self.mutex = PosixThreadMutex()
+    self.pendingDataMutex = PosixThreadMutex()
     super.init()
   }
 
@@ -138,38 +140,82 @@ class VirtualSocket: NSObject {
     outputStream = nil
   }
 
+  // Private method called by writeDataToOutputStream and writePendingData
+  func writeToStream(data: Data) -> Int {
+
+    guard let strongOuputStream = self.outputStream else {
+      return 0
+    }
+
+    let dataLength = data.count
+    let startDataPointer = (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: dataLength)
+    let buffer: [UInt8] = Array(
+                   UnsafeBufferPointer(start: startDataPointer, count: dataLength)
+                  )
+    let bytesWritten = strongOuputStream.write(buffer, maxLength: dataLength)
+    print("[ThaliCore] VirtualSocket.\(#function) writing:\(dataLength) written:\(bytesWritten)")
+    if bytesWritten < 0 {
+      // closeStreams()
+    }
+    return bytesWritten
+  }
+
+  // Public method
   func writeDataToOutputStream(_ data: Data) {
 
     guard let strongOuputStream = self.outputStream else {
       return
     }
 
-    if !strongOuputStream.hasSpaceAvailable {
-      pendingDataToWrite?.append(data)
-      return
+    pendingDataMutex.lock()
+
+    if strongOuputStream.hasSpaceAvailable {
+      if pendingDataToWrite.length > 0 {
+        pendingDataToWrite.append(data)
+        let written = writeToStream(data: pendingDataToWrite as Data)
+        if written == pendingDataToWrite.length {
+          pendingDataToWrite = NSMutableData()
+        }
+      } else {
+        let written = writeToStream(data: data)
+        if written == 0 {
+          pendingDataToWrite.append(data)
+        }
+      }
+    } else {
+      // pendingDataToWrite.append(data)
+      print("[ThaliCore] VirtualSocket.\(#function) no space, len:\(data.count)" +
+            " pending:\(pendingDataToWrite.length)")
+      let written = writeToStream(data: data)
+      if written == 0 {
+        pendingDataToWrite.append(data)
+      }
     }
 
-    let dataLength = data.count
-    let startDataPointer = (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count)
-    let buffer: [UInt8] = Array(
-      UnsafeBufferPointer(start: startDataPointer, count: dataLength)
-    )
-
-    let bytesWritten = strongOuputStream.write(buffer, maxLength: dataLength)
-    if bytesWritten < 0 {
-      closeStreams()
-    }
+    pendingDataMutex.unlock()
   }
 
+  // Event handler for Stream.Event.hasSpaceAvailable
   func writePendingData() {
-    guard let dataToWrite = pendingDataToWrite else {
+
+    guard pendingDataToWrite.length > 0 else {
       return
     }
 
-    pendingDataToWrite = nil
-    writeDataToOutputStream(dataToWrite as Data)
+    pendingDataMutex.lock()
+
+    if pendingDataToWrite.length > 0 {
+      print("[ThaliCore] VirtualSocket.\(#function) len: \(pendingDataToWrite.length)")
+      let written = writeToStream(data: pendingDataToWrite as Data)
+      if written == pendingDataToWrite.length {
+        pendingDataToWrite = NSMutableData()
+      }
+    }
+
+    pendingDataMutex.unlock()
   }
 
+  // Event handler for Stream.Event.hasBytesAvailable
   fileprivate func readDataFromInputStream() {
 
     guard let strongInputStream = self.inputStream else {
@@ -179,6 +225,7 @@ class VirtualSocket: NSObject {
     var buffer = [UInt8](repeating: 0, count: maxReadBufferLength)
 
     let bytesReaded = strongInputStream.read(&buffer, maxLength: maxReadBufferLength)
+    print("[ThaliCore] VirtualSocket.\(#function) reading: \(bytesReaded)")
     if bytesReaded > 0 {
       let data = Data(bytes: buffer, count: bytesReaded)
       didReadDataFromStreamHandler?(self, data)
@@ -240,6 +287,7 @@ extension VirtualSocket: StreamDelegate {
     case Stream.Event.hasBytesAvailable:
       break
     case Stream.Event.hasSpaceAvailable:
+      print("[ThaliCore] VirtualSocket.\(#function) Event.hasSpaceAvailable")
       writePendingData()
     case Stream.Event.errorOccurred:
       print("[ThaliCore] VirtualSocket.\(#function) errorOccurred vsID:\(vsID)")
