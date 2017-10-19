@@ -212,7 +212,7 @@ final class BrowserRelay {
       return
     }
 
-    self.nonTCPsession.disconnect()
+    disconnectNonTCPSession()
   }
 
   // This is called after both the input and output have been opened
@@ -229,6 +229,11 @@ final class BrowserRelay {
   fileprivate func createVirtualSocket(
                       with completion: @escaping ((VirtualSocket?, Error?) -> Void)) {
     print("[ThaliCore] BrowserRelay.\(#function)")
+
+    guard self.nonTCPsession != nil else {
+      completion(nil, ThaliCoreError.sessionDisconnected)
+      return
+    }
 
     let newStreamName = UUID().uuidString
     let virtualSocketBuilder = BrowserVirtualSocketBuilder(

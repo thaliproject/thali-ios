@@ -17,7 +17,7 @@ class VirtualSocketBuilder {
   /**
    Represents non-TCP/IP session.
    */
-  fileprivate let nonTCPsession: Session
+  fileprivate let nonTCPsession: Session?
 
   /**
    Represents object that provides write-only stream functionality.
@@ -119,7 +119,7 @@ final class BrowserVirtualSocketBuilder: VirtualSocketBuilder {
   func startBuilding(with completion: @escaping (VirtualSocket?, Error?) -> Void) {
     self.completion = completion
 
-    let outputStream = nonTCPsession.startOutputStream(with: streamName)
+    let outputStream = nonTCPsession?.startOutputStream(with: streamName)
     guard outputStream != nil else {
       print("[ThaliCore] VirtualSocketBuilder: startOutputStream() failed)")
       self.completion?(nil, ThaliCoreError.connectionFailed)
